@@ -38,7 +38,6 @@ const Nav = props => {
           <NavItem>Home</NavItem>
           <NavItem>Search</NavItem>
           <NavItem>Trending</NavItem>
-          <NavItem>New Releases</NavItem>
         </ul>
       </section>
       <section className="profile-section" >
@@ -47,6 +46,8 @@ const Nav = props => {
           <h3>Your Tastes</h3>
           <ul>
             <NavItem>Your Space</NavItem>
+            <NavItem>Playlists</NavItem>
+            <NavItem>Songs</NavItem>
             <NavItem>Most Listened</NavItem>
             <NavItem>Favorites</NavItem>
           </ul>

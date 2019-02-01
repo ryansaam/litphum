@@ -2,7 +2,7 @@ import React from 'react'
 
 export const ArtistTag = props => {
   return (    
-    <div className="artist-tag">
+    <div id={props.id} className="artist-tag" onClick={props.onClick}>
       <div className="artist-image-container">
         <div className="artist-img" style={{backgroundImage: `url(${props.img})`}} alt="Artist" />
       </div>

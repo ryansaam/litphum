@@ -6,9 +6,9 @@
   box-sizing: border-box;
 }
 
-.artist-section {
+/* .artist-section {
 
-}
+} */
 .artist-section h1 {
   color: white;
   margin: 0px;
@@ -23,18 +23,18 @@
 
 
 
-.location-picker-container {
+.picker-container {
   position: relative;
 }
-.location-tag-slides-container {
+.picker-tag-slides-container {
   overflow-x: hidden;
 }
-.location-tag-slides {
+.picker-tag-slides {
   position: relative;
   overflow: visible;
   transition: transform ease-in-out 300ms;
 }
-.location-tag-slides-btn {
+.picker-tag-slides-btn {
   background-color: white;
   border-radius: 50%;
   width: 40px;
@@ -43,20 +43,19 @@
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.14) 0px 1px 1px 1px;
 }
-.location-tag-slides-btn:focus {
+.picker-tag-slides-btn:focus {
   outline: none;
   box-shadow: 0 0 2px 2px #1c1c1c;
 }
-
-.artist-tag-container {
-  width: 25.5%;
+.tag-container {
   vertical-align: top;
   white-space: normal;
   display: inline-block;
 }
-.artist-tag-padding {
-  padding: 0px 25px;
-}
+
+
+
+
 .artist-tag {
   background-color: white;
   border-radius: 5px;

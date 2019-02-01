@@ -17,7 +17,7 @@ const btn2 = {
 const SlidesBtn = props => {
   return (
     <div style={{...props.style}} >
-      <button type="button" className="location-tag-slides-btn" onClick={props.onClick} >
+      <button type="button" className="picker-tag-slides-btn" onClick={props.onClick} >
         <svg viewBox="0 0 50 50">
           <g style={{transformOrigin: "50% 50%", transform: "rotate(50deg)"}} >
           <rect rx="3" x="4" y="19" width="30" height="5" style={{fill: "#313131"}}/>
@@ -36,15 +36,18 @@ const SlidePicker = props => {
   const [btn1IsShowing, setBtn1IsShowing] = useState(true)
   const [btn2IsShowing, setBtn2IsShowing] = useState(true)
 
+  const slidePercentage = 100 / props.visibleSlides
+  const slideRange = slidePercentage * props.visibleSlides
+
   function handleBtn1Click() {
     if (btn1IsShowing) {
-      setSlidesPosition(slidesPosition+25.5)
+      setSlidesPosition(slidesPosition+slidePercentage)
     }
   }
 
   function handleBtn2Click() {
       if (btn2IsShowing) {
-        setSlidesPosition(slidesPosition-25.5)
+        setSlidesPosition(slidesPosition-slidePercentage)
       }
   }
 
@@ -54,18 +57,30 @@ const SlidePicker = props => {
     } else {
       setBtn1IsShowing(true)
     }
-    if (slidesPosition === -102) {
+    if (slidesPosition === -slideRange) {
       setBtn2IsShowing(false)
     } else {
       setBtn2IsShowing(true)
     }
   }, [slidesPosition])
 
+  const children = props.children.map(element => {
+    return (
+      <span style={{whiteSpace: "nowrap"}} >
+        <div className="tag-container" style={{ width: `${slidePercentage}%` }} >
+          <div style={{padding: `0px ${props.slidePadding}px`}} >
+            {element}
+          </div>
+        </div>
+      </span>
+    )
+  });
+
   return (
-    <div className="location-picker-container">
-      <div className="location-tag-slides-container">
-        <div className="location-tag-slides" style={{transform: `translateX(${slidesPosition}%)`}}>
-          {props.children}
+    <div className="picker-container">
+      <div className="picker-tag-slides-container">
+        <div className="picker-tag-slides" style={{transform: `translateX(${slidesPosition}%)`}}>
+          {children}
         </div>
       </div>
       {btn1IsShowing ? <SlidesBtn onClick={handleBtn1Click} style={btn1} /> : null}

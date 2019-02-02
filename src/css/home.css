@@ -1,37 +1,12 @@
 .home {
   background: linear-gradient(120deg, rgb(198, 66, 250) 0%, rgb(80, 255, 153) 60%,rgb(0, 144, 211));
+  min-height: 100%;
 }
 .home-main {
   width: 100%;
   min-height: 100%;
-  padding: 40px 120px;
+  padding: 40px 0px;
   box-sizing: border-box;
-}
-
-.artist-section {
-  padding-bottom: 40px;
-}
-.artist-section h2 {
-  color: #2ad4ff;
-  margin: 0px 0px 0px 24px;
-  font-size: 18px;
-}
-.artist-section h1 {
-  color: white;
-  margin: 0px 0px 40px 24px;
-  font-size: 32px;
-}
-
-
-.new-releases-section h2 {
-  color: #26ff13;
-  margin: 0px 0px 0px 24px;
-  font-size: 18px;
-}
-.new-releases-section h1 {
-  color: white;
-  margin: 0px 0px 40px 24px;
-  font-size: 32px;
 }
 
 

@@ -66,7 +66,7 @@ const SlidePicker = props => {
 
   const children = props.children.map(element => {
     return (
-      <span style={{whiteSpace: "nowrap"}} >
+      <span key={element.key} style={{whiteSpace: "nowrap"}} >
         <div className="tag-container" style={{ width: `${slidePercentage}%` }} >
           <div style={{padding: `0px ${props.slidePadding}px`}} >
             {element}

@@ -9,13 +9,13 @@ const ProfileTab = props => {
   )
 }
 
-const search = props => {
-  return (
-    <div>
-      <input type="text" />
-    </div>
-  )
-}
+// const search = props => {
+//   return (
+//     <div>
+//       <input type="text" />
+//     </div>
+//   )
+// }
 
 const NavItem = props => {
   return (
@@ -28,9 +28,6 @@ const NavItem = props => {
 }
 
 const Nav = props => {
-  const handleClick = event => {
-
-  }
   return (
     <nav className="nav">
       <section>

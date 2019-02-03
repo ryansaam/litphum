@@ -85,10 +85,6 @@
   transition: bottom ease-in 200ms;
 }
 
-#viewerTab {
-  transition: top 100ms ease 120ms;
-}
-
 .home-main {
   transition: opacity ease-out 300ms;
 }

@@ -112,6 +112,7 @@ const Viewer = props => {
   const [targetPosition, setTargetPosition] = useState({x: 0, y: 0})
   const [translateY, setTranslateY] = useState(0)
   const [leftOffset, setLeftOffset] = useState(0)
+  const [sectionOffset, setSectionOffset] = useState(0)
   const [tagInfo, setTagInfo] = useState({name: "", genre: ""})
   const [tagIsShowing, setTagIsShowing] = useState(false)
   const [toggleIndex, setToggleIndex] = useState(0b1)
@@ -120,7 +121,10 @@ const Viewer = props => {
 
   useEffect(() => {
     const offset = document.getElementById("test").getBoundingClientRect()
+    const sectionTop = document.getElementById("test").getBoundingClientRect().top
     setLeftOffset(offset.left)
+    setSectionOffset(sectionTop)
+    return () => ({offset, sectionTop})
   },[])
 
   useEffect(() => {
@@ -130,7 +134,6 @@ const Viewer = props => {
   },[viewerIsShowing])
   useEffect(() => {
     setTargetPosition({x: leftOffset, y: targetPosition.y})
-    console.log(targetPosition.y)
   },[tagInfo])
   useEffect(() => {
     if (tagIsShowing)
@@ -140,9 +143,9 @@ const Viewer = props => {
   },[viewerIsShowing])
 
   const handleClick = (name, genre, event) => {
+    const offset = event.currentTarget.getBoundingClientRect()
     setViewerIsShowing(!viewerIsShowing)
     setTagIsShowing(!tagIsShowing)
-    const offset = event.currentTarget.getBoundingClientRect()
     setTargetPosition({x: offset.left, y: offset.top})
     setTagInfo({name, genre})
     setToggleIndex(~~!toggleIndex)
@@ -166,17 +169,12 @@ const Viewer = props => {
 
   return (
     <>
-      <ArtistSection>
-        <div style={{margin: "0px 120px", opacity: toggleIndex, transition: "opacity linear 200ms"}}>
-          <SectionHeaders>
-            <Header hColor="#2ad4ff" >Artists</Header>
-            <Header hMargin="40px" fontSize="34px" >Popular</Header>
-          </SectionHeaders>
-          <SlidePicker slidePadding={25} visibleSlides={4} >
-            {slideItems}
-          </SlidePicker>
-        </div>
-      </ArtistSection>
+      <div style={{margin: "0px 120px", opacity: toggleIndex, transition: "opacity linear 200ms"}}>
+        {props.children}
+        <SlidePicker slidePadding={25} visibleSlides={4} >
+          {slideItems}
+        </SlidePicker>
+      </div>
       <ViewFunctions translateY={tagIsShowing ? 0:-158}>
         <ViewBtn translateX={tagIsShowing ? 60:0} opacity={~~!toggleIndex} onClick={exitView}>
           <ArrowSVG/>
@@ -196,10 +194,18 @@ const Viewer = props => {
 }
 
 const Home = props => {
+
   return (
-    <section className="home">
+    <section className="home" id="home">
       <div className="home-main">
-        <Viewer />
+        <ArtistSection>
+          <Viewer>
+            <SectionHeaders>
+              <Header hColor="#2ad4ff" >Artists</Header>
+              <Header hMargin="40px" fontSize="34px" >Popular</Header>
+            </SectionHeaders>
+          </Viewer>
+        </ArtistSection>
       </div>
       <section className="new-releases-section">
           <SectionHeaders>
@@ -222,3 +228,42 @@ const Home = props => {
 }
 
 export default Home
+
+
+
+
+
+
+//    const main = document.getElementById("main")
+//    const sectionTop = document.getElementById("section-top").getBoundingClientRect().top
+//    const offset = sectionTop
+//    const target = event.currentTarget
+//    var timer = null
+//    console.log(sectionTop, sectionTop - window.scrollY)
+//    if (sectionTop !== (sectionTop - window.scrollY)) {
+//      main.scroll({
+//        top: offset,
+//        behavior: "smooth"
+//      })
+//      main.addEventListener('scroll', () => {
+  
+//        if(timer !== null) {
+//          clearTimeout(timer)
+//        }
+//        timer = setTimeout(() => {
+//          const offset = target.getBoundingClientRect()
+//          setViewerIsShowing(!viewerIsShowing)
+//          setTagIsShowing(!tagIsShowing)
+//          setTargetPosition({x: offset.left, y: offset.top})
+//          setTagInfo({name, genre})
+//          setToggleIndex(~~!toggleIndex)
+//        }, 150)
+//      })
+//    } else {
+//      const offset = target.getBoundingClientRect()
+//      setViewerIsShowing(!viewerIsShowing)
+//      setTagIsShowing(!tagIsShowing)
+//      setTargetPosition({x: offset.left, y: offset.top})
+//      setTagInfo({name, genre})
+//      setToggleIndex(~~!toggleIndex)
+//    }

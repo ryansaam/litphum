@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import '../css/nav.css'
 
 const ProfileTab = props => {
@@ -8,14 +9,6 @@ const ProfileTab = props => {
     </div>
   )
 }
-
-// const search = props => {
-//   return (
-//     <div>
-//       <input type="text" />
-//     </div>
-//   )
-// }
 
 const NavItem = props => {
   return (
@@ -32,9 +25,9 @@ const Nav = props => {
     <nav className="nav">
       <section>
         <ul>
-          <NavItem>Home</NavItem>
-          <NavItem>Search</NavItem>
-          <NavItem>Trending</NavItem>
+          <Link to="/" ><NavItem>Home</NavItem></Link>
+          <Link to="/search/" ><NavItem>Search</NavItem></Link>
+          <Link to="/tending/"><NavItem>Trending</NavItem></Link>
         </ul>
       </section>
       <section className="profile-section" >

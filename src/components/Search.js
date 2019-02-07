@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import icon from '../images/search-icon.svg'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -13,25 +12,38 @@ const SearchBox = styled.input`
   height: 57px;
   color: #fafafa;
   font-size: 24px;
-  padding-left: 20px;
+  padding-left: 60px;
   border: none;
   outline: none;
-  :before {
-    content: url("../images/search-icon.svg")
+  box-sizing: border-box;
+  &::-webkit-input-placeholder {
+    color: #999999;
   }
 `
-
-const searchIcon = (
-  <svg height="50px" version="1.1" viewBox="0 0 50 50" width="50px" >
-    <path clip-rule="evenodd" d="M306.39,154.09c19.628,4.543,35.244,21.259,39.787,39.523  c1.551,8.54,8.998,14.989,17.904,14.989c9.991,0,18.168-8.175,18.168-18.17c0-13.083-10.991-32.98-25.985-47.881  c-14.719-14.537-32.252-24.802-46.695-24.802c-9.991,0-18.172,8.45-18.172,18.446C291.396,145.094,297.847,152.546,306.39,154.09z   M56.629,392.312c-14.09,14.08-14.09,36.979,0,51.059c14.08,14.092,36.981,14.092,50.965,0l104.392-104.303  c24.347,15.181,53.062,23.991,83.953,23.991c87.857,0,158.995-71.142,158.995-158.999c0-87.854-71.138-158.995-158.995-158.995  c-87.856,0-158.995,71.141-158.995,158.995c0,30.802,8.819,59.606,23.992,83.953L56.629,392.312z M182.371,204.06  c0-62.687,50.875-113.568,113.568-113.568s113.569,50.881,113.569,113.568c0,62.694-50.876,113.569-113.569,113.569  S182.371,266.754,182.371,204.06z" fill="#010101" fill-rule="evenodd"/>
-  </svg>
-)
+const Label = styled.label`
+  position: relative;
+  width: 100%
+  :before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: -13px;
+    width: 35px;
+    height: 35px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' fill='#999999' height='500' viewBox='0 0 500 500' fill-rule='evenodd'%3E%3Cpath d='M497.913,497.913c-18.782,18.782-49.225,18.782-68.008,0l-84.862-84.863c-34.889,22.382-76.13,35.717-120.659,35.717  C100.469,448.767,0,348.312,0,224.383S100.469,0,224.384,0c123.931,0,224.384,100.452,224.384,224.383  c0,44.514-13.352,85.771-35.718,120.676l84.863,84.863C516.695,448.704,516.695,479.131,497.913,497.913z M224.384,64.109  c-88.511,0-160.274,71.747-160.274,160.273c0,88.526,71.764,160.274,160.274,160.274c88.525,0,160.273-71.748,160.273-160.274  C384.657,135.856,312.909,64.109,224.384,64.109z'%3E%3C/path%3E%3C/svg%3E");
+    background-size: 35px 35px;
+    background-repeat: no-repeat;
+    border-radius: 0px 0px 5px 0px;
+  }
+`
 
 const Search = props => {
   return (
 
     <SearchContainer>
+      <Label>
       <SearchBox placeholder="What are you looking for?" type="text" />
+      </Label>
     </SearchContainer>
   )
 }

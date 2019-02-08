@@ -10,7 +10,7 @@ const ArtistSection = styled.section`
   padding-bottom: 40px;
 `
 const SectionHeaders = styled.div`
-  margin-left: 24px;
+  margin-left: 145px;
 `
 const Header = styled.h2`
   color: ${props => props.hColor || "white"};
@@ -142,7 +142,7 @@ const Viewer = props => {
       setTranslateY(0)
   },[viewerIsShowing])
 
-  const handleClick = (name, genre, event) => {
+  const handleClick = (name, genre) => event => {
     const offset = event.currentTarget.getBoundingClientRect()
     setViewerIsShowing(!viewerIsShowing)
     setTagIsShowing(!tagIsShowing)
@@ -156,21 +156,15 @@ const Viewer = props => {
     setToggleIndex(1)
   }
 
-  const slideItems = Object.keys(artistInfo).map((key, index) => (
-    <ArtistTag 
-      id={key==="artist0"?'test':null} 
-      key={key} img={locationImg}
-      artistName={artistInfo[key].artistName}
-      genre={artistInfo[key].genre}
-      onClick={handleClick}
-      canClick
-    />
+  const slideItems = props.children.map((component,index) => (
+    <div key={index} id={index===0?'test':null} onClick={handleClick(component.name, component.genre)}>
+      {component.element}
+    </div>
   ))
 
   return (
     <>
       <div style={{margin: "0px 120px", opacity: toggleIndex, transition: "opacity linear 200ms"}}>
-        {props.children}
         <SlidePicker slidePadding={25} visibleSlides={4} >
           {slideItems}
         </SlidePicker>
@@ -194,16 +188,28 @@ const Viewer = props => {
 }
 
 const Home = props => {
-
+  const viewerItems = Object.keys(artistInfo).map((key, index) => (
+    { name: artistInfo[key].artistName,
+      genre: artistInfo[key].genre,
+      element: (
+        <ArtistTag 
+          img={locationImg}
+          artistName={artistInfo[key].artistName}
+          genre={artistInfo[key].genre}
+        />
+      )
+    }
+  ))
   return (
     <section className="home" id="home">
       <div className="home-main">
         <ArtistSection>
+          <SectionHeaders>
+            <Header hColor="#2ad4ff" >Artists</Header>
+            <Header hMargin="40px" fontSize="34px" >Popular</Header>
+          </SectionHeaders>
           <Viewer>
-            <SectionHeaders>
-              <Header hColor="#2ad4ff" >Artists</Header>
-              <Header hMargin="40px" fontSize="34px" >Popular</Header>
-            </SectionHeaders>
+            {viewerItems}
           </Viewer>
         </ArtistSection>
       </div>

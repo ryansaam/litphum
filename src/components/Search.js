@@ -42,7 +42,7 @@ const Search = props => {
 
     <SearchContainer>
       <Label>
-      <SearchBox placeholder="What are you looking for?" type="text" />
+        <SearchBox placeholder="What are you looking for?" type="text" />
       </Label>
     </SearchContainer>
   )

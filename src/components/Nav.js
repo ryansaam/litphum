@@ -1,11 +1,32 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 import '../css/nav.css'
+
+const ProfileContainer = styled.div`
+  padding: 5px;
+`
+const Avitar = styled.div`
+  background-color: #a2a2a2;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 50%;
+  float: left;
+`
+const SignedOutLink = styled.span`
+  display: block;
+  margin: 5px 0px;
+`
 
 const ProfileTab = props => {
   return (
     <div className="profile-tab">
-
+      <ProfileContainer>
+        <Avitar/>
+        <SignedOutLink>Sign In</SignedOutLink>
+        <SignedOutLink>Create Acount</SignedOutLink>
+      </ProfileContainer>
     </div>
   )
 }

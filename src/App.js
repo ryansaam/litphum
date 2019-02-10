@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css'
 import Home from './components/Home.js'
-import Nav from './components/Nav.js'
 import Search from './components/Search.js'
+import Trending from './components/Trending.js'
+import Nav from './components/Nav.js'
 
 class App extends Component {
   render() {
@@ -16,6 +17,7 @@ class App extends Component {
             <main id="main">
               <Route path="/" exact component={Home} />
               <Route path="/search/" component={Search} />
+              <Route path="/trending/" component={Trending} />
             </main>
         </div>
       </Router>

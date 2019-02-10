@@ -39,7 +39,6 @@ const Label = styled.label`
 
 const Search = props => {
   return (
-
     <SearchContainer>
       <Label>
         <SearchBox placeholder="What are you looking for?" type="text" />

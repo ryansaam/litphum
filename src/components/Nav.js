@@ -48,7 +48,7 @@ const Nav = props => {
         <ul>
           <Link to="/" ><NavItem>Home</NavItem></Link>
           <Link to="/search/" ><NavItem>Search</NavItem></Link>
-          <Link to="/tending/"><NavItem>Trending</NavItem></Link>
+          <Link to="/trending/"><NavItem>Trending</NavItem></Link>
         </ul>
       </section>
       <section className="profile-section" >

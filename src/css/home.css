@@ -1,13 +1,9 @@
 .home {
   background: linear-gradient(120deg, rgb(198, 66, 250) 0%, rgb(80, 255, 153) 60%,rgb(0, 144, 211));
-  min-height: 100%;
+  height: 100%;
+  overflow: auto;
 }
-.home-main {
-  width: 100%;
-  min-height: 100%;
-  padding: 40px 0px;
-  box-sizing: border-box;
-}
+
 .new-releases-section {
   position: relative;
   z-index: 0;

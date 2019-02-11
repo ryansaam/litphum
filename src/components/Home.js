@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import '../css/home.css'
 import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
 import { ArtistTag } from './Tags.js'
 import locationImg from '../images/location-photo.jpeg'
 
-
-const ArtistSection = styled.section`
-  padding-bottom: 40px;
+const ArtistSectionContainer = styled.section`
+  padding: 40px 0px;
 `
 const SectionHeaders = styled.div`
   margin-left: 145px;
@@ -112,7 +111,6 @@ const Viewer = props => {
   const [targetPosition, setTargetPosition] = useState({x: 0, y: 0})
   const [translateY, setTranslateY] = useState(0)
   const [leftOffset, setLeftOffset] = useState(0)
-  const [sectionOffset, setSectionOffset] = useState(0)
   const [tagInfo, setTagInfo] = useState({name: "", genre: ""})
   const [tagIsShowing, setTagIsShowing] = useState(false)
   const [toggleIndex, setToggleIndex] = useState(0b1)
@@ -121,10 +119,8 @@ const Viewer = props => {
 
   useEffect(() => {
     const offset = document.getElementById("test").getBoundingClientRect()
-    const sectionTop = document.getElementById("test").getBoundingClientRect().top
     setLeftOffset(offset.left)
-    setSectionOffset(sectionTop)
-    return () => ({offset, sectionTop})
+    return () => offset
   },[])
 
   useEffect(() => {
@@ -143,6 +139,7 @@ const Viewer = props => {
   },[viewerIsShowing])
 
   const handleClick = (name, genre) => event => {
+    props.onClick()
     const offset = event.currentTarget.getBoundingClientRect()
     setViewerIsShowing(!viewerIsShowing)
     setTagIsShowing(!tagIsShowing)
@@ -187,7 +184,26 @@ const Viewer = props => {
   )
 }
 
+const ArtistSection = props => {
+  const artistElement = useRef(null)
+  const handleClick = () => {
+    props.parentRef.current.scrollTo(0, artistElement.current.offsetTop)
+    console.log(artistElement.current.offsetTop)
+  }
+  return (
+    <div ref={artistElement}>
+    <ArtistSectionContainer>
+      {props.children}
+      <Viewer onClick={handleClick} parentRef={artistElement.current}>
+        {props.items}
+      </Viewer>
+    </ArtistSectionContainer>
+    </div>
+  )
+}
+
 const Home = props => {
+  const HomeRef = useRef(null)
   const viewerItems = Object.keys(artistInfo).map((key, index) => (
     { name: artistInfo[key].artistName,
       genre: artistInfo[key].genre,
@@ -201,75 +217,31 @@ const Home = props => {
     }
   ))
   return (
-    <section className="home" id="home">
-      <div className="home-main">
-        <ArtistSection>
-          <SectionHeaders>
-            <Header hColor="#2ad4ff" >Artists</Header>
-            <Header hMargin="40px" fontSize="34px" >Popular</Header>
-          </SectionHeaders>
-          <Viewer>
-            {viewerItems}
-          </Viewer>
-        </ArtistSection>
-      </div>
+    <section ref={HomeRef} className="home">
+      <ArtistSection parentRef={HomeRef} items={viewerItems}>
+        <SectionHeaders>
+          <Header hColor="#2ad4ff" >Artists</Header>
+          <Header hMargin="40px" fontSize="34px" >Popular</Header>
+        </SectionHeaders>
+      </ArtistSection>
       <section className="new-releases-section">
-          <SectionHeaders>
-            <Header hColor="#26ff13" >Albums</Header>
-            <Header hMargin="40px" fontSize="34px" >New Releases</Header>
-          </SectionHeaders>
-          <SlidePicker slidePadding={25} visibleSlides={4} >
-            <ArtistTag img={locationImg} artistName="Kanye West" genre="hip-hop" />
-            <ArtistTag img={locationImg} artistName="The Weeknd" genre="soul" />
-            <ArtistTag img={locationImg} artistName="Frank Ocean" genre="soul" />
-            <ArtistTag img={locationImg} artistName="Kurt Cobain" genre="alternative" />
-            <ArtistTag img={locationImg} artistName="Deadmou5" genre="EDM" />
-            <ArtistTag img={locationImg} artistName="Prince" genre="pop" />
-            <ArtistTag img={locationImg} artistName="Chris Cornell" genre="alternative" />
-            <ArtistTag img={locationImg} artistName="XXXTENTACION" genre="hip-hop" />
-          </SlidePicker>
-        </section>
+        <SectionHeaders>
+          <Header hColor="#26ff13" >Albums</Header>
+          <Header hMargin="40px" fontSize="34px" >New Releases</Header>
+        </SectionHeaders>
+        <SlidePicker slidePadding={25} visibleSlides={4} >
+          <ArtistTag img={locationImg} artistName="Kanye West" genre="hip-hop" />
+          <ArtistTag img={locationImg} artistName="The Weeknd" genre="soul" />
+          <ArtistTag img={locationImg} artistName="Frank Ocean" genre="soul" />
+          <ArtistTag img={locationImg} artistName="Kurt Cobain" genre="alternative" />
+          <ArtistTag img={locationImg} artistName="Deadmou5" genre="EDM" />
+          <ArtistTag img={locationImg} artistName="Prince" genre="pop" />
+          <ArtistTag img={locationImg} artistName="Chris Cornell" genre="alternative" />
+          <ArtistTag img={locationImg} artistName="XXXTENTACION" genre="hip-hop" />
+        </SlidePicker>
+      </section>
     </section>
   )
 }
 
 export default Home
-
-
-
-
-
-
-//    const main = document.getElementById("main")
-//    const sectionTop = document.getElementById("section-top").getBoundingClientRect().top
-//    const offset = sectionTop
-//    const target = event.currentTarget
-//    var timer = null
-//    console.log(sectionTop, sectionTop - window.scrollY)
-//    if (sectionTop !== (sectionTop - window.scrollY)) {
-//      main.scroll({
-//        top: offset,
-//        behavior: "smooth"
-//      })
-//      main.addEventListener('scroll', () => {
-  
-//        if(timer !== null) {
-//          clearTimeout(timer)
-//        }
-//        timer = setTimeout(() => {
-//          const offset = target.getBoundingClientRect()
-//          setViewerIsShowing(!viewerIsShowing)
-//          setTagIsShowing(!tagIsShowing)
-//          setTargetPosition({x: offset.left, y: offset.top})
-//          setTagInfo({name, genre})
-//          setToggleIndex(~~!toggleIndex)
-//        }, 150)
-//      })
-//    } else {
-//      const offset = target.getBoundingClientRect()
-//      setViewerIsShowing(!viewerIsShowing)
-//      setTagIsShowing(!tagIsShowing)
-//      setTargetPosition({x: offset.left, y: offset.top})
-//      setTagInfo({name, genre})
-//      setToggleIndex(~~!toggleIndex)
-//    }

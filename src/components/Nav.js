@@ -17,6 +17,10 @@ const Avitar = styled.div`
 const SignedOutLink = styled.span`
   display: block;
   margin: 5px 0px;
+  :hover {
+    color: pink;
+    cursor: pointer;
+  }
 `
 
 const ProfileTab = props => {
@@ -24,7 +28,7 @@ const ProfileTab = props => {
     <div className="profile-tab">
       <ProfileContainer>
         <Avitar/>
-        <SignedOutLink>Sign In</SignedOutLink>
+        <SignedOutLink onClick={() => window.location = "http://localhost:8888/login"} >Sign In</SignedOutLink>
         <SignedOutLink>Create Acount</SignedOutLink>
       </ProfileContainer>
     </div>

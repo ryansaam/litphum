@@ -3,7 +3,7 @@ import '../css/home.css'
 import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
 import { ArtistTag } from './Tags.js'
-import locationImg from '../images/location-photo.jpeg'
+import { getUserArtists } from '../api-calls'
 
 const ArtistSectionContainer = styled.section`
   padding: 40px 0px;
@@ -64,41 +64,6 @@ const ViewBtn = styled.button`
   } 
 `
 
-const artistInfo = {
-  artist0: {
-    artistName:"Kanye West",
-    genre:"hip-hop"
-  },
-  artist1: {
-    artistName:"The Weeknd",
-    genre:"soul"
-  },  
-  artist2: {
-    artistName:"Frank Ocean",
-    genre:"soul"
-  },
-  artist3: {
-    artistName:"Kurt Cobain",
-    genre:"alternative"
-  },  
-  artist4: {
-    artistName:"Deadmou5",
-    genre:"EDM"
-  },
-  artist5: {
-    artistName:"Prince",
-    genre:"pop"
-  },
-  artist6: {
-    artistName:"Chris Cornell",
-    genre:"alternative"
-  },
-  artist7: { 
-    artistName:"XXXTENTACION",
-    genre:"hip-hop"
-  }
-}
-
 const ArrowSVG = props => (
   <svg height="32px" id="Layer_1" style={{enableBackground:"new 0 0 32 32"}} version="1.1" viewBox="0 0 32 32" width="32px">
     <path d="M28,14H8.8l4.62-4.62C13.814,8.986,14,8.516,14,8c0-0.984-0.813-2-2-2c-0.531,0-0.994,0.193-1.38,0.58l-7.958,7.958  C2.334,14.866,2,15.271,2,16s0.279,1.08,0.646,1.447l7.974,7.973C11.006,25.807,11.469,26,12,26c1.188,0,2-1.016,2-2  c0-0.516-0.186-0.986-0.58-1.38L8.8,18H28c1.104,0,2-0.896,2-2S29.104,14,28,14z"/>
@@ -111,7 +76,7 @@ const Viewer = props => {
   const [targetPosition, setTargetPosition] = useState({x: 0, y: 0})
   const [translateY, setTranslateY] = useState(0)
   const [leftOffset, setLeftOffset] = useState(0)
-  const [tagInfo, setTagInfo] = useState({name: "", genre: ""})
+  const [tagInfo, setTagInfo] = useState({name: "", genre: "", image: ""})
   const [tagIsShowing, setTagIsShowing] = useState(false)
   const [toggleIndex, setToggleIndex] = useState(0b1)
 
@@ -138,13 +103,13 @@ const Viewer = props => {
       setTranslateY(0)
   },[viewerIsShowing])
 
-  const handleClick = (name, genre) => event => {
+  const handleClick = (name, genre, image) => event => {
     props.onClick()
     const offset = event.currentTarget.getBoundingClientRect()
     setViewerIsShowing(!viewerIsShowing)
     setTagIsShowing(!tagIsShowing)
     setTargetPosition({x: offset.left, y: offset.top})
-    setTagInfo({name, genre})
+    setTagInfo({name, genre, image})
     setToggleIndex(~~!toggleIndex)
   }
   const exitView = () => {
@@ -154,7 +119,7 @@ const Viewer = props => {
   }
 
   const slideItems = props.children.map((component,index) => (
-    <div key={index} id={index===0?'test':null} onClick={handleClick(component.name, component.genre)}>
+    <div key={component.id} id={index===0?'test':null} onClick={handleClick(component.name, component.genre, component.imageUrl)}>
       {component.element}
     </div>
   ))
@@ -175,7 +140,7 @@ const Viewer = props => {
       {tagIsShowing ?
           <ViewerTab top={targetPosition.y} left={targetPosition.x} >
             <AnimatedView translateY={translateY}>
-              <ArtistTag img={locationImg} artistName={tagInfo.name} genre={tagInfo.genre} />
+              <ArtistTag img={tagInfo.image} artistName={tagInfo.name} genre={tagInfo.genre} />
             </AnimatedView>
           </ViewerTab>
           : 
@@ -203,42 +168,48 @@ const ArtistSection = props => {
 }
 
 const Home = props => {
+  const [viewerItems, setViewerItems] = useState(null)
   const HomeRef = useRef(null)
-  const viewerItems = Object.keys(artistInfo).map((key, index) => (
-    { name: artistInfo[key].artistName,
-      genre: artistInfo[key].genre,
-      element: (
-        <ArtistTag 
-          img={locationImg}
-          artistName={artistInfo[key].artistName}
-          genre={artistInfo[key].genre}
-        />
-      )
-    }
-  ))
+  
+  useEffect(() => {
+    getUserArtists(8,'short_term').then(artist => {
+      const elements = artist.items.map(item => (
+        { name: item.name,
+          genre: item.genres[0],
+          imageUrl: item.images[2].url,
+          id: item.id,
+          element: (
+            <ArtistTag 
+              img={item.images[2].url}
+              artistName={item.name}
+              genre={item.genres[0]}
+            />
+          )
+        }
+      ))
+      setViewerItems(elements)
+    })
+    return () => getUserArtists(8,'short_term') 
+  },[])
+
   return (
     <section ref={HomeRef} className="home">
-      <ArtistSection parentRef={HomeRef} items={viewerItems}>
+      {viewerItems ? (<ArtistSection parentRef={HomeRef} items={viewerItems}>
         <SectionHeaders>
           <Header hColor="#2ad4ff" >Artists</Header>
           <Header hMargin="40px" fontSize="34px" >Popular</Header>
         </SectionHeaders>
-      </ArtistSection>
+      </ArtistSection>) : null}
       <section className="new-releases-section">
         <SectionHeaders>
           <Header hColor="#26ff13" >Albums</Header>
           <Header hMargin="40px" fontSize="34px" >New Releases</Header>
         </SectionHeaders>
-        <SlidePicker slidePadding={25} visibleSlides={4} >
-          <ArtistTag img={locationImg} artistName="Kanye West" genre="hip-hop" />
-          <ArtistTag img={locationImg} artistName="The Weeknd" genre="soul" />
-          <ArtistTag img={locationImg} artistName="Frank Ocean" genre="soul" />
-          <ArtistTag img={locationImg} artistName="Kurt Cobain" genre="alternative" />
-          <ArtistTag img={locationImg} artistName="Deadmou5" genre="EDM" />
-          <ArtistTag img={locationImg} artistName="Prince" genre="pop" />
-          <ArtistTag img={locationImg} artistName="Chris Cornell" genre="alternative" />
-          <ArtistTag img={locationImg} artistName="XXXTENTACION" genre="hip-hop" />
-        </SlidePicker>
+        {viewerItems 
+        ? (<SlidePicker slidePadding={25} visibleSlides={4} >
+            {viewerItems.map(item => <div key={item.id} >{item.element}</div>)}
+           </SlidePicker>)
+        : null}
       </section>
     </section>
   )

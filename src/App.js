@@ -5,20 +5,23 @@ import Home from './components/Home.js'
 import Search from './components/Search.js'
 import Trending from './components/Trending.js'
 import Nav from './components/Nav.js'
+import user_id from './api-calls'
 
 class App extends Component {
   render() {
     return (
       <Router>
         <div className="App">
-            <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
+            { user_id ?
+            (<><div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
               <Nav />
             </div>
             <main id="main">
               <Route path="/" exact component={Home} />
               <Route path="/search/" component={Search} />
               <Route path="/trending/" component={Trending} />
-            </main>
+            </main></>) : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>
+            }
         </div>
       </Router>
     );

@@ -17,7 +17,14 @@ class App extends Component {
   }
   componentDidMount() {
     if (user_token) {
-      this.setState({spotifyAPI: new spotifyAPI(user_token)})
+      sessionStorage.setItem('access_token', user_token)
+      this.setState({
+        spotifyAPI: new spotifyAPI( user_token )
+      })
+    } else if (sessionStorage.getItem('access_token')) {
+      this.setState({
+        spotifyAPI: new spotifyAPI( sessionStorage.getItem('access_token') )
+      })
     }
   }
   componentDidUpdate(prevProps, prevState) {
@@ -28,10 +35,11 @@ class App extends Component {
   
   render() {
     const { user, spotifyAPI } = this.state
+    const token = sessionStorage.getItem('access_token')
     return (
       <Router>
         <div className="App">
-            { spotifyAPI.user_token && user
+            { ((spotifyAPI.user_token || token) && user)
             ? (<>
                 <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
                   <Nav image={user.images ? user.images[0].url : null} user={user} />

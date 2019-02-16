@@ -25,11 +25,15 @@ const ProfileLink = styled.span`
 `
 
 const ProfileTab = props => {
+  const handleSignOut = () => {
+    sessionStorage.removeItem("access_token")
+    window.location = "http://localhost:3000/"
+  }
   return (
     <div className="profile-tab">
       <ProfileContainer>
         <Avitar src={props.image} />
-        <ProfileLink onClick={() => window.location = "http://localhost:3000/"} >Sign Out</ProfileLink>
+        <ProfileLink onClick={handleSignOut} >Sign Out</ProfileLink>
         <Link to="/profile/"><ProfileLink>View Profile</ProfileLink></Link>
       </ProfileContainer>
     </div>

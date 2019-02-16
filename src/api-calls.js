@@ -2,8 +2,8 @@ import queryString from 'query-string'
 const user_token = queryString.parse(window.location.search).access_token
 
 export function spotifyAPI(token) {
-  this.user_token = token
-
+  this.user_token = token || sessionStorage.getItem('access_token')
+   
   const checkServerStat = (status, response) => {
     if (status === 401)
       window.location = "http://localhost:3000"

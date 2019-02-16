@@ -5,9 +5,10 @@ export function spotifyAPI(token) {
   this.user_token = token || sessionStorage.getItem('access_token')
    
   const checkServerStat = (status, response) => {
-    if (status === 401)
+    if (status === 401) {
+      sessionStorage.removeItem("access_token")
       window.location = "http://localhost:3000"
-    else
+    } else
       return response
   }
 

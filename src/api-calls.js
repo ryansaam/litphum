@@ -9,7 +9,24 @@ export const getUserArtists = (limit, time_range) => {
       `${time_range ? '&time_range='+time_range : ''}`, {
       headers: {"Authorization": "Bearer " + user_id}
     })
-    .then(response => response.json())
+    .then(response => {
+      if (response.status === 401)
+        window.location = "http://localhost:3000"
+      else
+        return response.json()
+    })
+  )
+}
+
+export const getUserProfile = () => {
+  return (
+    fetch(
+      "https://api.spotify.com/v1/me", {
+      headers: {"Authorization": "Bearer " + user_id}
+    })
+    .then(response => {
+      return response.json()
+    })
   )
 }
 

@@ -5,22 +5,39 @@ import Home from './components/Home.js'
 import Search from './components/Search.js'
 import Trending from './components/Trending.js'
 import Nav from './components/Nav.js'
-import user_id from './api-calls'
+import user_token from './api-calls.js'
+import { getUserProfile } from './api-calls.js'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      user: {}
+    }
+  }
+  componentDidMount() {
+    if (user_token)
+      getUserProfile()
+      .then(data => this.setState({user: data}))
+  }
+  
   render() {
+    const { user } = this.state
     return (
       <Router>
         <div className="App">
-            { user_id ?
-            (<><div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
-              <Nav />
-            </div>
-            <main id="main">
-              <Route path="/" exact component={Home} />
-              <Route path="/search/" component={Search} />
-              <Route path="/trending/" component={Trending} />
-            </main></>) : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>
+            { user_token && user
+            ? (<>
+                <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
+                  <Nav image={user.images ? user.images[0].url : null} user={user} />
+                </div>
+                <main id="main">
+                  <Route path={`/${user.type}/${user.id}`} exact component={Home} />
+                  <Route path="/search/" component={Search} />
+                  <Route path="/trending/" component={Trending} />
+                </main>
+              </>) 
+            : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>
             }
         </div>
       </Router>

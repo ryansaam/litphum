@@ -5,20 +5,21 @@ import '../css/nav.css'
 
 const ProfileContainer = styled.div`
   padding: 5px;
+  text-decoration: none;
 `
-const Avitar = styled.div`
-  background-color: #a2a2a2;
+const Avitar = styled.img`
   width: 50px;
   height: 50px;
   margin-right: 10px;
   border-radius: 50%;
   float: left;
 `
-const SignedOutLink = styled.span`
+const ProfileLink = styled.span`
   display: block;
   margin: 5px 0px;
+  color: black;
   :hover {
-    color: pink;
+    opacity: 0.6;
     cursor: pointer;
   }
 `
@@ -27,9 +28,9 @@ const ProfileTab = props => {
   return (
     <div className="profile-tab">
       <ProfileContainer>
-        <Avitar/>
-        <SignedOutLink onClick={() => window.location = "http://localhost:8888/login"} >Sign In</SignedOutLink>
-        <SignedOutLink>Create Acount</SignedOutLink>
+        <Avitar src={props.image} />
+        <ProfileLink onClick={() => window.location = "http://localhost:3000/"} >Sign Out</ProfileLink>
+        <Link to="/profile/"><ProfileLink>View Profile</ProfileLink></Link>
       </ProfileContainer>
     </div>
   )
@@ -46,11 +47,12 @@ const NavItem = props => {
 }
 
 const Nav = props => {
+  const { type, id } = props.user
   return (
     <nav className="nav">
       <section>
         <ul>
-          <Link to="/" ><NavItem>Home</NavItem></Link>
+          <Link to={`/${type}/${id}`} ><NavItem>Home</NavItem></Link>
           <Link to="/search/" ><NavItem>Search</NavItem></Link>
           <Link to="/trending/"><NavItem>Trending</NavItem></Link>
         </ul>
@@ -67,7 +69,7 @@ const Nav = props => {
           <Link to="/favorites/" ><NavItem>Favorites</NavItem></Link>
           </ul>
         </div>
-        <ProfileTab />
+        <ProfileTab image={props.image} />
       </section>
     </nav>
   )

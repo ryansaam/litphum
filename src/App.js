@@ -5,34 +5,39 @@ import Home from './components/Home.js'
 import Search from './components/Search.js'
 import Trending from './components/Trending.js'
 import Nav from './components/Nav.js'
-import user_token from './api-calls.js'
-import { getUserProfile } from './api-calls.js'
+import user_token, { spotifyAPI } from './api-calls.js'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {}
+      user: {},
+      spotifyAPI: {}
     }
   }
   componentDidMount() {
-    if (user_token)
-      getUserProfile()
+    if (user_token) {
+      this.setState({spotifyAPI: new spotifyAPI(user_token)})
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.spotifyAPI !== prevState.spotifyAPI)
+      this.state.spotifyAPI.getUserProfile()
       .then(data => this.setState({user: data}))
   }
   
   render() {
-    const { user } = this.state
+    const { user, spotifyAPI } = this.state
     return (
       <Router>
         <div className="App">
-            { user_token && user
+            { spotifyAPI.user_token && user
             ? (<>
                 <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
                   <Nav image={user.images ? user.images[0].url : null} user={user} />
                 </div>
                 <main id="main">
-                  <Route path={`/${user.type}/${user.id}`} exact component={Home} />
+                  <Route path={`/${user.type}/${user.id}`} exact component={() => <Home spotifyAPI={spotifyAPI} />} />
                   <Route path="/search/" component={Search} />
                   <Route path="/trending/" component={Trending} />
                 </main>

@@ -3,7 +3,6 @@ import '../css/home.css'
 import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
 import { ArtistTag } from './Tags.js'
-import { getUserArtists } from '../api-calls'
 
 const ArtistSectionContainer = styled.section`
   padding: 40px 0px;
@@ -169,10 +168,11 @@ const ArtistSection = props => {
 
 const Home = props => {
   const [viewerItems, setViewerItems] = useState(null)
+  const { spotifyAPI } = props
   const HomeRef = useRef(null)
-  
+
   useEffect(() => {
-    getUserArtists(8,'short_term').then(artist => {
+    spotifyAPI.getUserArtists(8,'short_term').then(artist => {
       const elements = artist.items.map(item => (
         { name: item.name,
           genre: item.genres[0],
@@ -189,7 +189,7 @@ const Home = props => {
       ))
       setViewerItems(elements)
     })
-    return () => getUserArtists(8,'short_term') 
+    return () => spotifyAPI.getUserArtists(8,'short_term') 
   },[])
 
   return (

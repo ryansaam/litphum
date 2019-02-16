@@ -1,33 +1,41 @@
 import queryString from 'query-string'
-const user_id = queryString.parse(window.location.search).access_token
+const user_token = queryString.parse(window.location.search).access_token
 
-export const getUserArtists = (limit, time_range) => {
-  return (
-    fetch(
-      "https://api.spotify.com/v1/me/top/artists"+
-      `${limit ? '?limit='+limit : ''}`+
-      `${time_range ? '&time_range='+time_range : ''}`, {
-      headers: {"Authorization": "Bearer " + user_id}
-    })
-    .then(response => {
-      if (response.status === 401)
-        window.location = "http://localhost:3000"
-      else
-        return response.json()
-    })
-  )
-}
+export function spotifyAPI(token) {
+  this.user_token = token
 
-export const getUserProfile = () => {
-  return (
-    fetch(
-      "https://api.spotify.com/v1/me", {
-      headers: {"Authorization": "Bearer " + user_id}
-    })
-    .then(response => {
-      return response.json()
-    })
-  )
+  const checkServerStat = (status, response) => {
+    if (status === 401)
+      window.location = "http://localhost:3000"
+    else
+      return response
+  }
+
+  this.getUserProfile = () => {
+    return (
+      fetch(
+        "https://api.spotify.com/v1/me", {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
+
+  this.getUserArtists = (limit, time_range) => {
+    return (
+      fetch(
+        "https://api.spotify.com/v1/me/top/artists"+
+        `${limit ? '?limit='+limit : ''}`+
+        `${time_range ? '&time_range='+time_range : ''}`, {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
 }
 
 export const testArtistData = {
@@ -65,4 +73,4 @@ export const testArtistData = {
   }
 }
 
-export default user_id
+export default user_token

@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
-import styled from 'styled-components'
-import posed from 'react-pose'
+import React, { useState } from 'react'
+import styled, { keyframes, css } from 'styled-components'
 
 const InfoContainer = styled.div`
   max-width: 100%;
@@ -24,35 +23,26 @@ const ContentReference = styled.div`
 const ContentWrap = styled.span`
   white-space: nowrap;
 `
-const AnimationReel = posed.div({
-  play: {
-    transform: "translateX(-100%)",
-    transition: { 
-      duration: 3000,
-      ease: "linear"
-    }
-  },
-  stop: { 
-    transform: "translateX(0%)",
-    transition: { duration: 0 }
+const cycle = keyframes`
+  from {
+    transform: translateX(0%)
   }
-})
+  to {
+    transform: translateX(-100%)
+  }
+`
+const AnimationReel = styled.div`
+  animation: ${props => (props.isPlaying ? css`${cycle} 3s linear infinite` : "none")}
+`
 
 const InfoOverflow = props => {
-  const content = useRef(null)
-  const [contentWidth, setContentWidth] = useState(0)
-  useEffect(() => {
-    setContentWidth(content.current.clientWidth)
-  },[contentWidth])
-  console.log(props.isPlaying)
   return (
     <InfoContainer >
-      <AnimationReel
-        pose={props.isPlaying ? 'play' : 'stop'}
-      >
-        {props.children}
+      <AnimationReel isPlaying={props.isPlaying}>
+        <ContentWrap><OverFlowContent >{props.string}</OverFlowContent></ContentWrap>
+        <ContentWrap><OverFlowContent >{props.string}</OverFlowContent></ContentWrap>
       </AnimationReel>
-      <ContentReference ref={content} >{props.string}</ContentReference>
+      <ContentReference>{props.string}</ContentReference>
     </InfoContainer>
   )
 }
@@ -60,22 +50,18 @@ const InfoOverflow = props => {
 export const ArtistTag = props => {
   const [isPlaying, setIsPlaying] = useState(false)
   
- 
-  
   return (
-    <div onMouseOver={() => setIsPlaying(true)} onMouseLeave={() => setIsPlaying(false)} className="artist-tag" style={{cursor: "pointer"}}>
+    <div
+      onMouseOver={() => setIsPlaying(true)}
+      onMouseLeave={() => setIsPlaying(false)}
+      className="artist-tag"
+      style={{cursor: "pointer"}}
+    >
       <div className="artist-image-container">
         <div className="artist-img" style={{backgroundImage: `url(${props.img})`}} alt="Artist" />
       </div>
       <div className="artist-span-info-container">
-        <InfoOverflow 
-          string={props.artistName}
-          isPlaying={isPlaying}
-        >
-          <ContentWrap><OverFlowContent >{props.artistName}</OverFlowContent></ContentWrap>
-          <ContentWrap><OverFlowContent >{props.artistName}</OverFlowContent></ContentWrap>
-          <ContentWrap><OverFlowContent >{props.artistName}</OverFlowContent></ContentWrap>
-        </InfoOverflow>
+        <InfoOverflow string={props.artistName} isPlaying={isPlaying} />
         <span style={{opacity: "0.6"}} >{props.genre}</span>
       </div>
     </div>

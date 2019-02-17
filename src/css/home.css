@@ -67,12 +67,9 @@
 }
 .artist-span-info-container {
   height: 100%;
+  max-width: 100%;
   padding: 10px 0px;
-  margin-left: 10px;
+  margin: 0px 10px;
   box-sizing: border-box;
-  display: grid;
-  align-items: center;
-}
-.artist-tag span {
-  display: block;
+  overflow: hidden;
 }

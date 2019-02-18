@@ -11,16 +11,29 @@ const OverFlowContent = styled.div`
   opacity: 0.9;
   vertical-align: top;
   display: inline-block;
+  white-space: nowrap;
 `
-const ContentReference = styled.div`
+const ShortContent = styled.div`
   font-size: 20px;
   font-weight: 700;
-  visibility: hidden;
-  position: absolute;
+  opacity: 0.9;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 `
 const ContentWrap = styled.span`
   white-space: nowrap;
+`
+const ContentReference = styled.div`
+  visibility: hidden;
+  position: absolute;
+  white-space: nowrap;
+`
+const ContentRefContent = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  padding-right: ${props => (props.spaceBetween || 0)}px;
 `
 const cycle = keyframes`
   from {
@@ -32,23 +45,23 @@ const cycle = keyframes`
 `
 const AnimationReel = styled.div`
   animation: ${props => (props.isPlaying ? css`${cycle} 3s linear infinite` : "none")};
-  width: ${props => (props.width || "100%")}px;
+  width: ${props => (props.reelWidth+"px" || "100%")};
 `
 
 const InfoOverflow = props => {
-  if (props.width[0] < props.width[1]) {
+  if (!props.isPlaying)
+    return (
+      <ShortContent>{props.string}</ShortContent>
+    )
+  else
     return (
       <InfoContainer>
-        <AnimationReel width={props.width[1]} isPlaying={props.isPlaying}>
+        <AnimationReel reelWidth={props.width} isPlaying={props.isPlaying}>
           <ContentWrap><OverFlowContent>{props.string}</OverFlowContent></ContentWrap>
           <ContentWrap><OverFlowContent>{props.string}</OverFlowContent></ContentWrap>
         </AnimationReel>
       </InfoContainer>
     )
-  }
-  return (
-    <OverFlowContent>{props.string}</OverFlowContent>
-  )
 }
 
 export const ArtistTag = props => {
@@ -57,7 +70,7 @@ export const ArtistTag = props => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [infoWidth, setInfoWidth] = useState(0)
   const [contentWidth, setContentWidth] = useState(0)
-  
+  const spaceBetween = 30
   useEffect(() => {
     setInfoWidth(infoRef.current.clientWidth)
     setContentWidth(refContentWidth.current.clientWidth)
@@ -74,8 +87,17 @@ export const ArtistTag = props => {
         <div className="artist-img" style={{backgroundImage: `url(${props.img})`}} alt="Artist" />
       </div>
       <div ref={infoRef} className="artist-span-info-container">
-        <InfoOverflow width={[infoWidth,contentWidth]} string={props.artistName} isPlaying={isPlaying} />
-        <ContentReference ref={refContentWidth}>{props.artistName}</ContentReference>
+        { (infoWidth < contentWidth - spaceBetween)
+          ? <InfoOverflow 
+              width={contentWidth}
+              string={props.artistName}
+              isPlaying={isPlaying}
+            />
+          : <OverFlowContent>{props.artistName}</OverFlowContent>
+        }
+        <ContentReference ref={refContentWidth}>
+          <ContentRefContent spaceBetween={spaceBetween}>{props.artistName}</ContentRefContent>
+        </ContentReference>
         <span style={{opacity: "0.6"}} >{props.genre}</span>
       </div>
     </div>

@@ -8,41 +8,13 @@ const ArtistSectionContainer = styled.section`
   padding: 40px 0px;
 `
 const SectionHeaders = styled.div`
-  margin-left: 145px;
+  margin: ${props => (props.setMargin || "0px")};
 `
 const Header = styled.h2`
   color: ${props => props.hColor || "white"};
   margin: 0px;
   margin-bottom: ${props => props.hMargin || "0px"};
   font-size: ${props => props.fontSize || "18px"};
-`
-const ViewerTab = styled.div`
-  top: ${props => props.top+"px"};
-  left: ${props => props.left+"px"};
-  width: 169px;
-  position: absolute;
-  z-index: 6;
-  transition: top 100ms ease 200ms, left ease-in 200ms;
-`
-const AnimatedView = styled.div`
-  transform: translateY(${props => props.translateY || 0}px);
-  transition: transform 100ms ease 200ms;
-`
-const InfoView = styled.div`
-  background-color: #cccccc;
-  width: 100%;
-  height: 500px;
-  position: fixed;
-  z-index: 5;
-  bottom: ${props => props.bottom}px;
-  transform: translateY(${props => props.translateY || 0}px);
-  transition: bottom ease-in 200ms, transform 100ms ease 200ms;
-`
-const ViewFunctions = styled.div`
-  width: 100%;
-  height: 158px;
-  position: fixed;
-  top: ${props => props.translateY}px;
 `
 const ViewBtn = styled.button`
   width: 50px;
@@ -51,12 +23,12 @@ const ViewBtn = styled.button`
   text-align: center;
   border-radius: 50%;
   position: relative;
-  top: 50%;
+  top: 20px;
   opacity: ${props => props.opacity};
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.14) 0px 1px 1px 1px;
-  transform: translateY(-50%) translateX(${props => props.translateX || 0}px);
-  transition: transform 300ms ease-in, opacity 300ms ease-in;
+  transform: translateX(${props => props.translateX || 0}px);
+  transition: transform 300ms ease-in 300ms, opacity 300ms ease-in 300ms;
   :focus {
     outline: none;
     box-shadow: 0 0 2px 2px #1c1c1c;
@@ -69,98 +41,39 @@ const ArrowSVG = props => (
   </svg>
 )
 
+const ViewerContainer = styled.div`
+  background-color: #ccc;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: ${props => (props.translateY || 0)}%;
+  z-index: 5;
+  transition: top ease 300ms;
+`
 
-const Viewer = props => {
-  const [viewerIsShowing, setViewerIsShowing] = useState(false)
-  const [targetPosition, setTargetPosition] = useState({x: 0, y: 0})
-  const [translateY, setTranslateY] = useState(0)
-  const [leftOffset, setLeftOffset] = useState(0)
-  const [tagInfo, setTagInfo] = useState({name: "", genre: "", image: ""})
-  const [tagIsShowing, setTagIsShowing] = useState(false)
-  const [toggleIndex, setToggleIndex] = useState(0b1)
-
-  const position = viewerIsShowing ? -100 : -500
-
-  useEffect(() => {
-    const offset = document.getElementById("test").getBoundingClientRect()
-    setLeftOffset(offset.left)
-    return () => offset
-  },[])
-
-  useEffect(() => {
-    const offset = document.getElementById("test").getBoundingClientRect()
-    setTargetPosition({x: leftOffset, y: offset.top})
-    return () => offset
-  },[viewerIsShowing])
-  useEffect(() => {
-    setTargetPosition({x: leftOffset, y: targetPosition.y})
-  },[tagInfo])
-  useEffect(() => {
-    if (tagIsShowing)
-      setTranslateY(-100)
-    else
-      setTranslateY(0)
-  },[viewerIsShowing])
-
-  const handleClick = (name, genre, image) => event => {
-    props.onClick()
-    const offset = event.currentTarget.getBoundingClientRect()
-    setViewerIsShowing(!viewerIsShowing)
-    setTagIsShowing(!tagIsShowing)
-    setTargetPosition({x: offset.left, y: offset.top})
-    setTagInfo({name, genre, image})
-    setToggleIndex(~~!toggleIndex)
-  }
-  const exitView = () => {
-    setViewerIsShowing(false)
-    setTagIsShowing(false)
-    setToggleIndex(1)
-  }
-
-  const slideItems = props.children.map((component,index) => (
-    <div key={component.id} id={index===0?'test':null} onClick={handleClick(component.name, component.genre, component.imageUrl)}>
-      {component.element}
-    </div>
-  ))
-
+const SectionViewer = props => {
+  const translateY = props.isOpen ? 0 : 100
   return (
-    <>
-      <div style={{margin: "0px 120px", opacity: toggleIndex, transition: "opacity linear 200ms"}}>
-        <SlidePicker slidePadding={25} visibleSlides={4} >
-          {slideItems}
-        </SlidePicker>
-      </div>
-      <ViewFunctions translateY={tagIsShowing ? 0:-158}>
-        <ViewBtn translateX={tagIsShowing ? 60:0} opacity={~~!toggleIndex} onClick={exitView}>
-          <ArrowSVG/>
-        </ViewBtn>
-      </ViewFunctions>
-      <InfoView bottom={position} translateY={translateY}/>
-      {tagIsShowing ?
-          <ViewerTab top={targetPosition.y} left={targetPosition.x} >
-            <AnimatedView translateY={translateY}>
-              <ArtistTag img={tagInfo.image} artistName={tagInfo.name} genre={tagInfo.genre} />
-            </AnimatedView>
-          </ViewerTab>
-          : 
-      null}
-    </>
+    <ViewerContainer translateY={translateY}>
+      <ViewBtn onClick={props.toggleViewer} translateX={props.isOpen ? 50 : 0} opacity={props.isOpen ? 1 : 0}>
+        <ArrowSVG />
+      </ViewBtn>
+    </ViewerContainer>
   )
 }
 
 const ArtistSection = props => {
   const artistElement = useRef(null)
-  const handleClick = () => {
-    props.parentRef.current.scrollTo(0, artistElement.current.offsetTop)
-    console.log(artistElement.current.offsetTop)
-  }
+  const elements = props.items.map(item => {
+    return (
+      <div onClick={props.handleClick(artistElement)}>{item.element}</div>
+    )
+  })
   return (
-    <div ref={artistElement}>
+    <div ref={artistElement} style={{margin: "0px 120px"}}>
     <ArtistSectionContainer>
       {props.children}
-      <Viewer onClick={handleClick} parentRef={artistElement.current}>
-        {props.items}
-      </Viewer>
+      <SlidePicker visibleSlides={4} slidePadding={25} >{elements}</SlidePicker>
     </ArtistSectionContainer>
     </div>
   )
@@ -168,9 +81,10 @@ const ArtistSection = props => {
 
 const Home = props => {
   const [viewerItems, setViewerItems] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [height, setHeight] = useState(0)
   const { spotifyAPI } = props
   const HomeRef = useRef(null)
-
   useEffect(() => {
     spotifyAPI.getUserArtists(8,'short_term').then(artist => {
       const elements = artist.items.map(item => (
@@ -188,29 +102,44 @@ const Home = props => {
         }
       ))
       setViewerItems(elements)
+      setHeight(HomeRef.current.clientHeight)
     })
     return () => spotifyAPI.getUserArtists(8,'short_term') 
   },[])
+  const toggleViewer = () => {
+    setIsOpen(!isOpen)
+  }
+  const handleClick = (ref) => () => {
+    HomeRef.current.scrollTo(0, ref.current.offsetTop)
+    toggleViewer()
+  }
 
   return (
     <section ref={HomeRef} className="home">
-      {viewerItems ? (<ArtistSection parentRef={HomeRef} items={viewerItems}>
-        <SectionHeaders>
-          <Header hColor="#2ad4ff" >Artists</Header>
-          <Header hMargin="40px" fontSize="34px" >Popular</Header>
-        </SectionHeaders>
-      </ArtistSection>) : null}
-      <section className="new-releases-section">
-        <SectionHeaders>
-          <Header hColor="#26ff13" >Albums</Header>
-          <Header hMargin="40px" fontSize="34px" >New Releases</Header>
-        </SectionHeaders>
-        {viewerItems 
-        ? (<SlidePicker slidePadding={25} visibleSlides={4} >
-            {viewerItems.map(item => <div key={item.id} >{item.element}</div>)}
-           </SlidePicker>)
+      { viewerItems
+        ? (<ArtistSection
+              handleClick={handleClick}
+              parentRef={HomeRef}
+              items={viewerItems}
+           >
+            <SectionHeaders setMargin={"0px 0px 0px 25px"}>
+              <Header hColor="#2ad4ff" >Artists</Header>
+              <Header hMargin="40px" fontSize="34px" >Top</Header>
+            </SectionHeaders>
+           </ArtistSection>)
         : null}
-      </section>
+        { viewerItems
+        ? (<ArtistSection
+              handleClick={handleClick}
+              parentRef={HomeRef}
+              items={viewerItems}
+           >
+            <SectionHeaders setMargin={"0px 0px 0px 25px"}>
+              <Header hMargin="40px" fontSize="34px" >Recent Songs</Header>
+            </SectionHeaders>
+           </ArtistSection>)
+        : null}
+      <SectionViewer isOpen={isOpen} toggleViewer={toggleViewer} />
     </section>
   )
 }

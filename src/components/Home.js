@@ -22,7 +22,7 @@ const ViewBtn = styled.button`
   margin-left: 10px;
   text-align: center;
   border-radius: 50%;
-  position: relative;
+  position: absolute;
   top: 20px;
   opacity: ${props => props.opacity};
   cursor: pointer;
@@ -50,14 +50,31 @@ const ViewerContainer = styled.div`
   z-index: 5;
   transition: top ease 300ms;
 `
+const SectionViewHeader = styled.div`
+  background-image: url(${props => (props.image || null)});
+  background-size: contain;
+  background-position: center;
+  width: 100%;
+  height: 300px;
+`
 
 const SectionViewer = props => {
+  console.log(props.data)
   const translateY = props.isOpen ? 0 : 100
   return (
     <ViewerContainer translateY={translateY}>
       <ViewBtn onClick={props.toggleViewer} translateX={props.isOpen ? 50 : 0} opacity={props.isOpen ? 1 : 0}>
         <ArrowSVG />
       </ViewBtn>
+      {props.data.artist
+      ? <SectionViewHeader image={props.data.artist.images[0].url}>
+        <div style={{
+          background: "linear-gradient(120deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)",
+          width: "100%",
+          height: "100%"
+          }}/>  
+        </SectionViewHeader>
+      : null}
     </ViewerContainer>
   )
 }
@@ -66,7 +83,9 @@ const ArtistSection = props => {
   const artistElement = useRef(null)
   const elements = props.items.map(item => {
     return (
-      <div onClick={props.handleClick(artistElement)}>{item.element}</div>
+      <div key={item.id} onClick={props.handleClick(artistElement,item.id)}>
+        {item.element}
+      </div>
     )
   })
   return (
@@ -82,19 +101,17 @@ const ArtistSection = props => {
 const Home = props => {
   const [viewerItems, setViewerItems] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [height, setHeight] = useState(0)
+  const [viewerObj, setViewerObj] = useState({})
   const { spotifyAPI } = props
   const HomeRef = useRef(null)
+
   useEffect(() => {
     spotifyAPI.getUserArtists(8,'short_term').then(artist => {
       const elements = artist.items.map(item => (
-        { name: item.name,
-          genre: item.genres[0],
-          imageUrl: item.images[2].url,
-          id: item.id,
+        { id: item.id,
           element: (
             <ArtistTag 
-              img={item.images[2].url}
+              img={item.images[1].url}
               artistName={item.name}
               genre={item.genres[0]}
             />
@@ -102,16 +119,21 @@ const Home = props => {
         }
       ))
       setViewerItems(elements)
-      setHeight(HomeRef.current.clientHeight)
     })
     return () => spotifyAPI.getUserArtists(8,'short_term') 
   },[])
+
   const toggleViewer = () => {
     setIsOpen(!isOpen)
   }
-  const handleClick = (ref) => () => {
+
+  const handleClick = (ref,id) => () => {
     HomeRef.current.scrollTo(0, ref.current.offsetTop)
     toggleViewer()
+    spotifyAPI.getArtistProfile(id,["album"],"US")
+    .then(data => {
+      setViewerObj(data)
+    })
   }
 
   return (
@@ -139,7 +161,7 @@ const Home = props => {
             </SectionHeaders>
            </ArtistSection>)
         : null}
-      <SectionViewer isOpen={isOpen} toggleViewer={toggleViewer} />
+      <SectionViewer data={viewerObj} isOpen={isOpen} toggleViewer={toggleViewer} />
     </section>
   )
 }

@@ -28,8 +28,11 @@ export function spotifyAPI(token) {
     return (
       fetch(
         "https://api.spotify.com/v1/me/top/artists"+
-        `${limit ? '?limit='+limit : ''}`+
-        `${time_range ? '&time_range='+time_range : ''}`, {
+        ((limit || time_range)
+        ? '?'+
+          `${limit ? 'limit='+limit : ''}`+
+          `${time_range ? '&time_range='+time_range : ''}`
+        : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
       })
       .then(response => {
@@ -37,6 +40,66 @@ export function spotifyAPI(token) {
       })
     )
   }
+
+  this.getArtistProfile = (id,includeGroups,market,limit,offset) => {
+    return Promise.all([
+      this.getArtist(id),
+      this.getArtistAlbums(id,includeGroups,market,limit,offset),
+      this.getArtistTopTracks(id,market)
+    ])
+    .then(response => {
+      return ({
+        artist: response[0],
+        artistAlbums: response[1],
+        artistTopTracks: response[2]
+      })
+    })
+  }
+  this.getArtist = (id) => {
+    return (
+      fetch(
+        `https://api.spotify.com/v1/artists/${id}`, {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
+  this.getArtistAlbums = (id,includeGroups,market,limit,offset) => {
+    return (
+      fetch(
+        `https://api.spotify.com/v1/artists/${id}/albums`+
+        ((includeGroups || market || limit || offset) 
+        ? '?'+
+          `${includeGroups ? 'inclued_groups='+includeGroups.toString() : ''}`+
+          `${market ? '&market='+market : ''}`+
+          `${limit ? '&limit='+limit : ''}`+
+          `${offset ? '&offset='+offset : ''}`
+        : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
+  this.getArtistTopTracks = (id,market) => {
+    return (
+      fetch(
+        `https://api.spotify.com/v1/artists/${id}/top-tracks`+
+        (market 
+        ? '?'+
+          `${market ? '&market='+market : ''}`
+        : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
+
 }
 
 export const testArtistData = {

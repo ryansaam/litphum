@@ -7,10 +7,16 @@
   text-decoration: none;
 }
 
+.logged-in {
+  display: grid;
+  grid-template-columns: 250px auto;
+}
+
 .App main {
   height: 100%;
 }
 
 .testing {
-  background-color: #ce35fd; 
+  background-color: rgb(130, 246, 174);
+  background-color: rgb(97, 231, 255);
 }

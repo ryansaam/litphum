@@ -40,7 +40,7 @@ class App extends Component {
       <Router>
         <div className="App">
             { ((spotifyAPI.user_token || token) && user)
-            ? (<>
+            ? (<div className="logged-in">
                 <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
                   <Nav image={user.images ? user.images[0].url : null} user={user} />
                 </div>
@@ -49,7 +49,7 @@ class App extends Component {
                   <Route path="/search/" component={Search} />
                   <Route path="/trending/" component={Trending} />
                 </main>
-              </>) 
+              </div>) 
             : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>
             }
         </div>

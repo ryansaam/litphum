@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
 import { ArtistTag } from './Tags.js'
 import SectionViewer from './Viewer.js'
+import ArtistProfile from './ArtistProfile.js'
 
 const ArtistSectionContainer = styled.section`
   padding: 40px 0px;
@@ -40,6 +41,7 @@ const ArtistSection = props => {
 const Home = props => {
   const [viewerItems, setViewerItems] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [homeWidth, setHomeWidth] = useState(0)
   const [viewerObj, setViewerObj] = useState({})
   const { spotifyAPI } = props
   const HomeRef = useRef(null)
@@ -58,6 +60,7 @@ const Home = props => {
         }
       ))
       setViewerItems(elements)
+      setHomeWidth(HomeRef.current.clientWidth)
     })
     return () => spotifyAPI.getUserArtists(8,'short_term') 
   },[])
@@ -100,7 +103,14 @@ const Home = props => {
             </SectionHeaders>
            </ArtistSection>)
         : null}
-      <SectionViewer data={viewerObj} isOpen={isOpen} toggleViewer={toggleViewer} />
+      <SectionViewer
+        width={homeWidth}
+        data={viewerObj}
+        isOpen={isOpen}
+        toggleViewer={toggleViewer}
+      >
+        <ArtistProfile data={viewerObj}/>
+      </SectionViewer>
     </section>
   )
 }

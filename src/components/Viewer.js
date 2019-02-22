@@ -29,8 +29,9 @@ const ArrowSVG = props => (
 const ViewerContainer = styled.div`
   background-color: #ccc;
   height: 100%;
-  width: 100%;
+  width: ${props => (props.viewWidth+"px" || "100%")};
   position: fixed;
+  overflow-x: auto;
   top: ${props => (props.translateY || 0)}%;
   z-index: 5;
   transition: top ease 300ms;
@@ -48,7 +49,7 @@ const SectionViewer = props => {
   console.log(props.data)
   const translateY = props.isOpen ? 0 : 100
   return (
-    <ViewerContainer translateY={translateY}>
+    <ViewerContainer viewWidth={props.width} translateY={translateY}>
       <ViewBtn onClick={props.toggleViewer} translateX={props.isOpen ? 50 : 0} opacity={props.isOpen ? 1 : 0}>
         <ArrowSVG />
       </ViewBtn>
@@ -67,7 +68,7 @@ const SectionViewer = props => {
               position: "absolute",
               right: "0px",
               boxSizing: "border-box"
-            }}>Kanye West</h1>
+            }}>{props.data.artist.name}</h1>
 
           </div>
         </SectionViewHeader>

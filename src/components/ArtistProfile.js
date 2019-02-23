@@ -1,26 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const ArtistProfileContainer = styled.div`
-  background-color: pink;
-  height: 100%;
+  background-color: #1d1d1d;
   width: 100%;
+  box-sizing: border-box;
+  padding: 0px 20px;
 `
 const SongContainer = styled.div`
   background-color: #1d1d1d;
   width: 100%;
   height: 74px;
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  align-items: center;
+  :hover {
+    svg {
+      opacity: 0.7;
+    }
+    background-color: #181818;
+  }
 `
 const SongImage = styled.div`
   background-image: url(${props => props.image});
   width: 70px;
   height: 70px;
+  margin-right: 15px;
   background-size: cover;
 `
 const PlayButtonContainer = styled.div`
   fill: #fff;
   stroke: none;
-  float: left;
+  padding: 0px 15px;
 `
 
 const PlayButton = () => (
@@ -36,17 +47,60 @@ const SongTag = props => {
         <PlayButton />
       </PlayButtonContainer>
       <SongImage image={props.image} />
+      <div>
+      <span style={{display: "block", color: "white"}}>{props.name}</span>
+      {props.explicit 
+      ? <span style={{
+          background: "white",
+          opacity: "0.7",
+          borderRadius: "2px",
+          fontSize: "14px",
+          padding: "3px",
+          marginTop: "8px",
+          display: "inline-block"
+        }}>Explicit</span>
+      : null }
+      </div>
+      <span style={{justifySelf: "end", margin: "0px 15px", color: "white"}}>{props.duration}</span>
     </SongContainer>
   )
 }
 
+function msToTime(s) {
+  const pad = (n, z = 2) => ('00' + n).slice(-z);
+  if (s >= 3600000) {
+    return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0)
+  } else {
+    const minute = pad((s%3.6e6)/6e4 | 0).slice(0, 1) === '0' && pad((s%3.6e6)/6e4 | 0).slice(1)
+    return (minute || pad((s%3.6e6)/6e4 | 0)) + ':' + pad((s%6e4)/1000|0)
+  }
+}
+
 const  ArtistProfile = props => {
+  const tracks = props.data.artistTopTracks && props.data.artistTopTracks.tracks
+  const [songs, setSongs] = useState(null)
+
+  useEffect(() => {
+    if (tracks) {
+      const trackTags = tracks.map((track, index) => {
+        if (index > 4) return 
+        return (
+          <div key={track.id}>
+            <SongTag
+              image={track.album.images[1].url}
+              duration={msToTime(track.duration_ms)}
+              name={track.name}
+              explicit={track.explicit}
+            />
+          </div>
+        )
+      })
+      setSongs(trackTags)
+    }
+  }, [tracks])
   return (
     <ArtistProfileContainer>
-      { props.data.artistTopTracks
-      ? <SongTag image={props.data.artistTopTracks.tracks[0].album.images[1].url}/>
-      : null
-      }
+      {songs}
     </ArtistProfileContainer>
   )
 }

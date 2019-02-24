@@ -20,6 +20,12 @@ const SongContainer = styled.div`
     }
     background-color: #181818;
   }
+  :focus {
+    svg {
+      opacity: 0.7;
+    }
+    background-color: #181818;
+  }
 `
 const SongImage = styled.div`
   background-image: url(${props => props.image});

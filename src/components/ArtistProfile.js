@@ -7,8 +7,14 @@ const ArtistProfileContainer = styled.div`
   box-sizing: border-box;
   padding: 0px 20px;
 `
-const SongListItem = styled.li`
+const SongContainer = styled.li`
   background-color: #1d1d1d;
+  outline: none;
+  width: 100%;
+  height: 74px;
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  align-items: center;
   :hover {
     svg {
       opacity: 0.7;
@@ -21,13 +27,6 @@ const SongListItem = styled.li`
     }
     background-color: #181818;
   }
-`
-const SongContainer = styled.div`
-  width: 100%;
-  height: 74px;
-  display: grid;
-  grid-template-columns: auto auto auto 1fr;
-  align-items: center;
 `
 const SongImage = styled.div`
   background-image: url(${props => props.image});
@@ -49,8 +48,15 @@ const PlayButton = () => (
 )
 
 const SongTag = props => {
+  const songRef = useRef(null)
   return (
-    <SongContainer>
+    <SongContainer
+      key={props.key}
+      ref={songRef}
+      role="button"
+      onClick={() => songRef.current.focus()}
+      tabIndex="-1"
+    >
       <PlayButtonContainer>
         <PlayButton />
       </PlayButtonContainer>
@@ -87,21 +93,19 @@ function msToTime(s) {
 const  ArtistProfile = props => {
   const tracks = props.data.artistTopTracks && props.data.artistTopTracks.tracks
   const [songs, setSongs] = useState(null)
-  const songRef = useRef(null)
 
   useEffect(() => {
     if (tracks) {
       const trackTags = tracks.map((track, index) => {
         if (index > 4) return 
         return (
-          <SongListItem ref={songRef} role="button" key={track.id} onClick={() => songRef.current.focus()} tabIndex="-1">
-            <SongTag
-              image={track.album.images[1].url}
-              duration={msToTime(track.duration_ms)}
-              name={track.name}
-              explicit={track.explicit}
-            />
-          </SongListItem>
+          <SongTag
+            image={track.album.images[1].url}
+            duration={msToTime(track.duration_ms)}
+            key={track.id}
+            name={track.name}
+            explicit={track.explicit}
+          />
         )
       })
       setSongs(trackTags)
@@ -109,7 +113,7 @@ const  ArtistProfile = props => {
   }, [tracks])
   return (
     <ArtistProfileContainer>
-      <ol>{songs}</ol>
+      <ol style={{margin: "0px", padding: "0px", listStyle: "none"}}>{songs}</ol>
     </ArtistProfileContainer>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 
 const ArtistProfileContainer = styled.div`
@@ -7,13 +7,8 @@ const ArtistProfileContainer = styled.div`
   box-sizing: border-box;
   padding: 0px 20px;
 `
-const SongContainer = styled.div`
+const SongListItem = styled.li`
   background-color: #1d1d1d;
-  width: 100%;
-  height: 74px;
-  display: grid;
-  grid-template-columns: auto auto auto 1fr;
-  align-items: center;
   :hover {
     svg {
       opacity: 0.7;
@@ -26,6 +21,13 @@ const SongContainer = styled.div`
     }
     background-color: #181818;
   }
+`
+const SongContainer = styled.div`
+  width: 100%;
+  height: 74px;
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  align-items: center;
 `
 const SongImage = styled.div`
   background-image: url(${props => props.image});
@@ -85,20 +87,21 @@ function msToTime(s) {
 const  ArtistProfile = props => {
   const tracks = props.data.artistTopTracks && props.data.artistTopTracks.tracks
   const [songs, setSongs] = useState(null)
+  const songRef = useRef(null)
 
   useEffect(() => {
     if (tracks) {
       const trackTags = tracks.map((track, index) => {
         if (index > 4) return 
         return (
-          <div key={track.id}>
+          <SongListItem ref={songRef} role="button" key={track.id} onClick={() => songRef.current.focus()} tabIndex="-1">
             <SongTag
               image={track.album.images[1].url}
               duration={msToTime(track.duration_ms)}
               name={track.name}
               explicit={track.explicit}
             />
-          </div>
+          </SongListItem>
         )
       })
       setSongs(trackTags)
@@ -106,7 +109,7 @@ const  ArtistProfile = props => {
   }, [tracks])
   return (
     <ArtistProfileContainer>
-      {songs}
+      <ol>{songs}</ol>
     </ArtistProfileContainer>
   )
 }

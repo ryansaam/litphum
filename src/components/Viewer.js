@@ -32,9 +32,10 @@ const ViewerContainer = styled.div`
   width: ${props => (props.viewWidth+"px" || "100%")};
   position: fixed;
   overflow-x: auto;
+  visibility: ${props => props.visible ? "visible" : "hidden"};
   top: ${props => (props.translateY || 0)}%;
   z-index: 5;
-  transition: top ease 300ms;
+  transition: top ease 300ms, visibility linear 300ms;
 `
 const SectionViewHeader = styled.div`
   background-image: url(${props => (props.image || null)});
@@ -49,7 +50,7 @@ const SectionViewer = props => {
   console.log(props.data)
   const translateY = props.isOpen ? 0 : 100
   return (
-    <ViewerContainer viewWidth={props.width} translateY={translateY}>
+    <ViewerContainer viewWidth={props.width} translateY={translateY} visible={props.isOpen} >
       <ViewBtn onClick={props.toggleViewer} translateX={props.isOpen ? 50 : 0} opacity={props.isOpen ? 1 : 0}>
         <ArrowSVG />
       </ViewBtn>

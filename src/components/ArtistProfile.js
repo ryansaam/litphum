@@ -28,11 +28,11 @@ const SongContainer = styled.li`
     background-color: #181818;
   }
 `
-const SongImage = styled.div`
+const TagImage = styled.div`
   background-image: url(${props => props.image});
-  width: 70px;
-  height: 70px;
-  margin-right: 15px;
+  width: ${props => props.size ? props.size+"px" : "100%"};
+  height: ${props => props.size ? props.size+"px" : "100%"};
+  margin: ${props => props.imageMargin || "0px"};
   background-size: cover;
 `
 const PlayButtonContainer = styled.div`
@@ -51,7 +51,6 @@ const SongTag = props => {
   const songRef = useRef(null)
   return (
     <SongContainer
-      key={props.key}
       ref={songRef}
       role="button"
       onClick={() => songRef.current.focus()}
@@ -60,7 +59,7 @@ const SongTag = props => {
       <PlayButtonContainer>
         <PlayButton />
       </PlayButtonContainer>
-      <SongImage image={props.image} />
+      <TagImage image={props.image} imageMargin={"0px 15px 0px 0px"} size={70} />
       <div>
       <span style={{display: "block", color: "white"}}>{props.name}</span>
       {props.explicit 
@@ -80,6 +79,43 @@ const SongTag = props => {
   )
 }
 
+
+const AlbumContainer = styled.div`
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 10px;
+  justify-items: center;
+`
+const AlbumInfo = styled.div`
+  box-sizing: border-box;
+  padding: 10px 10px;
+  color: #fff;
+`
+const TextOverflow = styled.div`
+  width: 100%;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`
+const AlbumTag = props => {
+  return (
+    <div style={{marginBottom: "20px"}}>
+      <TagImage size={200} imageMargin={"auto"} image={props.image} />
+      <AlbumInfo>
+        <TextOverflow>
+          <div style={{display: "inline"}}>
+            <span>{props.name}</span>
+          </div>
+        </TextOverflow>
+        <span style={{opacity: "0.7", margin: "5px 0px", display: "block"}}>{props.artists[0].name}</span>
+      </AlbumInfo>
+    </div>
+  )
+}
+
 function msToTime(s) {
   const pad = (n, z = 2) => ('00' + n).slice(-z);
   if (s >= 3600000) {
@@ -92,7 +128,9 @@ function msToTime(s) {
 
 const  ArtistProfile = props => {
   const tracks = props.data.artistTopTracks && props.data.artistTopTracks.tracks
+  const artistAlbums = props.data.artistAlbums && props.data.artistAlbums
   const [songs, setSongs] = useState(null)
+  const [albums, setAlbums] = useState(null)
 
   useEffect(() => {
     if (tracks) {
@@ -110,10 +148,27 @@ const  ArtistProfile = props => {
       })
       setSongs(trackTags)
     }
-  }, [tracks])
+    if (artistAlbums) {
+      const albumTags = artistAlbums.items.map((album) => {
+        return (
+          <AlbumTag
+            image={album.images[0].url}
+            name={album.name}
+            artists={album.artists}
+          />
+        )
+      })
+      setAlbums(albumTags)
+    }
+  }, [tracks, albums])
   return (
     <ArtistProfileContainer>
       <ol style={{margin: "0px", padding: "0px", listStyle: "none"}}>{songs}</ol>
+      <AlbumContainer>
+      { artistAlbums
+      ? albums
+      : null }
+      </AlbumContainer>
     </ArtistProfileContainer>
   )
 }

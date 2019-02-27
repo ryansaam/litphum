@@ -72,7 +72,7 @@ const Home = props => {
   const handleClick = (ref,id) => () => {
     HomeRef.current.scrollTo(0, ref.current.offsetTop)
     toggleViewer()
-    spotifyAPI.getArtistProfile(id,["album"],"US")
+    spotifyAPI.getArtistProfile(id,["album"],"US",10)
     .then(data => {
       setViewerObj(data)
     })

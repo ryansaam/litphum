@@ -101,6 +101,9 @@ const TextOverflow = styled.div`
   overflow: hidden;
 `
 const AlbumTag = props => {
+  const artistsNames = props.artists.map(artist => {
+    return artist.name
+  });
   return (
     <div style={{marginBottom: "20px"}}>
       <TagImage size={200} imageMargin={"auto"} image={props.image} />
@@ -110,7 +113,7 @@ const AlbumTag = props => {
             <span>{props.name}</span>
           </div>
         </TextOverflow>
-        <span style={{opacity: "0.7", margin: "5px 0px", display: "block"}}>{props.artists[0].name}</span>
+        <span style={{opacity: "0.7", margin: "5px 0px", display: "block"}}>{artistsNames.toString()}</span>
       </AlbumInfo>
     </div>
   )
@@ -155,6 +158,7 @@ const  ArtistProfile = props => {
             image={album.images[0].url}
             name={album.name}
             artists={album.artists}
+            key={album.id}
           />
         )
       })

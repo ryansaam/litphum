@@ -5,6 +5,7 @@ import Home from './components/Home.js'
 import Search from './components/Search.js'
 import Trending from './components/Trending.js'
 import Nav from './components/Nav.js'
+import ArtistProfile from './components/ArtistProfile.js'
 import user_token, { spotifyAPI } from './api-calls.js'
 
 class App extends Component {
@@ -48,6 +49,7 @@ class App extends Component {
                   <Route path={`/${user.type}/${user.id}`} exact component={() => <Home spotifyAPI={spotifyAPI} />} />
                   <Route path="/search/" component={Search} />
                   <Route path="/trending/" component={Trending} />
+                  <Route path="/artist/" component={() => <ArtistProfile spotifyAPI={spotifyAPI} />} />
                 </main>
               </div>) 
             : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>

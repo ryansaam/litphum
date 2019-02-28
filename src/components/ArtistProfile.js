@@ -138,50 +138,50 @@ const Heading = styled.h2`
 `
 
 const  ArtistProfile = props => {
-  const tracks = props.data.artistTopTracks && props.data.artistTopTracks.tracks
-  const artistAlbums = props.data.artistAlbums && props.data.artistAlbums
   const [songs, setSongs] = useState(null)
   const [albums, setAlbums] = useState(null)
 
   useEffect(() => {
-    if (tracks) {
-      const trackTags = tracks.map((track, index) => {
-        if (index > 4) return 
-        return (
-          <SongTag
-            image={track.album.images[1].url}
-            duration={msToTime(track.duration_ms)}
-            key={track.id}
-            name={track.name}
-            explicit={track.explicit}
-          />
-        )
+    const id = window.location.pathname.split("/").pop()
+    if (props.spotifyAPI.user_token) {
+      console.log(id)
+      props.spotifyAPI.getArtistProfile(id, ["album"], "US", 10)
+      .then(data => {
+        const trackTags = data.artistTopTracks.tracks.map((track, index) => {
+          if (index > 4) return
+          return (
+            <SongTag
+              image={track.album.images[1].url}
+              duration={msToTime(track.duration_ms)}
+              key={track.id}
+              name={track.name}
+              explicit={track.explicit}
+            />
+          )
+        })
+        setSongs(trackTags)
+        const albumTags = data.artistAlbums.items.map(album => {
+          return (
+            <AlbumTag
+              image={album.images[0].url}
+              name={album.name}
+              artists={album.artists}
+              key={album.id}
+            />
+          )
+        })
+        setAlbums(albumTags)
       })
-      setSongs(trackTags)
     }
-    if (artistAlbums) {
-      const albumTags = artistAlbums.items.map((album) => {
-        return (
-          <AlbumTag
-            image={album.images[0].url}
-            name={album.name}
-            artists={album.artists}
-            key={album.id}
-          />
-        )
-      })
-      setAlbums(albumTags)
-    }
-  }, [tracks, albums])
+  }, [])
+
   return (
     <ArtistProfileContainer>
       <Heading>Top Songs</Heading>
       <ol style={{margin: "0px 0px 20px 0px", padding: "0px", listStyle: "none"}}>{songs}</ol>
       <Heading>Albums</Heading>
       <AlbumContainer>
-      { artistAlbums
-      ? albums
-      : null }
+        {albums}
       </AlbumContainer>
     </ArtistProfileContainer>
   )

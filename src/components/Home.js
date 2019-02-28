@@ -3,8 +3,6 @@ import '../css/home.css'
 import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
 import { ArtistTag } from './Tags.js'
-import SectionViewer from './Viewer.js'
-import ArtistProfile from './ArtistProfile.js'
 
 const ArtistSectionContainer = styled.section`
   padding: 40px 0px;
@@ -20,16 +18,15 @@ const Header = styled.h2`
 `
 
 const ArtistSection = props => {
-  const artistElement = useRef(null)
   const elements = props.items.map(item => {
     return (
-      <div key={item.id} onClick={props.handleClick(artistElement,item.id)}>
+      <div key={item.id} onClick={props.handleClick(item.id)}>
         {item.element}
       </div>
     )
   })
   return (
-    <div ref={artistElement} style={{margin: "0px 120px"}}>
+    <div style={{margin: "0px 120px"}}>
     <ArtistSectionContainer>
       {props.children}
       <SlidePicker visibleSlides={4} slidePadding={25} >{elements}</SlidePicker>
@@ -40,11 +37,7 @@ const ArtistSection = props => {
 
 const Home = props => {
   const [viewerItems, setViewerItems] = useState(null)
-  const [isOpen, setIsOpen] = useState(false)
-  const [homeWidth, setHomeWidth] = useState(0)
-  const [viewerObj, setViewerObj] = useState({})
   const { spotifyAPI } = props
-  const HomeRef = useRef(null)
 
   useEffect(() => {
     spotifyAPI.getUserArtists(8,'short_term').then(artist => {
@@ -60,30 +53,19 @@ const Home = props => {
         }
       ))
       setViewerItems(elements)
-      setHomeWidth(HomeRef.current.clientWidth)
     })
     return () => spotifyAPI.getUserArtists(8,'short_term') 
   },[])
 
-  const toggleViewer = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const handleClick = (ref,id) => () => {
-    HomeRef.current.scrollTo(0, ref.current.offsetTop)
-    toggleViewer()
-    spotifyAPI.getArtistProfile(id,["album"],"US",10)
-    .then(data => {
-      setViewerObj(data)
-    })
+  const handleClick = (id) => () => {
+    window.location = "http://localhost:3000/artist/" + id
   }
 
   return (
-    <section ref={HomeRef} className="home">
+    <section className="home">
       { viewerItems
         ? (<ArtistSection
               handleClick={handleClick}
-              parentRef={HomeRef}
               items={viewerItems}
            >
             <SectionHeaders setMargin={"0px 0px 0px 25px"}>
@@ -95,7 +77,6 @@ const Home = props => {
         { viewerItems
         ? (<ArtistSection
               handleClick={handleClick}
-              parentRef={HomeRef}
               items={viewerItems}
            >
             <SectionHeaders setMargin={"0px 0px 0px 25px"}>
@@ -103,14 +84,6 @@ const Home = props => {
             </SectionHeaders>
            </ArtistSection>)
         : null}
-      <SectionViewer
-        width={homeWidth}
-        data={viewerObj}
-        isOpen={isOpen}
-        toggleViewer={toggleViewer}
-      >
-        <ArtistProfile data={viewerObj}/>
-      </SectionViewer>
     </section>
   )
 }

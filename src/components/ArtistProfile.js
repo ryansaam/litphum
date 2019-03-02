@@ -136,54 +136,82 @@ const Heading = styled.h2`
   color: white;
   font-size: 40px;
 `
+const ArtistHeader = styled.div`
+  background-image: url(${props => (props.image || null)});
+  background-size: contain;
+  background-position: center;
+  width: 100%;
+  height: 300px;
+`
 
 const  ArtistProfile = props => {
-  const [songs, setSongs] = useState(null)
-  const [albums, setAlbums] = useState(null)
+  const [artistData, setArtistData] = useState(null)
 
-  useEffect(() => {
+  const fetchData = () => {
     const id = window.location.pathname.split("/").pop()
+    console.log(id)
+    props.spotifyAPI.getArtistProfile(id, ["album"], "US", 10)
+    .then(data => {setArtistData(data)})
+  }
+  useEffect(() => {
     if (props.spotifyAPI.user_token) {
-      console.log(id)
-      props.spotifyAPI.getArtistProfile(id, ["album"], "US", 10)
-      .then(data => {
-        const trackTags = data.artistTopTracks.tracks.map((track, index) => {
-          if (index > 4) return
-          return (
-            <SongTag
-              image={track.album.images[1].url}
-              duration={msToTime(track.duration_ms)}
-              key={track.id}
-              name={track.name}
-              explicit={track.explicit}
-            />
-          )
-        })
-        setSongs(trackTags)
-        const albumTags = data.artistAlbums.items.map(album => {
-          return (
-            <AlbumTag
-              image={album.images[0].url}
-              name={album.name}
-              artists={album.artists}
-              key={album.id}
-            />
-          )
-        })
-        setAlbums(albumTags)
-      })
+      fetchData()
     }
   }, [])
-
+  console.log(artistData)
   return (
-    <ArtistProfileContainer>
-      <Heading>Top Songs</Heading>
-      <ol style={{margin: "0px 0px 20px 0px", padding: "0px", listStyle: "none"}}>{songs}</ol>
-      <Heading>Albums</Heading>
-      <AlbumContainer>
-        {albums}
-      </AlbumContainer>
-    </ArtistProfileContainer>
+    <div>
+      {artistData ? <ArtistHeader image={artistData.artist.images[0].url}>
+          <div style={{
+            background: "linear-gradient(120deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)",
+            width: "100%",
+            height: "100%",
+          }}>
+            <h1 style={{
+              color: "#fff",
+              margin: "0px",
+              fontSize: "3.5em",
+              fontWeight: "700",
+              position: "absolute",
+              right: "0px",
+              boxSizing: "border-box"
+            }}>{artistData.artist.name}</h1>
+          </div>
+        </ArtistHeader>
+        : null}
+      <ArtistProfileContainer>
+        <Heading>Top Songs</Heading>
+        <ol style={{margin: "0px 0px 20px 0px", padding: "0px", listStyle: "none"}}>
+          {artistData ? artistData.artistTopTracks.tracks.map((track, index) => {
+            if (index > 4) return
+            return (
+              <SongTag
+                image={track.album.images[1].url}
+                duration={msToTime(track.duration_ms)}
+                key={track.id}
+                name={track.name}
+                explicit={track.explicit}
+              />
+            )
+          })
+          : null}
+        </ol>
+        <Heading>Albums</Heading>
+        <AlbumContainer>
+          {artistData ? artistData.artistAlbums.items.map(album => {
+            return (
+              <AlbumTag
+                image={album.images[0].url}
+                name={album.name}
+                artists={album.artists}
+                key={album.id}
+              />
+            )
+          })
+          : null}
+        </AlbumContainer>
+      </ArtistProfileContainer>
+    </div>
   )
 }
 

@@ -146,17 +146,19 @@ const ArtistHeader = styled.div`
 
 const  ArtistProfile = props => {
   const [artistData, setArtistData] = useState(null)
+  const [didMount, setDidMount] = useState(false); 
 
   const fetchData = () => {
     const id = window.location.pathname.split("/").pop()
     console.log(id)
     props.spotifyAPI.getArtistProfile(id, ["album"], "US", 10)
-    .then(data => {setArtistData(data)})
+    .then(data => {
+      if (data.artist.name) setArtistData(data)
+    })
   }
   useEffect(() => {
-    if (props.spotifyAPI.user_token) {
-      fetchData()
-    }
+    fetchData()
+    return () => { props.spotifyAPI.cancelRequest() }
   }, [])
   console.log(artistData)
   return (
@@ -183,7 +185,7 @@ const  ArtistProfile = props => {
         <Heading>Top Songs</Heading>
         <ol style={{margin: "0px 0px 20px 0px", padding: "0px", listStyle: "none"}}>
           {artistData ? artistData.artistTopTracks.tracks.map((track, index) => {
-            if (index > 4) return
+            if (index > 4) return null
             return (
               <SongTag
                 image={track.album.images[1].url}

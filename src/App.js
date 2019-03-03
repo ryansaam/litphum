@@ -40,7 +40,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-            { ((spotifyAPI.user_token || token) && user)
+            { (spotifyAPI.user_token && user)
             ? (<div className="logged-in">
                 <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
                   <Nav image={user.images ? user.images[0].url : null} user={user} />

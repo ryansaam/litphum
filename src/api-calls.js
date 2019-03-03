@@ -43,11 +43,11 @@ export function spotifyAPI(token) {
     )
   }
 
-  this.getArtistProfile = (id,includeGroups,market,limit,offset) => {
+  this.getArtistProfile = (id,includeGroups,market,limit,offset,ac) => {
     return Promise.all([
-      this.getArtist(id),
-      this.getArtistAlbums(id,includeGroups,market,limit,offset),
-      this.getArtistTopTracks(id,market)
+      this.getArtist(id,ac),
+      this.getArtistAlbums(id,includeGroups,market,limit,offset,ac),
+      this.getArtistTopTracks(id,market,ac)
     ])
     .then(response => {
       return ({
@@ -57,18 +57,18 @@ export function spotifyAPI(token) {
       })
     })
   }
-  this.getArtist = (id) => {
+  this.getArtist = (id,ac) => {
     return (
       fetch(
         `https://api.spotify.com/v1/artists/${id}`, {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, {signal})
+      }, { signal: ac.signal })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
     )
   }
-  this.getArtistAlbums = (id,includeGroups,market,limit,offset) => {
+  this.getArtistAlbums = (id,includeGroups,market,limit,offset,ac) => {
     return (
       fetch(
         `https://api.spotify.com/v1/artists/${id}/albums`+
@@ -80,13 +80,13 @@ export function spotifyAPI(token) {
           `${offset ? '&offset='+offset : ''}`
         : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, {signal})
+      }, { signal: ac.signal })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
     )
   }
-  this.getArtistTopTracks = (id,market) => {
+  this.getArtistTopTracks = (id,market,ac) => {
     return (
       fetch(
         `https://api.spotify.com/v1/artists/${id}/top-tracks`+
@@ -95,7 +95,7 @@ export function spotifyAPI(token) {
           `${market ? '&market='+market : ''}`
         : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, {signal})
+      }, { signal: ac.signal })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })

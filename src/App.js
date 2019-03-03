@@ -36,7 +36,6 @@ class App extends Component {
   
   render() {
     const { user, spotifyAPI } = this.state
-    const token = sessionStorage.getItem('access_token')
     return (
       <Router>
         <div className="App">

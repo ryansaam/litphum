@@ -146,19 +146,26 @@ const ArtistHeader = styled.div`
 
 const  ArtistProfile = props => {
   const [artistData, setArtistData] = useState(null)
-  const [didMount, setDidMount] = useState(false); 
+  const { getArtist, getArtistAlbums, getArtistTopTracks } = props.spotifyAPI
 
-  const fetchData = () => {
-    const id = window.location.pathname.split("/").pop()
-    console.log(id)
-    props.spotifyAPI.getArtistProfile(id, ["album"], "US", 10)
-    .then(data => {
-      if (data.artist.name) setArtistData(data)
-    })
-  }
   useEffect(() => {
-    fetchData()
-    return () => { props.spotifyAPI.cancelRequest() }
+    const id = window.location.pathname.split("/").pop()
+    const ac = new AbortController()
+    console.log(id)
+    Promise.all([
+      getArtist(id, ac),
+      getArtistAlbums(id, ["album"],"US", 10, 0, ac),
+      getArtistTopTracks(id, "US", ac)
+    ])
+    .then(response => {
+      setArtistData({
+        artist: response[0],
+        artistAlbums: response[1],
+        artistTopTracks: response[2]
+      })
+    })
+    .catch(ex => console.error(ex))
+    return () => ac.abort()
   }, [])
   console.log(artistData)
   return (

@@ -5,6 +5,7 @@
   "dependencies": {
     "query-string": "^6.2.0",
     "react": "^16.8.2",
+    "react-async": "^5.0.0",
     "react-dom": "^16.8.2",
     "react-pose": "^4.0.7",
     "react-router-dom": "^4.3.1",

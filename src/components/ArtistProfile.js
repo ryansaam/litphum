@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useRef } from 'react'
+import { useAsync } from "react-async"
 import styled from 'styled-components'
 
 const ArtistProfileContainer = styled.div`
@@ -144,33 +145,21 @@ const ArtistHeader = styled.div`
   height: 300px;
 `
 
-const  ArtistProfile = props => {
-  const [artistData, setArtistData] = useState(null)
-  const { getArtist, getArtistAlbums, getArtistTopTracks } = props.spotifyAPI
+const loadArtistProfileData = ({ api, id }) => {
+  const data = api.getArtistProfile(id, ["album"], "US", 10)
+  return data
+}
 
-  useEffect(() => {
-    const id = window.location.pathname.split("/").pop()
-    const ac = new AbortController()
-    console.log(id)
-    Promise.all([
-      getArtist(id, ac),
-      getArtistAlbums(id, ["album"],"US", 10, 0, ac),
-      getArtistTopTracks(id, "US", ac)
-    ])
-    .then(response => {
-      setArtistData({
-        artist: response[0],
-        artistAlbums: response[1],
-        artistTopTracks: response[2]
-      })
-    })
-    .catch(ex => console.error(ex))
-    return () => ac.abort()
-  }, [])
-  console.log(artistData)
+const  ArtistProfile = props => {
+  const id = window.location.pathname.split("/").pop()
+  const { data, error, isLoading } = useAsync({ 
+    promiseFn: loadArtistProfileData,
+    api: props.spotifyAPI, id
+  })
+  
   return (
     <div>
-      {artistData ? <ArtistHeader image={artistData.artist.images[0].url}>
+      {data ? <ArtistHeader image={data.artist.images[0].url}>
           <div style={{
             background: "linear-gradient(120deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)",
             width: "100%",
@@ -184,14 +173,14 @@ const  ArtistProfile = props => {
               position: "absolute",
               right: "0px",
               boxSizing: "border-box"
-            }}>{artistData.artist.name}</h1>
+            }}>{data.artist.name}</h1>
           </div>
         </ArtistHeader>
         : null}
       <ArtistProfileContainer>
         <Heading>Top Songs</Heading>
         <ol style={{margin: "0px 0px 20px 0px", padding: "0px", listStyle: "none"}}>
-          {artistData ? artistData.artistTopTracks.tracks.map((track, index) => {
+          {data ? data.artistTopTracks.tracks.map((track, index) => {
             if (index > 4) return null
             return (
               <SongTag
@@ -207,7 +196,7 @@ const  ArtistProfile = props => {
         </ol>
         <Heading>Albums</Heading>
         <AlbumContainer>
-          {artistData ? artistData.artistAlbums.items.map(album => {
+          {data ? data.artistAlbums.items.map(album => {
             return (
               <AlbumTag
                 image={album.images[0].url}

@@ -3,8 +3,6 @@ const user_token = queryString.parse(window.location.search).access_token
 
 export function spotifyAPI(token) {
   this.user_token = token || sessionStorage.getItem('access_token')
-  const controller = new AbortController()
-  const signal = controller.signal
    
   const checkServerStat = (status, response) => {
     if (status === 401) {
@@ -19,7 +17,7 @@ export function spotifyAPI(token) {
       fetch(
         "https://api.spotify.com/v1/me", {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, {signal})
+      })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
@@ -36,18 +34,18 @@ export function spotifyAPI(token) {
           `${time_range ? '&time_range='+time_range : ''}`
         : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, {signal})
+      })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
     )
   }
 
-  this.getArtistProfile = (id,includeGroups,market,limit,offset,ac) => {
+  this.getArtistProfile = (id,includeGroups,market,limit,offset) => {
     return Promise.all([
-      this.getArtist(id,ac),
-      this.getArtistAlbums(id,includeGroups,market,limit,offset,ac),
-      this.getArtistTopTracks(id,market,ac)
+      this.getArtist(id),
+      this.getArtistAlbums(id,includeGroups,market,limit,offset),
+      this.getArtistTopTracks(id,market)
     ])
     .then(response => {
       return ({
@@ -57,18 +55,18 @@ export function spotifyAPI(token) {
       })
     })
   }
-  this.getArtist = (id,ac) => {
+  this.getArtist = (id) => {
     return (
       fetch(
         `https://api.spotify.com/v1/artists/${id}`, {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, { signal: ac.signal })
+      })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
     )
   }
-  this.getArtistAlbums = (id,includeGroups,market,limit,offset,ac) => {
+  this.getArtistAlbums = (id,includeGroups,market,limit,offset) => {
     return (
       fetch(
         `https://api.spotify.com/v1/artists/${id}/albums`+
@@ -80,13 +78,13 @@ export function spotifyAPI(token) {
           `${offset ? '&offset='+offset : ''}`
         : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, { signal: ac.signal })
+      })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
     )
   }
-  this.getArtistTopTracks = (id,market,ac) => {
+  this.getArtistTopTracks = (id,market) => {
     return (
       fetch(
         `https://api.spotify.com/v1/artists/${id}/top-tracks`+
@@ -95,14 +93,12 @@ export function spotifyAPI(token) {
           `${market ? '&market='+market : ''}`
         : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
-      }, { signal: ac.signal })
+      })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
     )
   }
-
-  this.cancelRequest = () => controller.abort()
 }
 
 export const testArtistData = {

@@ -99,6 +99,19 @@ export function spotifyAPI(token) {
       })
     )
   }
+  this.getAlbum = (id,market) => {
+    return fetch(
+      `https://api.spotify.com/v1/albums/${id}`+
+      (market 
+      ? '?'+
+        `${market ? '&market='+market : ''}`
+      : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+  }
 }
 
 export const testArtistData = {

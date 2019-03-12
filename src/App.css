@@ -8,6 +8,7 @@
 }
 
 .logged-in {
+  height: 100%;
   display: grid;
   grid-template-columns: 250px auto;
 }
@@ -17,6 +18,5 @@
 }
 
 .testing {
-  background-color: rgb(130, 246, 174);
-  background-color: rgb(97, 231, 255);
+  background-color: #f85c14;
 }

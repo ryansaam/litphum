@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import { useAsync } from "react-async"
 import { Link } from "react-router-dom"
+import SongTag, { msToTime } from './SongTag.js'
 
 const AlbumView = styled.div`
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: auto 1fr;
+  overflow: auto;
 `
 const AlbumDetails = styled.div`
   background-color: #101010;
@@ -59,6 +61,14 @@ const Underline = styled.span`
   :hover {
     text-decoration: underline
   }
+`
+const CopyRight = styled.span`
+  color: white;
+  width: 80%;
+  opacity: 0.7;
+  fontSize: 12px;
+  display: block;
+  padding-left: 15px;
 `
 const Button = styled.div`
   background-color: rgb(198, 66, 250);
@@ -137,7 +147,22 @@ const Album = props => {
           <Info>{data.release_date.split('-')[0]} - {data.total_tracks} SONGS</Info>
         </AlbumDetails>
         <AlbumSongContainer>
-
+          { data.tracks.items.map((track, index) => {
+            return (
+              <SongTag
+                duration={msToTime(track.duration_ms)}
+                key={track.id}
+                name={track.name}
+                explicit={track.explicit}
+                hoverColor={"#101010"}
+              />
+            )
+          }) }
+          { data.copyrights.map(object => {
+            return (
+              <CopyRight>{object.text}</CopyRight>
+            )
+          }) }
         </AlbumSongContainer>
       </>
       : null }

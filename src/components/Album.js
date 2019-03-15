@@ -7,13 +7,13 @@ const AlbumView = styled.div`
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
 `
 const AlbumDetails = styled.div`
   background-color: #101010;
   height: 100%;
   width: 100%;
-  padding: 20px 0px;
+  padding: 20px;
   box-sizing: border-box;
 `
 const AlbumSongContainer = styled.div`
@@ -42,6 +42,7 @@ const Header = styled.div`
   text-align: center;
   font-size: 28px;
   font-weight: 600;
+  margin: 5px 0px;
 `
 const TextOverflow = styled.div`
   color: white;
@@ -59,6 +60,33 @@ const Underline = styled.span`
     text-decoration: underline
   }
 `
+const Button = styled.div`
+  background-color: rgb(198, 66, 250);
+  color: white;
+  height: 40px;
+  width: 140px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px auto;
+  cursor: pointer;
+  opacity: 0.9;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  :hover {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+`
+const Info = styled.span`
+  color: white;
+  font-size: 12px;
+  margin: auto;
+  opacity: 0.7;
+  text-align: center;
+  display: block;
+`
 const PlayBtn = props => (
   <svg style={{visibility: props.visibility ? "visible" : "hidden" }} fill="white" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
     <path id="control-play" d="m40,30c0,0.34 -0.173,0.657 -0.459,0.841l-10.01,6.435c-0.466,0.298 -1.083,0.164 -1.382,-0.299c-0.298,-0.465 -0.164,-1.083 0.3,-1.382l8.702,-5.595l-11.151,-7.168l0,16.168c0,0.553 -0.448,1 -1,1c-0.552,0 -1,-0.447 -1,-1l0,-18c0,-0.366 0.2,-0.702 0.521,-0.878c0.32,-0.175 0.711,-0.163 1.02,0.037l14,9c0.286,0.184 0.459,0.501 0.459,0.841m-10,28c-15.439,0 -28,-12.561 -28,-28c0,-15.439 12.561,-28 28,-28c15.439,0 28,12.561 28,28c0,15.439 -12.561,28 -28,28m0,-58c-16.542,0 -30,13.458 -30,30c0,16.542 13.458,30 30,30c16.542,0 30,-13.458 30,-30c0,-16.542 -13.458,-30 -30,-30"/>
@@ -72,8 +100,8 @@ const loadAlbumData = ({ api, id }) => {
 const listArtistsNames = (arr) => {
   if (arr.length === 1) return <Underline><Link to={"/artist/"+arr[0].id}>{arr[0].name}</Link></Underline>
   return arr.map((artist, index) => {
-    if (index === 0) return <Underline><Link to={"/artist/"+artist.id}>{artist.name}</Link></Underline>
-    return <span>, <Underline><Link to={"/artist/"+artist.id}>{artist.name}</Link></Underline></span>
+    if (index === 0) return <Underline key={artist.id}><Link to={"/artist/"+artist.id}>{artist.name}</Link></Underline>
+    return <span key={artist.id}>, <Underline><Link to={"/artist/"+artist.id}>{artist.name}</Link></Underline></span>
   });
 }
 
@@ -105,6 +133,8 @@ const Album = props => {
             </div>
           </TextOverflow>
           </div>
+          <Button>PLAY</Button>
+          <Info>{data.release_date.split('-')[0]} - {data.total_tracks} SONGS</Info>
         </AlbumDetails>
         <AlbumSongContainer>
 

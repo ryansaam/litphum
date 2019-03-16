@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useAsync } from 'react-async'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -37,7 +38,16 @@ const Label = styled.label`
   }
 `
 
+const loadSearchResults = ({ api, query, market, limit, offset }) => {
+  const data = api.getSearchResults("kanye", "album , artist, playlist, track")
+  return data
+}
 const Search = props => {
+  const { data, error, isLoading } = useAsync({ 
+    promiseFn: loadSearchResults,
+    api: props.spotifyAPI,
+  })
+  console.log(data)
   return (
     <SearchContainer>
       <Label>

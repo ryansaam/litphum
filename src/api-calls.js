@@ -112,6 +112,18 @@ export function spotifyAPI(token) {
         return checkServerStat(response.status, response.json())
       })
   }
+  this.getSearchResults = (query, type, market, limit, offset) => {
+    return fetch(
+      `https://api.spotify.com/v1/search?q=${query}&type=${type}`+
+      ((market || limit || offset)
+      ? `${market ? '&market='+market : ''}`+
+        `${limit ? '&limit='+limit : ''}`+
+        `${offset ? '&offset='+offset : ''}`
+      : '')
+      , {
+      headers: {"Authorization": "Bearer " + this.user_token}
+    })
+  }
 }
 
 export const testArtistData = {

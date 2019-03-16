@@ -47,7 +47,7 @@ class App extends Component {
                 </div>
                 <main id="main">
                   <Route path={`/${user.type}/${user.id}`} exact component={() => <Home spotifyAPI={spotifyAPI} />} />
-                  <Route path="/search/" component={Search} />
+                  <Route path="/search/" component={() => <Search spotifyAPI={spotifyAPI} />} />
                   <Route path="/trending/" component={Trending} />
                   <Route path="/artist/" component={() => <ArtistProfile spotifyAPI={spotifyAPI} />} />
                   <Route path="/album/" component={() => <Album spotifyAPI={spotifyAPI} />} />

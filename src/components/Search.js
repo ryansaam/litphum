@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useAsync } from 'react-async'
 
@@ -39,19 +39,26 @@ const Label = styled.label`
 `
 
 const loadSearchResults = ({ api, query, market, limit, offset }) => {
-  const data = api.getSearchResults("kanye", "album , artist, playlist, track")
+  const data = api.getSearchResults(query, "album,artist,playlist,track")
   return data
 }
+
 const Search = props => {
+  const [query, setQuery] = useState('')
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadSearchResults,
+    watch: query,
     api: props.spotifyAPI,
+    query
   })
+  const handleChange = event => {
+    setQuery(event.target.value)
+  }
   console.log(data)
   return (
     <SearchContainer>
       <Label>
-        <SearchBox placeholder="What are you looking for?" type="text" />
+        <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
       </Label>
     </SearchContainer>
   )

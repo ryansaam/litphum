@@ -123,6 +123,9 @@ export function spotifyAPI(token) {
       , {
       headers: {"Authorization": "Bearer " + this.user_token}
     })
+    .then(response => {
+      return checkServerStat(response.status, response.json())
+    })
   }
 }
 

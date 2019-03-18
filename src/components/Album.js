@@ -23,14 +23,14 @@ const AlbumSongContainer = styled.div`
   background-color: #010101;
   height: 100%;
 `
-const TagImage = styled.div`
+export const TagImage = styled.div`
   background-image: url(${props => props.image});
   width: ${props => props.size ? props.size : "100%"};
   height: ${props => props.size ? props.size : "100%"};
   margin: ${props => props.imageMargin || "0px"};
   background-size: cover;
 `
-const ImageContainer = styled.div`
+export const ImageContainer = styled.div`
   width: 100%;
   height: 100%;
   display: grid;
@@ -40,14 +40,14 @@ const ImageContainer = styled.div`
     background-color: rgba(0,0,0,0.6)
   }
 `
-const Header = styled.div`
+export const Header = styled.div`
   color: white;
   text-align: center;
   font-size: 28px;
   font-weight: 600;
   margin: 5px 0px;
 `
-const TextOverflow = styled.div`
+export const TextOverflow = styled.div`
   color: white;
   text-align: center;
   opacity: 0.7;
@@ -98,7 +98,7 @@ const Info = styled.span`
   text-align: center;
   display: block;
 `
-const PlayBtn = props => (
+export const PlayBtn = props => (
   <svg style={{visibility: props.visibility ? "visible" : "hidden" }} fill="white" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
     <path id="control-play" d="m40,30c0,0.34 -0.173,0.657 -0.459,0.841l-10.01,6.435c-0.466,0.298 -1.083,0.164 -1.382,-0.299c-0.298,-0.465 -0.164,-1.083 0.3,-1.382l8.702,-5.595l-11.151,-7.168l0,16.168c0,0.553 -0.448,1 -1,1c-0.552,0 -1,-0.447 -1,-1l0,-18c0,-0.366 0.2,-0.702 0.521,-0.878c0.32,-0.175 0.711,-0.163 1.02,0.037l14,9c0.286,0.184 0.459,0.501 0.459,0.841m-10,28c-15.439,0 -28,-12.561 -28,-28c0,-15.439 12.561,-28 28,-28c15.439,0 28,12.561 28,28c0,15.439 -12.561,28 -28,28m0,-58c-16.542,0 -30,13.458 -30,30c0,16.542 13.458,30 30,30c16.542,0 30,-13.458 30,-30c0,-16.542 -13.458,-30 -30,-30"/>
   </svg>
@@ -108,7 +108,7 @@ const loadAlbumData = ({ api, id }) => {
   const data = api.getAlbum(id, "US")
   return data
 }
-const listArtistsNames = (arr) => {
+export const listArtistsNames = (arr) => {
   if (arr.length === 1) return <Underline><Link to={"/artist/"+arr[0].id}>{arr[0].name}</Link></Underline>
   return arr.map((artist, index) => {
     if (index === 0) return <Underline key={artist.id}><Link to={"/artist/"+artist.id}>{artist.name}</Link></Underline>

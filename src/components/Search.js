@@ -3,6 +3,8 @@ import { useAsync } from 'react-async'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
 import history from '../history.js'
+import SongTag, { msToTime } from './SongTag.js'
+import { TagImage, PlayBtn, ImageContainer, Header, TextOverflow, listArtistsNames } from './Album.js'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -68,14 +70,65 @@ const Search = props => {
       <Label>
         <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
       </Label>
-      <Route path='/search/results/' component={TopResults} />
+      {data && data.albums
+      ? <>
+          <Route path='/search/results/' component={() => <TopResults data={data.tracks} />} />
+        </>
+      : null }
     </SearchContainer>
   )
 }
+const TopResultsContainer = styled.div`
+  padding: 20px;
+`
+const SongResults = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+`
 
 const TopResults = props => {
+  const [bool, setBool] = useState(false)
+  const artistsNames = listArtistsNames(props.data.items[0].artists)
   return (
-    <div>Hello World</div>
+    <TopResultsContainer>
+      <SongResults>
+        <div style={{marginRight: "20px"}}>
+        <TagImage imageMargin={"auto"} size={"300px"} image={props.data.items[0].album.images[0].url}>
+          <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
+            <PlayBtn visibility={bool} />
+          </ImageContainer>
+        </TagImage>
+        <div style={{maxWidth: "300px", margin: "auto"}}>
+          <Header>{props.data.items[0].name}</Header>
+          <TextOverflow>
+            <div style={{display: "inline"}}>
+              <span>{artistsNames}</span>
+            </div>
+          </TextOverflow>
+        </div>
+        </div>
+        <div>
+          { props.data.items.map((track, index) => {
+              if (index > 4) return null
+              return (
+                <SongTag
+                  duration={msToTime(track.duration_ms)}
+                  key={track.id}
+                  name={track.name}
+                  explicit={track.explicit}
+                  hoverColor={"#101010"}
+                />
+              )
+          }) }
+        </div>
+      </SongResults>
+      <div>
+      </div>
+      <div>
+      </div>
+      <div>
+      </div>
+    </TopResultsContainer>
   )
 }
 

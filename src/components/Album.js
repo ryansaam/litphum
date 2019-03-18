@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
+import history from '../history.js'
 import { useAsync } from "react-async"
 import { Link } from "react-router-dom"
 import SongTag, { msToTime } from './SongTag.js'
@@ -117,7 +118,7 @@ const listArtistsNames = (arr) => {
 
 const Album = props => {
   const [bool, setBool] = useState(false)
-  const id = window.location.pathname.split("/").pop()
+  const id = history.location.pathname.split("/").pop()
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadAlbumData,
     watch: id,

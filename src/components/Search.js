@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { useAsync } from 'react-async'
+import { Route } from 'react-router-dom'
+import styled from 'styled-components'
+import history from '../history.js'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -44,14 +46,20 @@ const loadSearchResults = ({ api, query, market, limit, offset }) => {
 }
 
 const Search = props => {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(history.location.pathname.split('/').pop())
+  
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadSearchResults,
     watch: query,
     api: props.spotifyAPI,
     query
   })
+
   const handleChange = event => {
+    if (event.target.value)
+      history.push('/search/results/'+event.target.value)
+    else
+      history.push('/search/')
     setQuery(event.target.value)
   }
   console.log(data)
@@ -60,7 +68,14 @@ const Search = props => {
       <Label>
         <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
       </Label>
+      <Route path='/search/results/' component={TopResults} />
     </SearchContainer>
+  )
+}
+
+const TopResults = props => {
+  return (
+    <div>Hello World</div>
   )
 }
 

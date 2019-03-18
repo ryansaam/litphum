@@ -3,6 +3,7 @@ import '../css/home.css'
 import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
 import { ArtistTag } from './Tags.js'
+import history from '../history.js'
 
 const ArtistSectionContainer = styled.section`
   padding: 40px 0px;
@@ -58,7 +59,7 @@ const Home = props => {
   },[])
 
   const handleClick = (id) => () => {
-    window.location = "http://localhost:3000/artist/" + id
+    history.push('/artist/'+id)
   }
 
   return (

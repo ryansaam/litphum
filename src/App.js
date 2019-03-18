@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import {BrowserRouter as Router, Route} from 'react-router-dom'
+import { Router, Route} from 'react-router-dom'
 import './App.css'
+import history from './history.js'
 import Home from './components/Home.js'
 import Search from './components/Search.js'
 import Trending from './components/Trending.js'
@@ -38,7 +39,7 @@ class App extends Component {
   render() {
     const { user, spotifyAPI } = this.state
     return (
-      <Router>
+      <Router history={history}>
         <div className="App">
             { (spotifyAPI.user_token && user)
             ? (<div className="logged-in">

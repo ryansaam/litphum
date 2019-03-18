@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useAsync } from "react-async"
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
+import history from '../history.js'
 import SongTag, { TagImage, msToTime } from './SongTag.js'
 
 const PlayBtn = props => (
@@ -104,7 +105,7 @@ const loadArtistProfileData = ({ api, id }) => {
 }
 
 const  ArtistProfile = props => {
-  const id = window.location.pathname.split("/").pop()
+  const id = history.location.pathname.split("/").pop()
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadArtistProfileData,
     api: props.spotifyAPI, id

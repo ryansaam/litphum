@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import history from '../history.js'
 import SongTag, { msToTime } from './SongTag.js'
 import { TagImage, PlayBtn, ImageContainer, Header, TextOverflow, listArtistsNames } from './Album.js'
+import { AlbumTag, AlbumContainer } from './ArtistProfile.js'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -72,7 +73,7 @@ const Search = props => {
       </Label>
       {data && data.albums
       ? <>
-          <Route path='/search/results/' component={() => <TopResults data={data.tracks} />} />
+          <Route path='/search/results/' component={() => <TopResults data={data} />} />
         </>
       : null }
     </SearchContainer>
@@ -88,42 +89,57 @@ const SongResults = styled.div`
 
 const TopResults = props => {
   const [bool, setBool] = useState(false)
-  const artistsNames = listArtistsNames(props.data.items[0].artists)
+  const artistsNames = props.data.tracks.total ? listArtistsNames(props.data.tracks.items[0].artists) : null
+  
   return (
     <TopResultsContainer>
-      <SongResults>
-        <div style={{marginRight: "20px"}}>
-        <TagImage imageMargin={"auto"} size={"300px"} image={props.data.items[0].album.images[0].url}>
-          <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
-            <PlayBtn visibility={bool} />
-          </ImageContainer>
-        </TagImage>
-        <div style={{maxWidth: "300px", margin: "auto"}}>
-          <Header>{props.data.items[0].name}</Header>
-          <TextOverflow>
-            <div style={{display: "inline"}}>
-              <span>{artistsNames}</span>
-            </div>
-          </TextOverflow>
-        </div>
-        </div>
-        <div>
-          { props.data.items.map((track, index) => {
-              if (index > 4) return null
-              return (
-                <SongTag
-                  duration={msToTime(track.duration_ms)}
-                  key={track.id}
-                  name={track.name}
-                  explicit={track.explicit}
-                  hoverColor={"#101010"}
-                />
-              )
-          }) }
-        </div>
-      </SongResults>
-      <div>
-      </div>
+      { props.data.tracks.total
+      ? <SongResults>
+          <div style={{marginRight: "20px"}}>
+          <TagImage imageMargin={"auto"} size={"300px"} image={props.data.tracks.items[0].album.images[0].url}>
+            <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
+              <PlayBtn visibility={bool} />
+            </ImageContainer>
+          </TagImage>
+          <div style={{maxWidth: "300px", margin: "auto"}}>
+            <Header>{props.data.tracks.items[0].name}</Header>
+            <TextOverflow>
+              <div style={{display: "inline"}}>
+                <span>{artistsNames}</span>
+              </div>
+            </TextOverflow>
+          </div>
+          </div>
+          <div>
+            { props.data.tracks.items.map((track, index) => {
+                if (index > 4) return null
+                return (
+                  <SongTag
+                    duration={msToTime(track.duration_ms)}
+                    key={track.id}
+                    name={track.name}
+                    explicit={track.explicit}
+                    hoverColor={"#101010"}
+                  />
+                )
+            }) }
+          </div>
+        </SongResults>
+      : null}
+      <AlbumContainer>
+        { props.data.albums.items.map((album, index) => {
+          if (index > 9) return null
+          return (
+            <AlbumTag
+              image={album.images[0].url}
+              name={album.name}
+              artistNames={listArtistsNames(album.artists)}
+              key={album.id}
+              albumId={album.id}
+            />
+          )
+        }) }
+      </AlbumContainer>
       <div>
       </div>
       <div>

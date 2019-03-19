@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import styled from 'styled-components'
 import history from '../history.js'
 import SongTag, { TagImage, msToTime } from './SongTag.js'
+import { listArtistsNames } from './Album.js'
 
 const PlayBtn = props => (
   <svg style={{visibility: props.visibility ? "visible" : "hidden" }} fill="white" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +28,7 @@ const ImageContainer = styled.div`
   }
 `
 
-const AlbumContainer = styled.div`
+export const AlbumContainer = styled.div`
   text-align: center;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -36,12 +37,12 @@ const AlbumContainer = styled.div`
 `
 const AlbumInfo = styled.div`
   box-sizing: border-box;
-  padding: 10px 10px;
+  padding: 10px 0px;
   color: #fff;
 `
 const TextOverflow = styled.div`
   width: 100%;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: ${props => props.lineClamp || 1};
   display: -webkit-box;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
@@ -52,7 +53,7 @@ const Underline = styled.span`
     text-decoration: underline
   }
 `
-const AlbumTag = props => {
+export const AlbumTag = props => {
   const [bool, setBool] = useState(false)
   return (
     <div style={{marginBottom: "20px"}}>
@@ -65,20 +66,17 @@ const AlbumTag = props => {
       </Link>
       <AlbumInfo>
         <Link style={{color: "white"}} to={"/album/"+props.albumId} >
-          <TextOverflow>
+          <TextOverflow lineClamp={2}>
             <div style={{display: "inline"}}>
               <span>{props.name}</span>
             </div>
           </TextOverflow>
         </Link>
-        <Underline>
-          <Link to={"/artist/"+props.artistId} style={{
-            color: "white",
-            opacity: "0.7",
-            margin: "5px 0px",
-            display: "block"
-          }}>{props.artistName}</Link>
-        </Underline>
+        <TextOverflow onClick={props.reload ? props.reload : null}>
+          <div style={{display: "inline"}}>
+            <span style={{opacity: "0.7"}}>{props.artistNames}</span>
+          </div>
+        </TextOverflow>
       </AlbumInfo>
     </div>
   )
@@ -100,6 +98,7 @@ const ArtistHeader = styled.div`
 `
 
 const loadArtistProfileData = ({ api, id }) => {
+  window.scroll(0, 0)
   const data = api.getArtistProfile(id, ["album"], "US", 10)
   return data
 }
@@ -108,6 +107,7 @@ const  ArtistProfile = props => {
   const id = history.location.pathname.split("/").pop()
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadArtistProfileData,
+    watch: id,
     api: props.spotifyAPI, id
   })
   
@@ -156,8 +156,7 @@ const  ArtistProfile = props => {
               <AlbumTag
                 image={album.images[0].url}
                 name={album.name}
-                artistName={data.artist.name}
-                artistId={id}
+                artistNames={listArtistsNames(album.artists)}
                 key={album.id}
                 albumId={album.id}
               />

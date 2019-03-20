@@ -140,8 +140,20 @@ const TopResults = props => {
           )
         }) }
       </AlbumContainer>
-      <div>
-      </div>
+      <AlbumContainer>
+        { props.data.playlists.items.map((playlist, index) => {
+          if (index > 9) return null
+          return (
+            <AlbumTag
+              image={playlist.images[0].url}
+              name={playlist.name}
+              key={playlist.id}
+              albumId={playlist.id}
+              playlist
+            />
+          )
+        }) }
+      </AlbumContainer>
       <div>
       </div>
     </TopResultsContainer>

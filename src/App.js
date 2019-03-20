@@ -52,6 +52,7 @@ class App extends Component {
                   <Route path="/trending/" component={Trending} />
                   <Route path="/artist/" component={() => <ArtistProfile spotifyAPI={spotifyAPI} />} />
                   <Route path="/album/" component={() => <Album spotifyAPI={spotifyAPI} />} />
+                  <Route path="/playlist/" component={() => <Album playlist spotifyAPI={spotifyAPI} />} />
                 </main>
               </div>)
             : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>

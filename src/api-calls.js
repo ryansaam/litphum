@@ -104,13 +104,26 @@ export function spotifyAPI(token) {
       `https://api.spotify.com/v1/albums/${id}`+
       (market 
       ? '?'+
-        `${market ? '&market='+market : ''}`
+        `${market ? 'market='+market : ''}`
       : ''), {
         headers: {"Authorization": "Bearer " + this.user_token}
       })
       .then(response => {
         return checkServerStat(response.status, response.json())
       })
+  }
+  this.getPlaylist = (id, market) => {
+    return fetch(
+      `https://api.spotify.com/v1/playlists/${id}`+
+      (market
+      ? '?'+
+        `${market ? 'market='+market : ''}`
+      : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+    .then(response => {
+      return checkServerStat(response.status, response.json())
+    })
   }
   this.getSearchResults = (query, type, market, limit, offset) => {
     return fetch(

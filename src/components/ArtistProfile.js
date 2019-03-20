@@ -57,7 +57,7 @@ export const AlbumTag = props => {
   const [bool, setBool] = useState(false)
   return (
     <div style={{marginBottom: "20px"}}>
-      <Link to={"/album/"+props.albumId} >
+      <Link to={props.playlist ? "/playlist/"+props.albumId : "/album/"+props.albumId} >
         <TagImage size={200} imageMargin={"auto"} image={props.image}>
          <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
             <PlayBtn visibility={bool} />
@@ -65,7 +65,7 @@ export const AlbumTag = props => {
         </TagImage>
       </Link>
       <AlbumInfo>
-        <Link style={{color: "white"}} to={"/album/"+props.albumId} >
+        <Link style={{color: "white"}} to={props.playlist ? "/album/"+props.albumId : "/playlist/"+props.albumId} >
           <TextOverflow lineClamp={2}>
             <div style={{display: "inline"}}>
               <span>{props.name}</span>

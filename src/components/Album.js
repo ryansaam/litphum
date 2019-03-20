@@ -108,6 +108,10 @@ const loadAlbumData = ({ api, id }) => {
   const data = api.getAlbum(id, "US")
   return data
 }
+const loadPlaylistData = ({ api, id }) => {
+  const data = api.getPlaylist(id, "US")
+  return data
+}
 export const listArtistsNames = (arr) => {
   if (arr.length === 1) return <Underline><Link to={"/artist/"+arr[0].id}>{arr[0].name}</Link></Underline>
   return arr.map((artist, index) => {
@@ -120,11 +124,11 @@ const Album = props => {
   const [bool, setBool] = useState(false)
   const id = history.location.pathname.split("/").pop()
   const { data, error, isLoading } = useAsync({ 
-    promiseFn: loadAlbumData,
+    promiseFn: props.playlist ? loadPlaylistData : loadAlbumData,
     watch: id,
     api: props.spotifyAPI, id
   })
-  const artistsNames = data ? listArtistsNames(data.artists) : null
+  const artistsNames = (data && !props.playlist) ? listArtistsNames(data.artists) : null
   console.log(data)
   return (
     <AlbumView>
@@ -145,11 +149,21 @@ const Album = props => {
           </TextOverflow>
           </div>
           <Button>PLAY</Button>
-          <Info>{data.release_date.split('-')[0]} - {data.total_tracks} SONGS</Info>
+          { props.playlist 
+            ? <Info>{data.tracks.total} SONGS</Info>
+            : <Info>{data.release_date.split('-')[0]} - {data.total_tracks} SONGS</Info> }
         </AlbumDetails>
         <AlbumSongContainer>
           { data.tracks.items.map((track, index) => {
-            return (
+            return props.playlist ? (
+              <SongTag
+                duration={msToTime(track.track.duration_ms)}
+                key={track.track.id}
+                name={track.track.name}
+                explicit={track.track.explicit}
+                hoverColor={"#101010"}
+              />
+            ) : (
               <SongTag
                 duration={msToTime(track.duration_ms)}
                 key={track.id}
@@ -159,9 +173,9 @@ const Album = props => {
               />
             )
           }) }
-          { data.copyrights.map(object => {
+          { props.playlist ? null : data.copyrights.map((object, index) => {
             return (
-              <CopyRight>{object.text}</CopyRight>
+              <CopyRight key={index}>{object.text}</CopyRight>
             )
           }) }
         </AlbumSongContainer>

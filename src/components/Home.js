@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../css/home.css'
 import styled from 'styled-components'
 import SlidePicker from './SlidePicker.js'
-import { ArtistTag } from './Tags.js'
+import { ArtistCard } from './Tags.js'
 import history from '../history.js'
 
 const ArtistSectionContainer = styled.section`
@@ -45,7 +45,7 @@ const Home = props => {
       const elements = artist.items.map(item => (
         { id: item.id,
           element: (
-            <ArtistTag 
+            <ArtistCard
               img={item.images[1].url}
               artistName={item.name}
               genre={item.genres[0]}

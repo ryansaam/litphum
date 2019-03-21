@@ -6,6 +6,8 @@ import history from '../history.js'
 import SongTag, { msToTime } from './SongTag.js'
 import { TagImage, PlayBtn, ImageContainer, Header, TextOverflow, listArtistsNames } from './Album.js'
 import { AlbumTag, AlbumContainer } from './ArtistProfile.js'
+import { ArtistResult } from './Tags.js'
+import profileImg from '../images/profile-img.png'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -96,19 +98,19 @@ const TopResults = props => {
       { props.data.tracks.total
       ? <SongResults>
           <div style={{marginRight: "20px"}}>
-          <TagImage imageMargin={"auto"} size={"300px"} image={props.data.tracks.items[0].album.images[0].url}>
-            <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
-              <PlayBtn visibility={bool} />
-            </ImageContainer>
-          </TagImage>
-          <div style={{maxWidth: "300px", margin: "auto"}}>
-            <Header>{props.data.tracks.items[0].name}</Header>
-            <TextOverflow>
-              <div style={{display: "inline"}}>
-                <span>{artistsNames}</span>
-              </div>
-            </TextOverflow>
-          </div>
+            <TagImage imageMargin={"auto"} size={"300px"} image={props.data.tracks.items[0].album.images[0].url}>
+              <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
+                <PlayBtn visibility={bool} />
+              </ImageContainer>
+            </TagImage>
+            <div style={{maxWidth: "300px", margin: "auto"}}>
+              <Header>{props.data.tracks.items[0].name}</Header>
+              <TextOverflow>
+                <div style={{display: "inline"}}>
+                  <span>{artistsNames}</span>
+                </div>
+              </TextOverflow>
+            </div>
           </div>
           <div>
             { props.data.tracks.items.map((track, index) => {
@@ -126,6 +128,20 @@ const TopResults = props => {
           </div>
         </SongResults>
       : null}
+      <AlbumContainer>
+        { props.data.artists.items.map((artist, index) => {
+          if (index > 9) return null
+          return (
+            <ArtistResult
+              img={artist.images[0] ? artist.images[0].url : profileImg}
+              name={artist.name}
+              bgColor={artist.images[0] ? null : "rgba(0,0,0,0.6)"}
+              key={artist.id}
+              id={artist.id}
+            />
+          )
+        }) }
+      </AlbumContainer>
       <AlbumContainer>
         { props.data.albums.items.map((album, index) => {
           if (index > 9) return null
@@ -154,8 +170,6 @@ const TopResults = props => {
           )
         }) }
       </AlbumContainer>
-      <div>
-      </div>
     </TopResultsContainer>
   )
 }

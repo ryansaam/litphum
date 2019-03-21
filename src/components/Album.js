@@ -158,7 +158,7 @@ const Album = props => {
             return props.playlist ? (
               <SongTag
                 duration={msToTime(track.track.duration_ms)}
-                key={track.track.id}
+                key={track.track.id+index}
                 name={track.track.name}
                 explicit={track.track.explicit}
                 hoverColor={"#101010"}

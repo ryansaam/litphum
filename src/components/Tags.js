@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import styled, { keyframes, css } from 'styled-components'
+import { TextOverflow, ImageContainer, PlayBtn } from './ArtistProfile.js'
 
 const InfoContainer = styled.div`
   position: relative;
@@ -47,6 +49,13 @@ const AnimationReel = styled.div`
   animation: ${props => (props.isPlaying ? css`${cycle} 3s linear infinite` : "none")};
   width: ${props => (props.reelWidth+"px" || "100%")};
 `
+export const Header = styled.div`
+  color: white;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 5px 0px;
+`
 
 const InfoOverflow = props => {
   if (!props.isPlaying)
@@ -64,7 +73,7 @@ const InfoOverflow = props => {
     )
 }
 
-export const ArtistTag = props => {
+export const ArtistCard = props => {
   const infoRef = useRef(null)
   const refContentWidth = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -100,6 +109,34 @@ export const ArtistTag = props => {
         </ContentReference>
         <span style={{opacity: "0.6"}} >{props.genre}</span>
       </div>
+    </div>
+  )
+}
+
+export const ArtistResult = props => {
+  const [bool,setBool] = useState(false)
+  return (
+    <div>
+      <Link style={{color: "white"}} to={"/artist/"+props.id} >
+        <div style={{
+          backgroundImage: `url(${props.img})`,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          borderRadius: "50%",
+          height: "200px",
+          width: "200px",
+          marginBottom: "10px"}}
+        >
+          <ImageContainer style={{backgroundColor: props.bgColor}} circle onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
+            <PlayBtn visibility={bool} />
+          </ImageContainer>
+        </div>
+        <TextOverflow lineClamp={2}>
+          <div style={{display: "inline"}}>
+            <span>{props.name}</span>
+          </div>
+        </TextOverflow>
+      </Link>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useAsync } from 'react-async'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import history from '../history.js'
 import SongTag, { msToTime } from './SongTag.js'
@@ -52,13 +52,45 @@ const loadSearchResults = ({ api, query, market, limit, offset }) => {
 
 const Search = props => {
   const [query, setQuery] = useState(history.location.pathname.split('/').pop())
-  
+  const [activeFilter, setActiveFilter] = useState("results")
+
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadSearchResults,
     watch: query,
     api: props.spotifyAPI,
     query
   })
+
+  const handleFilter = location => event => {
+    if (query) {
+      switch (location) {
+        case "results":
+          history.push('/search/results/'+query)
+          setActiveFilter("results")
+          break
+        case "artists":
+          history.push('/search/artists/'+query)
+          setActiveFilter("artists")
+          break
+        case "songs":
+          history.push('/search/songs/'+query)
+          setActiveFilter("songs")
+          break
+        case "albums":
+          history.push('/search/albums/'+query)
+          setActiveFilter("albums")
+          break
+        case "playlists":
+          history.push('/search/playlists/'+query)
+          setActiveFilter("playlists")
+          break
+        default:
+          history.push('/search/')
+          setActiveFilter("")
+          break
+      }
+    }
+  }
 
   const handleChange = event => {
     if (event.target.value)
@@ -75,14 +107,90 @@ const Search = props => {
       </Label>
       {data && data.albums
       ? <>
+          <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
           <Route path='/search/results/' component={() => <TopResults data={data} />} />
         </>
       : null }
     </SearchContainer>
   )
 }
+
+const FilterBarList = styled.ul`
+  margin: 30px 0px;
+  padding: 0px;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(5, 120px);
+  li {
+    color: rgba(255,255,255,0.8);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: color linear 150ms;
+    :hover {
+      color: rgba(255,255,255,1)
+    } 
+  }
+`
+const SelectedBar = styled.span`
+  background-color: #2ad4ff;
+  width: 30px;
+  height: 2px;
+  margin: 5px auto 0px auto;
+  visibility: ${props => props.selected || "hidden"};
+  display: block;
+`
+
+const FilterLink = props => {
+  return (
+    <Link to={`/search/${props.page}/${props.query}`} onClick={props.filterSelection(props.page)} >
+      <li>{props.children}</li>
+      <SelectedBar selected={props.activeFilter === props.page ? true : false} />
+    </Link>
+  )
+}
+
+const FilterBar = props => {
+  return (
+    <div style={{display: "grid", justifyItems: "center"}} >
+      <FilterBarList>
+        <FilterLink
+          query={props.query}
+          page={'results'}
+          filterSelection={props.filterSelection}
+          activeFilter={props.activeFilter}
+        >Top Results</FilterLink>
+        <FilterLink
+          query={props.query}
+          page={'artists'}
+          filterSelection={props.filterSelection}
+          activeFilter={props.activeFilter}
+        >Artists</FilterLink>
+        <FilterLink
+          query={props.query}
+          page={'songs'}
+          filterSelection={props.filterSelection}
+          activeFilter={props.activeFilter}
+        >Songs</FilterLink>
+        <FilterLink
+          query={props.query}
+          page={'albums'}
+          filterSelection={props.filterSelection}
+          activeFilter={props.activeFilter}
+        >Albums</FilterLink>
+        <FilterLink
+          query={props.query}
+          page={'playlists'}
+          filterSelection={props.filterSelection}
+          activeFilter={props.activeFilter}
+        >Playlists</FilterLink>
+      </FilterBarList>
+    </div>
+  )
+}
+
 const TopResultsContainer = styled.div`
-  padding: 20px;
+  padding: 0px 20px;
 `
 const SongResults = styled.div`
   display: grid;

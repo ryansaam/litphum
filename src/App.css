@@ -7,6 +7,10 @@
   color: inherit;
   text-decoration: none;
 }
+.App li {
+  color: inherit;
+  list-style: none;
+}
 
 .logged-in {
   height: 100%;

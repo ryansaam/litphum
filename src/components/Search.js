@@ -109,6 +109,8 @@ const Search = props => {
       ? <>
           <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
           <Route path='/search/results/' component={() => <TopResults data={data} />} />
+          <Route path='/search/albums/' component={() => <Albums data={data.albums} />} />
+          <Route path='/search/playlists/' component={() => <Albums data={data.playlists} />} />
         </>
       : null }
     </SearchContainer>
@@ -279,6 +281,27 @@ const TopResults = props => {
         }) }
       </AlbumContainer>
     </TopResultsContainer>
+  )
+}
+
+const Albums = props => {
+  console.log(props.data)
+  return (
+    <div>
+      <AlbumContainer>
+        { props.data.items.map((album, index) => {
+          return (
+            <AlbumTag
+              image={album.images[0].url}
+              name={album.name}
+              key={album.id}
+              albumId={album.id}
+              playlist
+            />
+          )
+        }) }
+      </AlbumContainer>
+    </div>
   )
 }
 

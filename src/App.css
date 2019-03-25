@@ -20,6 +20,7 @@
 
 .App main {
   height: 100%;
+  position: relative;
 }
 
 .testing {

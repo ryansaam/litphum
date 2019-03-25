@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useAsync } from 'react-async'
 import { Route, Link } from 'react-router-dom'
 import styled from 'styled-components'
@@ -12,7 +12,9 @@ import profileImg from '../images/profile-img.png'
 const SearchContainer = styled.div`
   background: #4d4b4b;
   width: 100%;
-  height: 100%
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
 `
 const SearchBox = styled.input`
   background: #2e2e2e;
@@ -30,7 +32,7 @@ const SearchBox = styled.input`
 `
 const Label = styled.label`
   position: relative;
-  width: 100%
+  width: 100%;
   :before {
     content: "";
     position: absolute;
@@ -44,15 +46,26 @@ const Label = styled.label`
     border-radius: 0px 0px 5px 0px;
   }
 `
+const ScrollContainer = styled.div`
+  overflow: auto;
+  position: relative;
+  height: 100%;
+`
 
 const loadSearchResults = ({ api, query, market, limit, offset }) => {
   const data = api.getSearchResults(query, "album,artist,playlist,track")
+  return data
+}
+const loadMoreAlbums = ({ api, url }) => {
+  const data = api.getMoreAlbums(url)
   return data
 }
 
 const Search = props => {
   const [query, setQuery] = useState(history.location.pathname.split('/').pop())
   const [activeFilter, setActiveFilter] = useState("results")
+  const scrollRef = useRef(null)
+  const heightRef = useRef(null)
 
   const { data, error, isLoading } = useAsync({ 
     promiseFn: loadSearchResults,
@@ -102,17 +115,25 @@ const Search = props => {
   console.log(data)
   return (
     <SearchContainer>
-      <Label>
-        <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
-      </Label>
-      {data && data.albums
-      ? <>
-          <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
-          <Route path='/search/results/' component={() => <TopResults data={data} />} />
-          <Route path='/search/albums/' component={() => <Albums data={data.albums} />} />
-          <Route path='/search/playlists/' component={() => <Albums data={data.playlists} />} />
-        </>
-      : null }
+      <ScrollContainer ref={scrollRef} onScroll={event => {
+        if (scrollRef.current.scrollTop === scrollRef.current.scrollHeight - scrollRef.current.offsetHeight) {
+          console.log(data.albums.next)
+        }
+      }}>
+        <div ref={heightRef}>
+          <Label>
+            <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
+          </Label>
+          {data && data.albums
+          ? <>
+              <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
+              <Route path='/search/results/' component={() => <TopResults data={data} />} />
+              <Route path='/search/albums/' component={() => <Albums data={data.albums} />} />
+              <Route path='/search/playlists/' component={() => <Albums data={data.playlists} />} />
+            </>
+          : null }
+        </div>
+      </ScrollContainer>
     </SearchContainer>
   )
 }

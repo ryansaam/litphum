@@ -140,6 +140,12 @@ export function spotifyAPI(token) {
       return checkServerStat(response.status, response.json())
     })
   }
+  this.getMoreAlbums = (url) => {
+    fetch(url, {headers: {"Authorization": "Bearer " + this.user_token}})
+    .then(response => {
+      return checkServerStat(response.status, response.json())
+    })
+  }
 }
 
 export const testArtistData = {

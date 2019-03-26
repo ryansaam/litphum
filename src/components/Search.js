@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useAsync } from 'react-async'
 import { Route, Link } from 'react-router-dom'
 import styled from 'styled-components'
@@ -8,6 +8,7 @@ import { TagImage, PlayBtn, ImageContainer, Header, TextOverflow, listArtistsNam
 import { AlbumTag, AlbumContainer } from './ArtistProfile.js'
 import { ArtistResult } from './Tags.js'
 import profileImg from '../images/profile-img.png'
+import _ from 'underscore'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -56,14 +57,16 @@ const loadSearchResults = ({ api, query, market, limit, offset }) => {
   const data = api.getSearchResults(query, "album,artist,playlist,track")
   return data
 }
-const loadMoreAlbums = ({ api, url }) => {
-  const data = api.getMoreAlbums(url)
+const loadMoreAlbums = ( url , { api } ) => {
+  const data = api.getMoreAlbums(url[0])
   return data
 }
 
 const Search = props => {
   const [query, setQuery] = useState(history.location.pathname.split('/').pop())
-  const [activeFilter, setActiveFilter] = useState("results")
+  const [activeFilter, setActiveFilter] = useState(history.location.pathname.split('/')[2])
+  const [loadAlbumURL, setLoadAlbumURL] = useState("")
+  const [albums, setAlbums] = useState([])
   const scrollRef = useRef(null)
   const heightRef = useRef(null)
 
@@ -73,6 +76,21 @@ const Search = props => {
     api: props.spotifyAPI,
     query
   })
+
+  const { data: albumData, run, isLoading: loadingAlbums } = useAsync({ 
+    deferFn: loadMoreAlbums,
+    api: props.spotifyAPI,
+  })
+
+  useEffect(() => {
+    if (albumData) { 
+      setLoadAlbumURL(albumData.albums.next)
+      setAlbums([...albums, ...albumData.albums.items])
+    }
+  }, [albumData])
+  useEffect(() => {
+    if (data && data.albums) setAlbums(data.albums.items)
+  }, [data])
 
   const handleFilter = location => event => {
     if (query) {
@@ -105,6 +123,12 @@ const Search = props => {
     }
   }
 
+  const updateAlbums = _.throttle(() => {
+    if (scrollRef.current.scrollTop >= scrollRef.current.scrollHeight - scrollRef.current.offsetHeight - 100) {
+      run(loadAlbumURL || data.albums.next)
+    }
+  }, 2000)
+
   const handleChange = event => {
     if (event.target.value)
       history.push('/search/results/'+event.target.value)
@@ -112,14 +136,10 @@ const Search = props => {
       history.push('/search/')
     setQuery(event.target.value)
   }
-  console.log(data)
+  
   return (
     <SearchContainer>
-      <ScrollContainer ref={scrollRef} onScroll={event => {
-        if (scrollRef.current.scrollTop === scrollRef.current.scrollHeight - scrollRef.current.offsetHeight) {
-          console.log(data.albums.next)
-        }
-      }}>
+      <ScrollContainer ref={scrollRef} onScroll={updateAlbums}>
         <div ref={heightRef}>
           <Label>
             <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
@@ -128,7 +148,7 @@ const Search = props => {
           ? <>
               <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
               <Route path='/search/results/' component={() => <TopResults data={data} />} />
-              <Route path='/search/albums/' component={() => <Albums data={data.albums} />} />
+              <Route path='/search/albums/' component={() => <Albums albums={albums} loading={loadingAlbums} />} />
               <Route path='/search/playlists/' component={() => <Albums data={data.playlists} />} />
             </>
           : null }
@@ -306,11 +326,10 @@ const TopResults = props => {
 }
 
 const Albums = props => {
-  console.log(props.data)
   return (
     <div>
       <AlbumContainer>
-        { props.data.items.map((album, index) => {
+        { props.albums.map((album, index) => {
           return (
             <AlbumTag
               image={album.images[0].url}
@@ -322,8 +341,18 @@ const Albums = props => {
           )
         }) }
       </AlbumContainer>
+      { props.loading ? <Loading>Loading...</Loading> : null }
     </div>
   )
 }
+
+const Loading = styled.span`
+  width: 200px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 20px auto;
+  display: block;
+`
 
 export default Search

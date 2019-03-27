@@ -67,8 +67,10 @@ const Search = props => {
   const [activeFilter, setActiveFilter] = useState(history.location.pathname.split('/')[2])
   const [loadAlbumURL, setLoadAlbumURL] = useState("")
   const [loadPlaylistURL, setLoadPlaylistURL] = useState("")
+  const [loadArtistURL, setLoadArtistURL] = useState("")
   const [albums, setAlbums] = useState([])
   const [playlists, setPlaylists] = useState([])
+  const [artists, setArtists] = useState([])
   const scrollRef = useRef(null)
   const heightRef = useRef(null)
 
@@ -88,6 +90,10 @@ const Search = props => {
     deferFn: loadMoreAlbums,
     api: props.spotifyAPI,
   })
+  const { data: artistData, run: runLoadArtists } = useAsync({ 
+    deferFn: loadMoreAlbums,
+    api: props.spotifyAPI,
+  })
 
   useEffect(() => {
     if (albumData) { 
@@ -102,12 +108,19 @@ const Search = props => {
     }
   }, [playlistData])
   useEffect(() => {
+    if (artistData) { 
+      setLoadArtistURL(artistData.artists.next)
+      setArtists([...artists, ...artistData.artists.items])
+    }
+  }, [artistData])
+  useEffect(() => {
     if (data && data.albums) {
       setAlbums(data.albums.items)
       setPlaylists(data.playlists.items)
+      setArtists(data.artists.items)
     }
   }, [data])
-
+  
   const handleFilter = location => event => {
     if (query) {
       switch (location) {
@@ -142,21 +155,26 @@ const Search = props => {
   const updateAlbums = _.throttle(() => {
     if (scrollRef.current.scrollTop === scrollRef.current.scrollHeight - scrollRef.current.offsetHeight) {
       switch (activeFilter) {
+        case "artists":
+          if (loadArtistURL !== null) runLoadArtists(loadArtistURL || data.artists.next)
+          break
         case "albums":
-          run(loadAlbumURL || data.albums.next)
+        if (loadAlbumURL !== null) run(loadAlbumURL || data.albums.next)
           break
         case "playlists":
-          runLoadPlaylists(loadPlaylistURL || data.playlists.next)
+        if (loadPlaylistURL !== null) runLoadPlaylists(loadPlaylistURL || data.playlists.next)
           break
       }
     }
   }, 1000)
   
   const handleChange = event => {
-    if (event.target.value)
+    if (event.target.value) {
+      setActiveFilter("results")
       history.push('/search/results/'+event.target.value)
-    else
+    } else {
       history.push('/search/')
+    }
     setQuery(event.target.value)
   }
   
@@ -171,6 +189,7 @@ const Search = props => {
           ? <>
               <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
               <Route path='/search/results/' component={() => <TopResults data={data} />} />
+              <Route path='/search/artists/' component={() => <Artists artists={artists} />} />
               <Route path='/search/albums/' component={() => <Albums albums={albums} />} />
               <Route path='/search/playlists/' component={() => <Albums albums={playlists} />} />
             </>
@@ -348,11 +367,31 @@ const TopResults = props => {
   )
 }
 
+const Artists = props => {
+  return (
+    <div>
+      <AlbumContainer>
+        { props.artists.map((artist) => {
+          return (
+            <ArtistResult
+              img={artist.images[0] ? artist.images[0].url : profileImg}
+              name={artist.name}
+              bgColor={artist.images[0] ? null : "rgba(0,0,0,0.6)"}
+              key={artist.id}
+              id={artist.id}
+            />
+          )
+        }) }
+      </AlbumContainer>
+    </div>
+  )
+}
+
 const Albums = props => {
   return (
     <div>
       <AlbumContainer>
-        { props.albums.map((album, index) => {
+        { props.albums.map((album) => {
           return (
             <AlbumTag
               image={album.images[0].url}

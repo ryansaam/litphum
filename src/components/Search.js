@@ -65,12 +65,14 @@ const loadMoreAlbums = ( url , { api } ) => {
 const Search = props => {
   const [query, setQuery] = useState(history.location.pathname.split('/').pop())
   const [activeFilter, setActiveFilter] = useState(history.location.pathname.split('/')[2])
+  const [loadArtistURL, setLoadArtistURL] = useState("")
+  const [loadSongURL, setLoadSongURL] = useState("")
   const [loadAlbumURL, setLoadAlbumURL] = useState("")
   const [loadPlaylistURL, setLoadPlaylistURL] = useState("")
-  const [loadArtistURL, setLoadArtistURL] = useState("")
+  const [artists, setArtists] = useState([])
+  const [songs, setSongs] = useState([])
   const [albums, setAlbums] = useState([])
   const [playlists, setPlaylists] = useState([])
-  const [artists, setArtists] = useState([])
   const scrollRef = useRef(null)
   const heightRef = useRef(null)
 
@@ -80,21 +82,35 @@ const Search = props => {
     api: props.spotifyAPI,
     query
   })
-
-  const { data: albumData, run } = useAsync({ 
-    deferFn: loadMoreAlbums,
-    api: props.spotifyAPI,
-  })
-
-  const { data: playlistData, run: runLoadPlaylists } = useAsync({ 
-    deferFn: loadMoreAlbums,
-    api: props.spotifyAPI,
-  })
   const { data: artistData, run: runLoadArtists } = useAsync({ 
     deferFn: loadMoreAlbums,
-    api: props.spotifyAPI,
+    api: props.spotifyAPI
+  })
+  const { data: songData, run: runLoadSongs } = useAsync({
+    deferFn: loadMoreAlbums,
+    api: props.spotifyAPI
+  })
+  const { data: albumData, run } = useAsync({ 
+    deferFn: loadMoreAlbums,
+    api: props.spotifyAPI
+  })
+  const { data: playlistData, run: runLoadPlaylists } = useAsync({ 
+    deferFn: loadMoreAlbums,
+    api: props.spotifyAPI
   })
 
+  useEffect(() => {
+    if (artistData) { 
+      setLoadArtistURL(artistData.artists.next)
+      setArtists([...artists, ...artistData.artists.items])
+    }
+  }, [artistData])
+  useEffect(() => {
+    if (songData) { 
+      setLoadSongURL(songData.tracks.next)
+      setSongs([...songs, ...songData.tracks.items])
+    }
+  }, [songData])
   useEffect(() => {
     if (albumData) { 
       setLoadAlbumURL(albumData.albums.next)
@@ -107,17 +123,13 @@ const Search = props => {
       setPlaylists([...playlists, ...playlistData.playlists.items])
     }
   }, [playlistData])
-  useEffect(() => {
-    if (artistData) { 
-      setLoadArtistURL(artistData.artists.next)
-      setArtists([...artists, ...artistData.artists.items])
-    }
-  }, [artistData])
+  
   useEffect(() => {
     if (data && data.albums) {
       setAlbums(data.albums.items)
       setPlaylists(data.playlists.items)
       setArtists(data.artists.items)
+      setSongs(data.tracks.items)
     }
   }, [data])
   
@@ -158,6 +170,9 @@ const Search = props => {
         case "artists":
           if (loadArtistURL !== null) runLoadArtists(loadArtistURL || data.artists.next)
           break
+        case "songs":
+          if (loadSongURL !== null) runLoadSongs(loadSongURL || data.tracks.next)
+          break
         case "albums":
         if (loadAlbumURL !== null) run(loadAlbumURL || data.albums.next)
           break
@@ -190,6 +205,7 @@ const Search = props => {
               <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
               <Route path='/search/results/' component={() => <TopResults data={data} />} />
               <Route path='/search/artists/' component={() => <Artists artists={artists} />} />
+              <Route path='/search/songs/' component={() => <Songs songs={songs} />} />
               <Route path='/search/albums/' component={() => <Albums albums={albums} />} />
               <Route path='/search/playlists/' component={() => <Albums albums={playlists} />} />
             </>
@@ -383,6 +399,24 @@ const Artists = props => {
           )
         }) }
       </AlbumContainer>
+    </div>
+  )
+}
+
+const Songs = props => {
+  return (
+    <div>
+      { props.songs.map((track) => {
+          return (
+            <SongTag
+              duration={msToTime(track.duration_ms)}
+              key={track.id}
+              name={track.name}
+              explicit={track.explicit}
+              hoverColor={"#101010"}
+            />
+          )
+      }) }
     </div>
   )
 }

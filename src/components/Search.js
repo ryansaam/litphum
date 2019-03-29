@@ -47,6 +47,13 @@ const Label = styled.label`
     border-radius: 0px 0px 5px 0px;
   }
 `
+const Heading = styled.h2`
+  box-sizing: border-box;
+  margin: 25px 0px 0px 0px;
+  padding: 16px 0px;
+  color: white;
+  font-size: 40px;
+`
 const ScrollContainer = styled.div`
   overflow: auto;
   position: relative;
@@ -198,7 +205,7 @@ const Search = props => {
       <ScrollContainer ref={scrollRef} onScroll={updateAlbums}>
         <div ref={heightRef}>
           <Label>
-            <SearchBox onChange={handleChange} placeholder="What are you looking for?" type="text" />
+            <SearchBox onChange={handleChange} placeholder="Type a song, artist, album, playlist..." type="text" />
           </Label>
           {data && data.albums
           ? <>
@@ -294,6 +301,7 @@ const TopResultsContainer = styled.div`
   padding: 0px 20px;
 `
 const SongResults = styled.div`
+  padding-bottom: 20px;
   display: grid;
   grid-template-columns: auto 1fr;
 `
@@ -337,6 +345,7 @@ const TopResults = props => {
           </div>
         </SongResults>
       : null}
+      <Heading>Artists</Heading>
       <AlbumContainer>
         { props.data.artists.items.map((artist, index) => {
           if (index > 9) return null
@@ -351,6 +360,7 @@ const TopResults = props => {
           )
         }) }
       </AlbumContainer>
+      <Heading>Albums</Heading>
       <AlbumContainer>
         { props.data.albums.items.map((album, index) => {
           if (index > 9) return null
@@ -365,6 +375,7 @@ const TopResults = props => {
           )
         }) }
       </AlbumContainer>
+      <Heading>Playlists</Heading>
       <AlbumContainer>
         { props.data.playlists.items.map((playlist, index) => {
           if (index > 9) return null

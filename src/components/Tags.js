@@ -131,11 +131,13 @@ export const ArtistResult = props => {
             <PlayBtn visibility={bool} />
           </ImageContainer>
         </div>
-        <TextOverflow lineClamp={2}>
-          <div style={{display: "inline"}}>
-            <span>{props.name}</span>
-          </div>
-        </TextOverflow>
+        <div style={{marginBottom: "20px"}}>
+          <TextOverflow lineClamp={2}>
+            <div style={{display: "inline"}}>
+              <span>{props.name}</span>
+            </div>
+          </TextOverflow>
+        </div>
       </Link>
     </div>
   )

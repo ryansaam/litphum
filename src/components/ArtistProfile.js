@@ -38,7 +38,7 @@ export const AlbumContainer = styled.div`
 `
 const AlbumInfo = styled.div`
   box-sizing: border-box;
-  padding: 10px 0px;
+  padding-top: 10px;
   color: #fff;
 `
 export const TextOverflow = styled.div`

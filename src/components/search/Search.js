@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useAsync } from 'react-async'
 import { Route, Link } from 'react-router-dom'
 import styled from 'styled-components'
-import history from '../history.js'
-import SongTag, { msToTime } from './SongTag.js'
-import { TagImage, PlayBtn, ImageContainer, Header, TextOverflow, listArtistsNames } from './Album.js'
-import { AlbumTag, AlbumContainer } from './ArtistProfile.js'
-import { ArtistResult } from './Tags.js'
-import profileImg from '../images/profile-img.png'
+import history from '../../history.js'
+import SongTag, { msToTime } from '../SongTag.js'
+import { AlbumTag, AlbumContainer } from '../ArtistProfile.js'
+import { ArtistResult } from '../Tags.js'
+import profileImg from '../../images/profile-img.png'
 import _ from 'underscore'
+import TopResults from './TopResults.js'
+import FilterBar from './FilterBar.js'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
@@ -47,13 +48,6 @@ const Label = styled.label`
     border-radius: 0px 0px 5px 0px;
   }
 `
-const Heading = styled.h2`
-  box-sizing: border-box;
-  margin: 25px 0px 0px 0px;
-  padding: 16px 0px;
-  color: white;
-  font-size: 40px;
-`
 const ScrollContainer = styled.div`
   overflow: auto;
   position: relative;
@@ -64,8 +58,8 @@ const loadSearchResults = ({ api, query, market, limit, offset }) => {
   const data = api.getSearchResults(query, "album,artist,playlist,track")
   return data
 }
-const loadMoreAlbums = ( url , { api } ) => {
-  const data = api.getMoreAlbums(url[0])
+const loadMoreItems = ( url , { api } ) => {
+  const data = api.getMoreItems(url[0])
   return data
 }
 
@@ -90,19 +84,19 @@ const Search = props => {
     query
   })
   const { data: artistData, run: runLoadArtists } = useAsync({ 
-    deferFn: loadMoreAlbums,
+    deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
   const { data: songData, run: runLoadSongs } = useAsync({
-    deferFn: loadMoreAlbums,
+    deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
   const { data: albumData, run } = useAsync({ 
-    deferFn: loadMoreAlbums,
+    deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
   const { data: playlistData, run: runLoadPlaylists } = useAsync({ 
-    deferFn: loadMoreAlbums,
+    deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
 
@@ -220,177 +214,6 @@ const Search = props => {
         </div>
       </ScrollContainer>
     </SearchContainer>
-  )
-}
-
-const FilterBarList = styled.ul`
-  margin: 30px 0px;
-  padding: 0px;
-  text-align: center;
-  display: grid;
-  grid-template-columns: repeat(5, 120px);
-  li {
-    color: rgba(255,255,255,0.8);
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: color linear 150ms;
-    :hover {
-      color: rgba(255,255,255,1)
-    } 
-  }
-`
-const SelectedBar = styled.span`
-  background-color: #2ad4ff;
-  width: 30px;
-  height: 2px;
-  margin: 5px auto 0px auto;
-  visibility: ${props => props.selected || "hidden"};
-  display: block;
-`
-
-const FilterLink = props => {
-  return (
-    <Link to={`/search/${props.page}/${props.query}`} onClick={props.filterSelection(props.page)} >
-      <li>{props.children}</li>
-      <SelectedBar selected={props.activeFilter === props.page ? true : false} />
-    </Link>
-  )
-}
-
-const FilterBar = props => {
-  return (
-    <div style={{display: "grid", justifyItems: "center"}} >
-      <FilterBarList>
-        <FilterLink
-          query={props.query}
-          page={'results'}
-          filterSelection={props.filterSelection}
-          activeFilter={props.activeFilter}
-        >Top Results</FilterLink>
-        <FilterLink
-          query={props.query}
-          page={'artists'}
-          filterSelection={props.filterSelection}
-          activeFilter={props.activeFilter}
-        >Artists</FilterLink>
-        <FilterLink
-          query={props.query}
-          page={'songs'}
-          filterSelection={props.filterSelection}
-          activeFilter={props.activeFilter}
-        >Songs</FilterLink>
-        <FilterLink
-          query={props.query}
-          page={'albums'}
-          filterSelection={props.filterSelection}
-          activeFilter={props.activeFilter}
-        >Albums</FilterLink>
-        <FilterLink
-          query={props.query}
-          page={'playlists'}
-          filterSelection={props.filterSelection}
-          activeFilter={props.activeFilter}
-        >Playlists</FilterLink>
-      </FilterBarList>
-    </div>
-  )
-}
-
-const TopResultsContainer = styled.div`
-  padding: 0px 20px;
-`
-const SongResults = styled.div`
-  padding-bottom: 20px;
-  display: grid;
-  grid-template-columns: auto 1fr;
-`
-
-const TopResults = props => {
-  const [bool, setBool] = useState(false)
-  const artistsNames = props.data.tracks.total ? listArtistsNames(props.data.tracks.items[0].artists) : null
-  
-  return (
-    <TopResultsContainer>
-      { props.data.tracks.total
-      ? <SongResults>
-          <div style={{marginRight: "20px"}}>
-            <TagImage imageMargin={"auto"} size={"300px"} image={props.data.tracks.items[0].album.images[0].url}>
-              <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
-                <PlayBtn visibility={bool} />
-              </ImageContainer>
-            </TagImage>
-            <div style={{maxWidth: "300px", margin: "auto"}}>
-              <Header>{props.data.tracks.items[0].name}</Header>
-              <TextOverflow>
-                <div style={{display: "inline"}}>
-                  <span>{artistsNames}</span>
-                </div>
-              </TextOverflow>
-            </div>
-          </div>
-          <div>
-            { props.data.tracks.items.map((track, index) => {
-                if (index > 4) return null
-                return (
-                  <SongTag
-                    duration={msToTime(track.duration_ms)}
-                    key={track.id}
-                    name={track.name}
-                    explicit={track.explicit}
-                    hoverColor={"#101010"}
-                  />
-                )
-            }) }
-          </div>
-        </SongResults>
-      : null}
-      <Heading>Artists</Heading>
-      <AlbumContainer>
-        { props.data.artists.items.map((artist, index) => {
-          if (index > 9) return null
-          return (
-            <ArtistResult
-              img={artist.images[0] ? artist.images[0].url : profileImg}
-              name={artist.name}
-              bgColor={artist.images[0] ? null : "rgba(0,0,0,0.6)"}
-              key={artist.id}
-              id={artist.id}
-            />
-          )
-        }) }
-      </AlbumContainer>
-      <Heading>Albums</Heading>
-      <AlbumContainer>
-        { props.data.albums.items.map((album, index) => {
-          if (index > 9) return null
-          return (
-            <AlbumTag
-              image={album.images[0].url}
-              name={album.name}
-              artistNames={listArtistsNames(album.artists)}
-              key={album.id}
-              albumId={album.id}
-            />
-          )
-        }) }
-      </AlbumContainer>
-      <Heading>Playlists</Heading>
-      <AlbumContainer>
-        { props.data.playlists.items.map((playlist, index) => {
-          if (index > 9) return null
-          return (
-            <AlbumTag
-              image={playlist.images[0].url}
-              name={playlist.name}
-              key={playlist.id}
-              albumId={playlist.id}
-              playlist
-            />
-          )
-        }) }
-      </AlbumContainer>
-    </TopResultsContainer>
   )
 }
 

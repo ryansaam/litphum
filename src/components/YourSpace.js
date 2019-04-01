@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import yourSpaceBG from '../images/your-space-bg.jpg'
 
 const YourSpaceContainer = styled.div`
-  background: white;
-  hieght: 100%;
+  background: url(${yourSpaceBG});
+  background-size: cover;
+  background-position: bottom;
+  height: 100%;
   width: 100%;
 `
 

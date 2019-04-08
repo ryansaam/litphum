@@ -34,7 +34,7 @@ const ProfileTab = props => {
       <ProfileContainer>
         <Avitar src={props.image} />
         <ProfileLink onClick={handleSignOut} >Sign Out</ProfileLink>
-        <Link to="/profile/"><ProfileLink>View Profile</ProfileLink></Link>
+        <Link to="/your-space/"><ProfileLink>View Profile</ProfileLink></Link>
       </ProfileContainer>
     </div>
   )
@@ -58,7 +58,6 @@ const Nav = props => {
         <ul>
           <Link to={`/${type}/${id}`} ><NavItem>Home</NavItem></Link>
           <Link to="/search/" ><NavItem>Search</NavItem></Link>
-          <Link to="/trending/"><NavItem>Trending</NavItem></Link>
         </ul>
       </section>
       <section className="profile-section" >
@@ -69,8 +68,6 @@ const Nav = props => {
             <Link to="/your-space/" ><NavItem>Your Space</NavItem></Link>
             <Link to="/playlists/" ><NavItem>Playlists</NavItem></Link>
             <Link to="/songs/" ><NavItem>Songs</NavItem></Link>
-            <Link to="/most-listened/" ><NavItem>Most Listened</NavItem></Link>
-            <Link to="/favorites/" ><NavItem>Favorites</NavItem></Link>
           </ul>
         </div>
         <ProfileTab image={props.image} />

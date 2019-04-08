@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Router, Route} from 'react-router-dom'
 import './App.css'
 import history from './history.js'
+import Login from './components/Login.js'
 import Home from './components/Home.js'
 import Search from './components/search/Search.js'
 import Trending from './components/Trending.js'
@@ -57,7 +58,7 @@ class App extends Component {
                   <Route path="/your-space/" component={() => <YourSpace spotifyAPI={spotifyAPI} />} />
                 </main>
               </div>)
-            : <div onClick={() => window.location = "http://localhost:8888/login"} >log in</div>
+            : <Login />
             }
         </div>
       </Router>

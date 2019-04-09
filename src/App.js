@@ -11,6 +11,7 @@ import ArtistProfile from './components/ArtistProfile.js'
 import Album from './components/Album.js'
 import YourSpace from './components/YourSpace.js'
 import user_token, { spotifyAPI } from './api-calls.js'
+import profileImg from './images/profile-img.png'
 
 class App extends Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class App extends Component {
             { (spotifyAPI.user_token && user)
             ? (<div className="logged-in">
                 <div style={{width: "250px", height: "100%", position: "relative", float: "left"}} >
-                  <Nav image={user.images ? user.images[0].url : null} user={user} />
+                  <Nav image={(user.images && user.images[0]) ? user.images[0].url : profileImg} user={user} />
                 </div>
                 <main id="main">
                   <Route path={`/${user.type}/${user.id}`} exact component={() => <Home spotifyAPI={spotifyAPI} />} />

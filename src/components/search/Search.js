@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useAsync } from 'react-async'
-import { Route, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import styled from 'styled-components'
 import history from '../../history.js'
 import SongTag, { msToTime } from '../SongTag.js'
@@ -179,6 +179,8 @@ const Search = props => {
           break
         case "playlists":
         if (loadPlaylistURL !== null) runLoadPlaylists(loadPlaylistURL || data.playlists.next)
+          break
+        default:
           break
       }
     }

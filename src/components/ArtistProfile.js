@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useAsync } from "react-async"
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
 import history from '../history.js'
 import SongTag, { TagImage, msToTime } from './SongTag.js'
 import { listArtistsNames } from './Album.js'
+import albumImg from '../images/album-img.svg'
 
 export const PlayBtn = props => (
   <svg style={{visibility: props.visibility ? "visible" : "hidden" }} fill="white" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
@@ -49,11 +50,7 @@ export const TextOverflow = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
 `
-const Underline = styled.span`
-  :hover {
-    text-decoration: underline
-  }
-`
+
 export const AlbumTag = props => {
   const [bool, setBool] = useState(false)
   return (
@@ -106,7 +103,7 @@ const loadArtistProfileData = ({ api, id }) => {
 
 const  ArtistProfile = props => {
   const id = history.location.pathname.split("/").pop()
-  const { data, error, isLoading } = useAsync({ 
+  const { data } = useAsync({ 
     promiseFn: loadArtistProfileData,
     watch: id,
     api: props.spotifyAPI, id
@@ -155,7 +152,7 @@ const  ArtistProfile = props => {
           {data ? data.artistAlbums.items.map(album => {
             return (
               <AlbumTag
-                image={album.images[0].url}
+                image={(album.images && album.images[0]) ? album.images[0].url : albumImg}
                 name={album.name}
                 artistNames={listArtistsNames(album.artists)}
                 key={album.id}

@@ -123,7 +123,7 @@ export const listArtistsNames = (arr) => {
 const Album = props => {
   const [bool, setBool] = useState(false)
   const id = history.location.pathname.split("/").pop()
-  const { data, error, isLoading } = useAsync({ 
+  const { data } = useAsync({ 
     promiseFn: props.playlist ? loadPlaylistData : loadAlbumData,
     watch: id,
     api: props.spotifyAPI, id

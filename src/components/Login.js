@@ -28,7 +28,7 @@ const LoginBtn = styled.button`
 const Login = props => {
   return (
     <LoginContainer>
-      <LoginBtn onClick={() => window.location = "http://localhost:8888/login"}>
+      <LoginBtn onClick={() => window.location = "http://localhost2/login"}>
        LOG IN WITH SPOTIFY
       </LoginBtn>
     </LoginContainer>

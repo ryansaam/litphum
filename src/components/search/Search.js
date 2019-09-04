@@ -91,7 +91,7 @@ const Search = props => {
     deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
-  const { data: albumData, run } = useAsync({ 
+  const { data: albumData, run: runLoadAlbums } = useAsync({ 
     deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
@@ -175,7 +175,7 @@ const Search = props => {
           if (loadSongURL !== null) runLoadSongs(loadSongURL || data.tracks.next)
           break
         case "albums":
-        if (loadAlbumURL !== null) run(loadAlbumURL || data.albums.next)
+        if (loadAlbumURL !== null) runLoadAlbums(loadAlbumURL || data.albums.next)
           break
         case "playlists":
         if (loadPlaylistURL !== null) runLoadPlaylists(loadPlaylistURL || data.playlists.next)
@@ -268,7 +268,6 @@ const Albums = props => {
               name={album.name}
               key={album.id}
               albumId={album.id}
-              playlist
             />
           )
         }) }

@@ -27,7 +27,7 @@ const ProfileLink = styled.span`
 const ProfileTab = props => {
   const handleSignOut = () => {
     sessionStorage.removeItem("access_token")
-    window.location = "http://localhost:3000/"
+    window.location = "http://localhost2/"
   }
   return (
     <div className="profile-tab">

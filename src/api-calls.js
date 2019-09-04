@@ -7,7 +7,7 @@ export function spotifyAPI(token) {
   const checkServerStat = (status, response) => {
     if (status === 401) {
       sessionStorage.removeItem("access_token")
-      window.location = "http://localhost:3000"
+      window.location = "http://localhost2"
     } else
       return response
   }

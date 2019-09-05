@@ -62,7 +62,7 @@ const SlidePicker = props => {
     } else {
       setBtn2IsShowing(true)
     }
-  }, [slidesPosition])
+  }, [slidesPosition, slideRange])
 
   const children = props.children.map(element => {
     return (

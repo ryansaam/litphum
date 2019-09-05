@@ -41,6 +41,23 @@ export function spotifyAPI(token) {
     )
   }
 
+  this.getUserTracks = (limit, time_range) => {
+    return (
+      fetch(
+        "https://api.spotify.com/v1/me/top/tracks"+
+        ((limit || time_range)
+        ? '?'+
+          `${limit ? 'limit='+limit : ''}`+
+          `${time_range ? '&time_range='+time_range : ''}`
+        : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
+
   this.getArtistProfile = (id,includeGroups,market,limit,offset) => {
     return Promise.all([
       this.getArtist(id),

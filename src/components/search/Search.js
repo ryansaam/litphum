@@ -105,25 +105,25 @@ const Search = props => {
       setLoadArtistURL(artistData.artists.next)
       setArtists([...artists, ...artistData.artists.items])
     }
-  }, [artistData])
+  }, [artistData, artists])
   useEffect(() => {
     if (songData) { 
       setLoadSongURL(songData.tracks.next)
       setSongs([...songs, ...songData.tracks.items])
     }
-  }, [songData])
+  }, [songData, songs])
   useEffect(() => {
     if (albumData) { 
       setLoadAlbumURL(albumData.albums.next)
       setAlbums([...albums, ...albumData.albums.items])
     }
-  }, [albumData])
+  }, [albumData, albums])
   useEffect(() => {
     if (playlistData) { 
       setLoadPlaylistURL(playlistData.playlists.next)
       setPlaylists([...playlists, ...playlistData.playlists.items])
     }
-  }, [playlistData])
+  }, [playlistData, playlists])
   
   useEffect(() => {
     if (data && data.albums) {

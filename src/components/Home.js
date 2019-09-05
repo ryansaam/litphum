@@ -18,6 +18,13 @@ const Header = styled.h2`
   font-size: ${props => props.fontSize || "18px"};
 `
 
+// Make Track Card to replace dummy Artist card
+// const TrackCard = props => {
+//   return (
+//     <div></div>
+//   )
+// }
+
 const ArtistSection = props => {
   const elements = props.items.map(item => {
     return (
@@ -28,16 +35,17 @@ const ArtistSection = props => {
   })
   return (
     <div style={{margin: "0px 120px"}}>
-    <ArtistSectionContainer>
-      {props.children}
-      <SlidePicker visibleSlides={4} slidePadding={25} >{elements}</SlidePicker>
-    </ArtistSectionContainer>
+      <ArtistSectionContainer>
+        {props.children}
+        <SlidePicker visibleSlides={4} slidePadding={25} >{elements}</SlidePicker>
+      </ArtistSectionContainer>
     </div>
   )
 }
 
 const Home = props => {
   const [viewerItems, setViewerItems] = useState(null)
+  const [trackItems, setTrackItems] = useState(null)
   const { spotifyAPI } = props
 
   useEffect(() => {
@@ -56,12 +64,34 @@ const Home = props => {
       setViewerItems(elements)
     })
     return () => spotifyAPI.getUserArtists(8,'short_term') 
-  },[])
+  },[spotifyAPI])
+
+  useEffect(() => {
+    spotifyAPI.getUserTracks(8,'short_term').then(track => {
+      const elements = track.items.map(item => (
+        { id: item.id,
+          element: (
+            <ArtistCard
+              img={item.album.images[1].url}
+              artistName={item.name}
+              genre={item.track_number}
+            />
+          )
+        }
+      ))
+      console.log(track)
+      setTrackItems(elements)
+    })
+    return () => spotifyAPI.getUserTracks(8,'short_term') 
+  },[spotifyAPI])
 
   const handleClick = (id) => () => {
     history.push('/artist/'+id)
   }
-
+  const playTrack = () => {
+    console.log("track is playing")
+  }
+  console.log(trackItems)
   return (
     <section className="home">
       { viewerItems
@@ -75,10 +105,10 @@ const Home = props => {
             </SectionHeaders>
            </ArtistSection>)
         : null}
-        { viewerItems
+        { trackItems
         ? (<ArtistSection
-              handleClick={handleClick}
-              items={viewerItems}
+              handleClick={playTrack}
+              items={trackItems}
            >
             <SectionHeaders setMargin={"0px 0px 0px 25px"}>
               <Header hMargin="40px" fontSize="34px" >Recent Songs</Header>

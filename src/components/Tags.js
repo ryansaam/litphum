@@ -46,7 +46,7 @@ const cycle = keyframes`
   }
 `
 const AnimationReel = styled.div`
-  animation: ${props => (props.isPlaying ? css`${cycle} 3s linear infinite` : "none")};
+  animation: ${props => (props.isPlaying ? css`${cycle} ${props.length / 6}s linear infinite` : "none")};
   width: ${props => (props.reelWidth+"px" || "100%")};
 `
 export const Header = styled.div`
@@ -58,6 +58,7 @@ export const Header = styled.div`
 `
 
 const InfoOverflow = props => {
+  console.log(props.string.length)
   if (!props.isPlaying)
     return (
       <ShortContent>{props.string}</ShortContent>
@@ -65,7 +66,7 @@ const InfoOverflow = props => {
   else
     return (
       <InfoContainer>
-        <AnimationReel reelWidth={props.width} isPlaying={props.isPlaying}>
+        <AnimationReel length={props.string.length} reelWidth={props.width} isPlaying={props.isPlaying}>
           <ContentWrap><OverFlowContent>{props.string}</OverFlowContent></ContentWrap>
           <ContentWrap><OverFlowContent>{props.string}</OverFlowContent></ContentWrap>
         </AnimationReel>

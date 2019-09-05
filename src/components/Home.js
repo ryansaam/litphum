@@ -18,7 +18,7 @@ const Header = styled.h2`
   font-size: ${props => props.fontSize || "18px"};
 `
 
-// Make Track Card to replace dummy Artist card // test
+// Make Track Card to replace dummy Artist card
 // const TrackCard = props => {
 //   return (
 //     <div></div>

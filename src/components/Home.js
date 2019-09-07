@@ -18,12 +18,31 @@ const Header = styled.h2`
   font-size: ${props => props.fontSize || "18px"};
 `
 
-// Make Track Card to replace dummy Artist card
-// const TrackCard = props => {
-//   return (
-//     <div></div>
-//   )
-// }
+const TrackCard = props => {
+  return (
+    <div style={{backgroundColor: "white", height: "60px", width: "250px"}}>
+
+    </div>
+  )
+}
+
+const TrackSection = props => {
+  const elements = props.items.map(item => {
+    return (
+      <div key={item.id} onClick={props.handleClick(item.id)}>
+        {item.element}
+      </div>
+    )
+  })
+  return (
+    <div style={{margin: "0px 120px"}}>
+      <ArtistSectionContainer>
+        {props.children}
+        <SlidePicker visibleSlides={3} slidePadding={25} >{elements}</SlidePicker>
+      </ArtistSectionContainer>
+    </div>
+  )
+}
 
 const ArtistSection = props => {
   const elements = props.items.map(item => {
@@ -71,11 +90,7 @@ const Home = props => {
       const elements = track.items.map(item => (
         { id: item.id,
           element: (
-            <ArtistCard
-              img={item.album.images[1].url}
-              artistName={item.name}
-              genre={item.track_number}
-            />
+            <TrackCard />
           )
         }
       ))
@@ -106,14 +121,14 @@ const Home = props => {
            </ArtistSection>)
         : null}
         { trackItems
-        ? (<ArtistSection
+        ? (<TrackSection
               handleClick={playTrack}
               items={trackItems}
            >
             <SectionHeaders setMargin={"0px 0px 0px 25px"}>
               <Header hMargin="40px" fontSize="34px" >Recent Songs</Header>
             </SectionHeaders>
-           </ArtistSection>)
+           </TrackSection>)
         : null}
     </section>
   )

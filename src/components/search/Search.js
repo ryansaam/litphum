@@ -219,11 +219,11 @@ const Search = props => {
   )
 }
 
-const Artists = props => {
+export const Artists = props => {
   return (
     <div>
       <AlbumContainer>
-        { props.artists.map((artist) => {
+        { props.artists.map(artist => {
           return (
             <ArtistResult
               img={artist.images[0] ? artist.images[0].url : profileImg}

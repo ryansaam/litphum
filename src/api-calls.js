@@ -23,8 +23,23 @@ export function spotifyAPI(token) {
       })
     )
   }
+  this.getUserTracks = (limit, offset) => {
+    return (
+      fetch(
+        "https://api.spotify.com/v1/me/tracks?" +
+        ((limit || offset)
+        ? `${limit ? '&limit='+limit : ''}`+
+          `${offset ? '&offset='+offset : ''}`
+        : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
 
-  this.getUserArtists = (limit, time_range) => {
+  this.getUserTopArtists = (limit, time_range) => {
     return (
       fetch(
         "https://api.spotify.com/v1/me/top/artists"+
@@ -41,7 +56,7 @@ export function spotifyAPI(token) {
     )
   }
 
-  this.getUserTracks = (limit, time_range) => {
+  this.getUserTopTracks = (limit, time_range) => {
     return (
       fetch(
         "https://api.spotify.com/v1/me/top/tracks"+

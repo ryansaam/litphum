@@ -24,15 +24,15 @@ const Home = props => {
   const { spotifyAPI } = props
 
   useEffect(() => {
-    spotifyAPI.getUserArtists(8,'short_term')
+    spotifyAPI.getUserTopArtists(8,'short_term')
     .then(artist => { setArtistsItems(artist.items) })
-    return () => spotifyAPI.getUserArtists(8,'short_term') 
+    return () => spotifyAPI.getUserTopArtists(8,'short_term') 
   },[spotifyAPI])
 
   useEffect(() => {
-    spotifyAPI.getUserTracks(8,'short_term')
+    spotifyAPI.getUserTopTracks(8,'short_term')
     .then(track => { setTrackItems(track.items) })
-    return () => spotifyAPI.getUserTracks(8,'short_term') 
+    return () => spotifyAPI.getUserTopTracks(8,'short_term') 
   },[spotifyAPI])
   console.log(artistsItems)
   return (

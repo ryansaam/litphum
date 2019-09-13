@@ -58,7 +58,7 @@ const loadSearchResults = ({ api, query, market, limit, offset }) => {
   const data = api.getSearchResults(query, "album,artist,playlist,track")
   return data
 }
-const loadMoreItems = ( url , { api } ) => {
+export const loadMoreItems = ( url , { api } ) => {
   const data = api.getMoreItems(url[0])
   return data
 }
@@ -131,6 +131,7 @@ const Search = props => {
       setPlaylists(data.playlists.items)
       setArtists(data.artists.items)
       setSongs(data.tracks.items)
+      console.log(data.tracks.items)
     }
   }, [data])
   
@@ -186,6 +187,7 @@ const Search = props => {
     }
   }, 1000)
   
+  /* Takes keyboard input from user and pushes it on the url query also sets filter back to results */ 
   const handleChange = event => {
     if (event.target.value) {
       setActiveFilter("results")
@@ -208,7 +210,7 @@ const Search = props => {
               <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
               <Route path='/search/results/' component={() => <TopResults data={data} />} />
               <Route path='/search/artists/' component={() => <Artists artists={artists} />} />
-              <Route path='/search/songs/' component={() => <Songs songs={songs} />} />
+              <Route path='/search/songs/' component={() => <Tracks songs={songs} />} />
               <Route path='/search/albums/' component={() => <Albums albums={albums} />} />
               <Route path='/search/playlists/' component={() => <Albums albums={playlists} />} />
             </>
@@ -239,7 +241,7 @@ export const Artists = props => {
   )
 }
 
-const Songs = props => {
+const Tracks = props => {
   return (
     <div>
       { props.songs.map((track) => {

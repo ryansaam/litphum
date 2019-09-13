@@ -36,50 +36,68 @@ const Tracks = props => {
     </div>
   )
 }
+
+// gets users tracks from SpotifyAPI
 const loadUserTracks = ({ api, limmit }) => {
   const data = api.getUserTracks(limmit)
   return data
+}
+
+// React prevState example hook
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 }
 
 
 const Songs = props => {
   const [songs, setSongs] = useState([])
   const [loadSongURL, setLoadSongURL] = useState("")
+  const prevURL = usePrevious(loadSongURL);
   const scrollRef = useRef(null)
+  const scrollPadding = 300
 
-  /* init songs with users saved tracks */
+  /* users tracks first request */
   const { data } = useAsync({ 
     promiseFn: loadUserTracks,
     api: props.spotifyAPI
   })
-  useEffect(() => {
-    if (data) {
-      setSongs(data.items)
-      console.log(data)
-    }
-  }, [data])
 
+  // requests more tracks if user scrolls to bottom
   const { data: songData, run: runLoadSongs } = useAsync({
     deferFn: loadMoreItems,
     api: props.spotifyAPI
   })
 
-
+  /* init songs with users saved tracks and points URL query string to next list */
   useEffect(() => {
-    if (songData) { 
-      console.log(`url: ${songData.next}`)
-      console.log(songData)
-      setLoadSongURL(songData.next)
-      setSongs([...songs, ...songData.items])
+    if (data) {
+      setSongs(data.items)
+      setLoadSongURL(data.next)
     }
-  }, [songData, songs])
+  }, [data])
 
-  // dynamically loads albums when user scrolls to bottom
+  // updates songs arr and api URL querry string
+  useEffect(() => {
+    if (songData) {
+      setLoadSongURL(songData.next)
+      setSongs(prevSongs => [...prevSongs, ...songData.items])
+    }
+  }, [songData])
+
+  // dynamically loads songs when user scrolls to bottom
   const updateAlbums = _.throttle(() => {
-    if (scrollRef.current.scrollTop === scrollRef.current.scrollHeight - scrollRef.current.offsetHeight)
-      if (loadSongURL !== null) 
-        runLoadSongs(loadSongURL || data.next)
-  }, 1000)
+    if (scrollRef.current.scrollTop >= (scrollRef.current.scrollHeight - scrollRef.current.offsetHeight) - scrollPadding) {
+      if (!(prevURL === loadSongURL)) { // prevents loading same content twice and throwing duplicate key err
+        runLoadSongs(loadSongURL)
+        console.log(songData)
+      }
+    }
+  }, 300) // ms
+
   return (
     <SongsContainer>
       <SongContentWrapper ref={scrollRef} onScroll={updateAlbums}>

@@ -60,6 +60,7 @@ const loadSearchResults = ({ api, query, market, limit, offset }) => {
 }
 export const loadMoreItems = ( url , { api } ) => {
   const data = api.getMoreItems(url[0])
+  console.log(data)
   return data
 }
 

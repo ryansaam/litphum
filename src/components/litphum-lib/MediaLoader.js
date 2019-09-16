@@ -17,7 +17,7 @@ const MusicContentWrapper = styled.div`
 `
 
 // React prevState example hook
-export function usePrevious(value) {
+function usePrevious(value) {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
@@ -25,7 +25,7 @@ export function usePrevious(value) {
   return ref.current;
 }
 
-export const loadMoreItems = ( url , { api } ) => {
+const loadMoreItems = ( url , { api } ) => {
   const data = api.getMoreItems(url[0])
   return data
 }
@@ -35,7 +35,7 @@ const MediaLoader = props => {
   const [nextURL, setNextURL] = useState("")
   const prevURL = usePrevious(nextURL);
   const scrollRef = useRef(null)
-  const scrollPadding = props.scrollPadding || 0
+  const scrollPadding = props.scrollPadding || 300
 
   // requests more data if user scrolls to bottom
   const { data: mediaData, run: runLoadMediaData } = useAsync({ 
@@ -51,8 +51,14 @@ const MediaLoader = props => {
   // updates musicItems arr and api URL querry string
   useEffect(() => {
     if (mediaData) {
-      setNextURL(mediaData[props.mediaType].next)
-      setMusicItems(prevMediaItems => [...prevMediaItems, ...mediaData[props.mediaType].items])
+      console.log(mediaData)
+      if (mediaData.next) {
+        setMusicItems(prevMediaItems => [...prevMediaItems, ...mediaData.items])
+        setNextURL(mediaData.next)
+      } else {
+        setNextURL(mediaData.next || mediaData[props.mediaType].next)
+        setMusicItems(prevMediaItems => [...prevMediaItems, ...mediaData[props.mediaType].items])
+      }
     }
   }, [mediaData, props.mediaType])
 

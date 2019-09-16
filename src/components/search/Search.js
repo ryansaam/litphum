@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useAsync } from 'react-async'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
@@ -7,16 +7,14 @@ import SongTag, { msToTime } from '../SongTag.js'
 import { AlbumTag, AlbumContainer } from '../ArtistProfile.js'
 import { ArtistResult } from '../Tags.js'
 import profileImg from '../../images/profile-img.png'
-import _ from 'underscore'
 import TopResults from './TopResults.js'
 import FilterBar from './FilterBar.js'
+import MediaLoader from '../litphum-lib/MediaLoader.js'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
   width: 100%;
   height: 100%;
-  position: absolute;
-  overflow: hidden;
 `
 const SearchBox = styled.input`
   background: #2e2e2e;
@@ -48,35 +46,15 @@ const Label = styled.label`
     border-radius: 0px 0px 5px 0px;
   }
 `
-const ScrollContainer = styled.div`
-  overflow: auto;
-  position: relative;
-  height: 100%;
-`
 
 const loadSearchResults = ({ api, query, market, limit, offset }) => {
   const data = api.getSearchResults(query, "album,artist,playlist,track")
-  return data
-}
-export const loadMoreItems = ( url , { api } ) => {
-  const data = api.getMoreItems(url[0])
-  console.log(data)
   return data
 }
 
 const Search = props => {
   const [query, setQuery] = useState(history.location.pathname.split('/').pop())
   const [activeFilter, setActiveFilter] = useState(history.location.pathname.split('/')[2])
-  const [loadArtistURL, setLoadArtistURL] = useState("")
-  const [loadSongURL, setLoadSongURL] = useState("")
-  const [loadAlbumURL, setLoadAlbumURL] = useState("")
-  const [loadPlaylistURL, setLoadPlaylistURL] = useState("")
-  const [artists, setArtists] = useState([])
-  const [songs, setSongs] = useState([])
-  const [albums, setAlbums] = useState([])
-  const [playlists, setPlaylists] = useState([])
-  const scrollRef = useRef(null)
-  const heightRef = useRef(null)
 
   const { data } = useAsync({ 
     promiseFn: loadSearchResults,
@@ -84,58 +62,8 @@ const Search = props => {
     api: props.spotifyAPI,
     query
   })
-  const { data: artistData, run: runLoadArtists } = useAsync({ 
-    deferFn: loadMoreItems,
-    api: props.spotifyAPI
-  })
-  const { data: songData, run: runLoadSongs } = useAsync({
-    deferFn: loadMoreItems,
-    api: props.spotifyAPI
-  })
-  const { data: albumData, run: runLoadAlbums } = useAsync({ 
-    deferFn: loadMoreItems,
-    api: props.spotifyAPI
-  })
-  const { data: playlistData, run: runLoadPlaylists } = useAsync({ 
-    deferFn: loadMoreItems,
-    api: props.spotifyAPI
-  })
-
-  useEffect(() => {
-    if (artistData) { 
-      setLoadArtistURL(artistData.artists.next)
-      setArtists([...artists, ...artistData.artists.items])
-    }
-  }, [artistData, artists])
-  useEffect(() => {
-    if (songData) { 
-      setLoadSongURL(songData.tracks.next)
-      setSongs([...songs, ...songData.tracks.items])
-    }
-  }, [songData, songs])
-  useEffect(() => {
-    if (albumData) { 
-      setLoadAlbumURL(albumData.albums.next)
-      setAlbums([...albums, ...albumData.albums.items])
-    }
-  }, [albumData, albums])
-  useEffect(() => {
-    if (playlistData) { 
-      setLoadPlaylistURL(playlistData.playlists.next)
-      setPlaylists([...playlists, ...playlistData.playlists.items])
-    }
-  }, [playlistData, playlists])
   
-  useEffect(() => {
-    if (data && data.albums) {
-      setAlbums(data.albums.items)
-      setPlaylists(data.playlists.items)
-      setArtists(data.artists.items)
-      setSongs(data.tracks.items)
-      console.log(data.tracks.items)
-    }
-  }, [data])
-  
+  // filters results, artists, songs, albums, playlists, etc.
   const handleFilter = location => event => {
     if (query) {
       switch (location) {
@@ -166,27 +94,6 @@ const Search = props => {
       }
     }
   }
-
-  const updateAlbums = _.throttle(() => {
-    if (scrollRef.current.scrollTop === scrollRef.current.scrollHeight - scrollRef.current.offsetHeight) {
-      switch (activeFilter) {
-        case "artists":
-          if (loadArtistURL !== null) runLoadArtists(loadArtistURL || data.artists.next)
-          break
-        case "songs":
-          if (loadSongURL !== null) runLoadSongs(loadSongURL || data.tracks.next)
-          break
-        case "albums":
-        if (loadAlbumURL !== null) runLoadAlbums(loadAlbumURL || data.albums.next)
-          break
-        case "playlists":
-        if (loadPlaylistURL !== null) runLoadPlaylists(loadPlaylistURL || data.playlists.next)
-          break
-        default:
-          break
-      }
-    }
-  }, 1000)
   
   /* Takes keyboard input from user and pushes it on the url query also sets filter back to results */ 
   const handleChange = event => {
@@ -198,26 +105,43 @@ const Search = props => {
     }
     setQuery(event.target.value)
   }
-  
+
+  const filterBar = <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
+
   return (
     <SearchContainer>
-      <ScrollContainer ref={scrollRef} onScroll={updateAlbums}>
-        <div ref={heightRef}>
-          <Label>
-            <SearchBox onChange={handleChange} placeholder="Type a song, artist, album, playlist..." type="text" />
-          </Label>
-          {data && data.albums
-          ? <>
-              <FilterBar query={query} filterSelection={handleFilter} activeFilter={activeFilter} />
-              <Route path='/search/results/' component={() => <TopResults data={data} />} />
-              <Route path='/search/artists/' component={() => <Artists artists={artists} />} />
-              <Route path='/search/songs/' component={() => <Tracks songs={songs} />} />
-              <Route path='/search/albums/' component={() => <Albums albums={albums} />} />
-              <Route path='/search/playlists/' component={() => <Albums albums={playlists} />} />
-            </>
-          : null }
-        </div>
-      </ScrollContainer>
+      <Label>
+        <SearchBox onChange={handleChange} placeholder="Type a song, artist, album, playlist..." type="text" />
+      </Label>
+      { data && data.albums
+      ? <>
+          <Route path='/search/results/' component={() => <TopResults filter={filterBar} data={data} />} />
+
+          <Route path='/search/artists/' component={() => (
+            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.artists.next} defaultItems={data.artists.items} mediaType={"artists"} >
+              { artistItems => <Artists artists={artistItems} /> }
+            </MediaLoader>
+          )} />
+
+          <Route path='/search/songs/' component={() => (
+            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.tracks.next} defaultItems={data.tracks.items} mediaType={"tracks"} >
+              { songItems => <Tracks songs={songItems} /> }
+            </MediaLoader>
+          )} />
+
+          <Route path='/search/albums/' component={() => (
+            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.albums.next} defaultItems={data.albums.items} mediaType={"albums"} >
+              { albumItems => <Albums albums={albumItems} /> }
+            </MediaLoader>
+          )} />
+
+          <Route path='/search/playlists/' component={() => (
+            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.playlists.next} defaultItems={data.playlists.items} mediaType={"playlists"} >
+              { playlistItems => <Albums albums={playlistItems} /> }
+            </MediaLoader>
+          )} />
+        </>
+      : null }
     </SearchContainer>
   )
 }

@@ -3,7 +3,7 @@ import { useAsync } from 'react-async'
 import styled from 'styled-components'
 import _ from 'underscore'
 import SongTag, { msToTime } from './SongTag.js'
-import { loadMoreItems } from './search/Search.js'
+import { loadMoreItems } from './litphum-lib/MediaLoader.js'
 
 const SongsContainer = styled.div`
   background: linear-gradient(120deg, rgb(223, 223, 223), rgb(8, 34, 105));
@@ -44,7 +44,7 @@ const loadUserTracks = ({ api, limmit }) => {
 }
 
 // React prevState example hook
-function usePrevious(value) {
+export function usePrevious(value) {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;

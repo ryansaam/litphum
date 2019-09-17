@@ -38,6 +38,36 @@ export function spotifyAPI(token) {
       })
     )
   }
+  this.getUserAlbums = (limit, offset) => {
+    return (
+      fetch(
+        "https://api.spotify.com/v1/me/albums" +
+        ((limit || offset)
+        ? `${limit ? '&limit='+limit : ''}`+
+          `${offset ? '&offset='+offset : ''}`
+        : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
+  this.getUserPlaylists = (limit, offset) => {
+    return (
+      fetch(
+        "https://api.spotify.com/v1/me/playlists" +
+        ((limit || offset)
+        ? `${limit ? '&limit='+limit : ''}`+
+          `${offset ? '&offset='+offset : ''}`
+        : ''), {
+        headers: {"Authorization": "Bearer " + this.user_token}
+      })
+      .then(response => {
+        return checkServerStat(response.status, response.json())
+      })
+    )
+  }
 
   this.getUserTopArtists = (limit, time_range) => {
     return (

@@ -63,11 +63,11 @@ const Nav = props => {
       <section className="profile-section" >
         <div>
           <hr style={{border: "0.5px solid #474747", margin: "14px"}} />
-          <h3>Your Tastes</h3>
+          <h3 style={{color: "white"}}>Your Tastes</h3>
           <ul>
-            <Link to="/your-space/" ><NavItem>Your Space</NavItem></Link>
-            <Link to="/playlists/" ><NavItem>Playlists</NavItem></Link>
             <Link to="/songs/" ><NavItem>Songs</NavItem></Link>
+            <Link to="/albums/" ><NavItem>Albums</NavItem></Link>
+            <Link to="/playlists/" ><NavItem>Playlists</NavItem></Link>
           </ul>
         </div>
         <ProfileTab image={props.image} />

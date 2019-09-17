@@ -52,11 +52,11 @@ const MediaLoader = props => {
   useEffect(() => {
     if (mediaData) {
       console.log(mediaData)
-      if (mediaData.next) {
+      if (mediaData.next || !(props.mediaType)) {
         setMusicItems(prevMediaItems => [...prevMediaItems, ...mediaData.items])
         setNextURL(mediaData.next)
       } else {
-        setNextURL(mediaData.next || mediaData[props.mediaType].next)
+        setNextURL(mediaData[props.mediaType].next)
         setMusicItems(prevMediaItems => [...prevMediaItems, ...mediaData[props.mediaType].items])
       }
     }

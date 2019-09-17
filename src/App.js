@@ -5,11 +5,12 @@ import history from './history.js'
 import Login from './components/Login.js'
 import Home from './components/Home.js'
 import Search from './components/search/Search.js'
-import Songs from './components/Songs.js'
+import UserSongs from './components/Songs.js'
+import UserAlbums from './components/Albums.js'
+import UserPlaylists from './components/Playlists.js'
 import Nav from './components/Nav.js'
 import ArtistProfile from './components/ArtistProfile.js'
 import Album from './components/Album.js'
-import YourSpace from './components/YourSpace.js'
 import user_token, { spotifyAPI } from './api-calls.js'
 import profileImg from './images/profile-img.png'
 
@@ -55,8 +56,9 @@ class App extends Component {
                   <Route path="/artist/" component={() => <ArtistProfile spotifyAPI={spotifyAPI} />} />
                   <Route path="/album/" component={() => <Album spotifyAPI={spotifyAPI} />} />
                   <Route path="/playlist/" component={() => <Album playlist spotifyAPI={spotifyAPI} />} />
-                  <Route path="/your-space/" component={() => <YourSpace spotifyAPI={spotifyAPI} />} />
-                  <Route path="/songs/" component={() => <Songs spotifyAPI={spotifyAPI} />} />
+                  <Route path="/songs/" component={() => <UserSongs spotifyAPI={spotifyAPI} />} />
+                  <Route path="/albums/" component={() => <UserAlbums spotifyAPI={spotifyAPI} />} />
+                  <Route path="/playlists/" component={() => <UserPlaylists spotifyAPI={spotifyAPI} />} />
                 </main>
               </div>)
             : <Login />

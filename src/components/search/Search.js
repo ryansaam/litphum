@@ -184,18 +184,27 @@ const Tracks = props => {
   )
 }
 
-const Albums = props => {
+export const Albums = props => { 
   return (
     <div>
       <AlbumContainer>
         { props.albums.map((album) => {
           return (
-            <AlbumTag
-              image={album.images[0].url}
-              name={album.name}
-              key={album.id}
-              albumId={album.id}
-            />
+            <>
+              { album.added_at // variation of SpotifyAPI data return 
+              ? <AlbumTag
+                  image={album.album.images[0].url}
+                  name={album.album.name}
+                  key={album.album.id}
+                  albumId={album.album.id}
+                />
+              : <AlbumTag
+                  image={album.images[0].url}
+                  name={album.name}
+                  key={album.id}
+                  albumId={album.id}
+                />}
+              </>
           )
         }) }
       </AlbumContainer>

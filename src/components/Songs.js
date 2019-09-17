@@ -1,6 +1,5 @@
 import React from 'react'
 import { useAsync } from 'react-async'
-import _ from 'underscore'
 import SongTag, { msToTime } from './SongTag.js'
 import MediaLoader from './litphum-lib/MediaLoader.js'
 
@@ -29,7 +28,7 @@ const loadUserTracks = ({ api, limmit }) => {
   return data
 }
 
-const Songs = props => {
+const UserSongs = props => {
   /* users tracks first request */
   const { data } = useAsync({ 
     promiseFn: loadUserTracks,
@@ -48,4 +47,4 @@ const Songs = props => {
   )
 }
 
-export default Songs
+export default UserSongs

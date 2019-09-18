@@ -39,7 +39,13 @@ const UserSongs = props => {
   return (
     <>
       { data
-      ? <MediaLoader spotifyAPI={props.spotifyAPI} defaultLoadURL={data.next} defaultItems={data.items} mediaType={"tracks"} >
+      ? <MediaLoader 
+          setBackground={"linear-gradient(120deg, rgb(223, 223, 223), rgb(8, 34, 105))"}
+          spotifyAPI={props.spotifyAPI}
+          defaultLoadURL={data.next} 
+          defaultItems={data.items} 
+          mediaType={"tracks"}
+        >
           { songItems => <Tracks songs={songItems} /> }
         </MediaLoader>
       : null }

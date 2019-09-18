@@ -4,16 +4,24 @@ import styled from 'styled-components'
 import _ from 'underscore'
 
 const MusicContainer = styled.div`
-  background: linear-gradient(120deg, rgb(223, 223, 223), rgb(8, 34, 105));
+  background: ${props => (props.setBackground || "#4d4b4b")};
   height: 100%;
   width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
   position: relative;
 `
 const MusicContentWrapper = styled.div`
   width: 100%;
   height: 100%;
+  padding: inherit;
+  box-sizing: border-box;
   overflow-y: scroll;
   position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 `
 
 // React prevState example hook
@@ -72,7 +80,7 @@ const MediaLoader = props => {
   }, 300) // ms
 
   return (
-    <MusicContainer>
+    <MusicContainer setBackground={props.setBackground}>
       <MusicContentWrapper ref={scrollRef} onScroll={updateMusicData}>
         { props.filter || null }
         { musicItems 

@@ -24,7 +24,7 @@ const SongContainer = styled.li`
 const PlayButtonContainer = styled.div`
   fill: #fff;
   stroke: none;
-  padding: 0px 15px;
+  padding-right: 15px;
 `
 export const TagImage = styled.div`
   background-image: url(${props => props.image});
@@ -79,7 +79,7 @@ const SongTag = props => {
         }}>Explicit</span>
       : null }
       </div>
-      <span style={{justifySelf: "end", margin: "0px 15px", color: "white"}}>{props.duration}</span>
+      <span style={{justifySelf: "end", paddingRight: "15px", color: "white"}}>{props.duration}</span>
     </SongContainer>
   )
 }

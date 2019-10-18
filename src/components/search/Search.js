@@ -168,7 +168,7 @@ const Search = props => {
               mediaType={"playlists"} 
               text={"no playlists found"}
             >
-              { playlistItems => <Albums albums={playlistItems} /> }
+              { playlistItems => <Albums albums={playlistItems} playlist /> }
             </MediaLoader>
           )} />
         </>
@@ -228,12 +228,14 @@ export const Albums = props => {
                   name={album.album.name}
                   key={album.album.id}
                   albumId={album.album.id}
+                  playlist={props.playlist}
                 />
               : <AlbumTag
                   image={album.images[0].url}
                   name={album.name}
                   key={album.id}
                   albumId={album.id}
+                  playlist={props.playlist}
                 />}
               </>
           )

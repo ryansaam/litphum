@@ -16,7 +16,6 @@ const UserPlaylists = props => {
     promiseFn: loadUserPlaylists,
     api: props.spotifyAPI
   })
-  console.log(data)
 
   return (
     <>
@@ -29,7 +28,7 @@ const UserPlaylists = props => {
           mediaType={"playlists"}
           header={<LibraryHeader>Your Playlists</LibraryHeader>}
         >
-          { playlistItems => <Albums albums={playlistItems} /> }
+          { playlistItems => <Albums albums={playlistItems} playlist /> }
         </MediaLoader>
       : null }
     </>

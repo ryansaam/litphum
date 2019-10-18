@@ -129,7 +129,6 @@ const Album = props => {
     api: props.spotifyAPI, id
   })
   const artistsNames = (data && !props.playlist) ? listArtistsNames(data.artists) : null
-  console.log(data)
   return (
     <AlbumView>
       {data ? 

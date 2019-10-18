@@ -7,6 +7,7 @@ import SongTag, { msToTime } from './SongTag.js'
 const TrackSectionContainer = styled.section`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
 `
 const SectionHeaders = styled.div`
   margin: ${props => (props.setMargin || "0px")};
@@ -34,18 +35,18 @@ const Home = props => {
     .then(track => { setTrackItems(track.items) })
     return () => spotifyAPI.getUserTopTracks(8,'short_term') 
   },[spotifyAPI])
-  console.log(artistsItems)
+
   return (
     <section className="home">
       <div style={{padding: "0px 40px"}}>
-        <SectionHeaders setMargin={"0px 0px 0px 25px"}>
+        <SectionHeaders>
           <Header hColor="#2ad4ff" >Artists</Header>
           <Header hMargin="40px" fontSize="34px" >Top</Header>
         </SectionHeaders>
         {artistsItems ? <Artists artists={artistsItems} /> : null}
       </div>
       <div style={{padding: "0px 40px", marginTop: "40px"}}>
-        <SectionHeaders setMargin={"0px 0px 0px 25px"}>
+        <SectionHeaders>
           <Header hColor="#2ad4ff" >Songs</Header>
           <Header hMargin="40px" fontSize="34px" >Recent</Header>
         </SectionHeaders>

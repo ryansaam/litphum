@@ -2,6 +2,7 @@ import React from 'react'
 import { useAsync } from 'react-async'
 import SongTag, { msToTime } from './SongTag.js'
 import MediaLoader from './litphum-lib/MediaLoader.js'
+import LibraryHeader from './litphum-lib/LibraryHeader.js'
 
 const Tracks = props => {
   return (
@@ -34,7 +35,6 @@ const UserSongs = props => {
     promiseFn: loadUserTracks,
     api: props.spotifyAPI
   })
-  console.log(data)
 
   return (
     <>
@@ -45,6 +45,7 @@ const UserSongs = props => {
           defaultLoadURL={data.next} 
           defaultItems={data.items} 
           mediaType={"tracks"}
+          header={<LibraryHeader>Your Songs</LibraryHeader>}
         >
           { songItems => <Tracks songs={songItems} /> }
         </MediaLoader>

@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useAsync } from 'react-async'
 import styled from 'styled-components'
 import _ from 'underscore'
+import NullElement from './NullElement.js'
 
 const MusicContainer = styled.div`
   background: ${props => (props.setBackground || "#4d4b4b")};
   height: 100%;
   width: 100%;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
   box-sizing: border-box;
   position: relative;
 `
@@ -33,22 +34,22 @@ function usePrevious(value) {
   return ref.current;
 }
 
-const loadMoreItems = ( url , { api } ) => {
-  const data = api.getMoreItems(url[0])
-  return data
-}
-
 const MediaLoader = props => {
   const [musicItems, setMusicItems] = useState(props.defaultItems)
   const [nextURL, setNextURL] = useState("")
   const prevURL = usePrevious(nextURL);
   const scrollRef = useRef(null)
   const scrollPadding = props.scrollPadding || 300
+  
+  const loadMoreItems = ( url , { api } ) => {
+    const data = api.getMoreItems(url[0])
+    return data
+  }
 
   // requests more data if user scrolls to bottom
   const { data: mediaData, run: runLoadMediaData } = useAsync({ 
     deferFn: loadMoreItems,
-    api: props.spotifyAPI
+    api: props.spotifyAPI,
   })
   
   /* points URL query string to next list */
@@ -59,7 +60,6 @@ const MediaLoader = props => {
   // updates musicItems arr and api URL querry string
   useEffect(() => {
     if (mediaData) {
-      console.log(mediaData)
       if (mediaData.next || !(props.mediaType)) {
         setMusicItems(prevMediaItems => [...prevMediaItems, ...mediaData.items])
         setNextURL(mediaData.next)
@@ -80,14 +80,22 @@ const MediaLoader = props => {
   }, 300) // ms
 
   return (
-    <MusicContainer setBackground={props.setBackground}>
-      <MusicContentWrapper ref={scrollRef} onScroll={updateMusicData}>
-        { props.filter || null }
-        { musicItems 
-        ? props.children(musicItems)
-        : null }
-      </MusicContentWrapper>
-    </MusicContainer>
+    <>
+      { musicItems.length ?
+        <MusicContainer setBackground={props.setBackground}>
+          <MusicContentWrapper ref={scrollRef} onScroll={updateMusicData}>
+            {props.header}
+            { props.filter || null }
+            { musicItems 
+            ? props.children(musicItems)
+            : null }
+          </MusicContentWrapper>
+        </MusicContainer>
+      : <div style={{height: "100%", display: "grid", gridTemplateRows: "auto 1fr"}}>
+          { props.filter || null }
+          <NullElement>{props.text}</NullElement>
+        </div> }
+    </>
   )
 }
 

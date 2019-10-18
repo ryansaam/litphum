@@ -117,15 +117,21 @@ const  ArtistProfile = props => {
             width: "100%",
             height: "100%",
           }}>
-            <h1 style={{
-              color: "#fff",
-              margin: "0px",
-              fontSize: "3.5em",
-              fontWeight: "700",
+            <div style={{
+              padding: "20px",
               position: "absolute",
-              right: "0px",
-              boxSizing: "border-box"
-            }}>{data.artist.name}</h1>
+              right: "0px"
+            }}>
+              <h1 style={{
+                backgroundColor: "black",
+                padding: "5px",
+                color: "#fff",
+                margin: "0px",
+                fontSize: "3.5em",
+                fontWeight: "700",
+                boxSizing: "border-box"
+              }}>{data.artist.name}</h1>
+            </div>
           </div>
         </ArtistHeader>
         : null}

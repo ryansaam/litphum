@@ -5,6 +5,8 @@ const SongContainer = styled.li`
   outline: none;
   width: 100%;
   height: 74px;
+  padding: 0px 5px;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: ${props => props.image ? "auto auto auto 1fr" : "auto auto 1fr"};
   align-items: center;
@@ -79,7 +81,7 @@ const SongTag = props => {
         }}>Explicit</span>
       : null }
       </div>
-      <span style={{justifySelf: "end", paddingRight: "15px", color: "white"}}>{props.duration}</span>
+      <span style={{justifySelf: "end", color: "white"}}>{props.duration}</span>
     </SongContainer>
   )
 }

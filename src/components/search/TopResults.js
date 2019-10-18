@@ -6,9 +6,10 @@ import { AlbumTag, AlbumContainer } from '../ArtistProfile.js'
 import { ArtistResult } from '../Tags.js'
 import profileImg from '../../images/profile-img.png'
 import albumImg from '../../images/album-img.svg'
+import NullElement from '../litphum-lib/NullElement.js'
 
 const TopResultsContainer = styled.div`
-  padding: 0px 20px;
+  padding: 0px 20px 20px 20px;
 `
 const SongResults = styled.div`
   padding-bottom: 20px;
@@ -26,7 +27,7 @@ const Heading = styled.h2`
 const TopResults = props => {
   const [bool, setBool] = useState(false)
   const artistsNames = props.data.tracks.total ? listArtistsNames(props.data.tracks.items[0].artists) : null
-  
+  console.log(props.data.artists.length)
   return (
     <>
       {props.filter}
@@ -63,52 +64,58 @@ const TopResults = props => {
               }) }
             </div>
           </SongResults>
-        : null}
+        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={400} size={24}>no results</NullElement>}
         <Heading>Artists</Heading>
-        <AlbumContainer>
-          { props.data.artists.items.map((artist, index) => {
-            if (index > 9) return null
-            return (
-              <ArtistResult
-                img={artist.images[0] ? artist.images[0].url : profileImg}
-                name={artist.name}
-                bgColor={artist.images[0] ? null : "rgba(0,0,0,0.6)"}
-                key={artist.id}
-                id={artist.id}
-              />
-            )
-          }) }
-        </AlbumContainer>
+        { props.data.artists.items.length ?
+          <AlbumContainer>
+            { props.data.artists.items.map((artist, index) => {
+              if (index > 9) return null
+              return (
+                <ArtistResult
+                  img={artist.images[0] ? artist.images[0].url : profileImg}
+                  name={artist.name}
+                  bgColor={artist.images[0] ? null : "rgba(0,0,0,0.6)"}
+                  key={artist.id}
+                  id={artist.id}
+                />
+              )
+            }) }
+          </AlbumContainer>
+        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no artist found</NullElement> }
         <Heading>Albums</Heading>
-        <AlbumContainer>
-          { props.data.albums.items.map((album, index) => {
-            if (index > 9) return null
-            return (
-              <AlbumTag
-                image={album.images[0].url}
-                name={album.name}
-                artistNames={listArtistsNames(album.artists)}
-                key={album.id}
-                albumId={album.id}
-              />
-            )
-          }) }
-        </AlbumContainer>
+        { props.data.albums.items.length ?
+          <AlbumContainer>
+            { props.data.albums.items.map((album, index) => {
+              if (index > 9) return null
+              return (
+                <AlbumTag
+                  image={album.images[0].url}
+                  name={album.name}
+                  artistNames={listArtistsNames(album.artists)}
+                  key={album.id}
+                  albumId={album.id}
+                />
+              )
+            }) }
+          </AlbumContainer>
+        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no albums found</NullElement> }
         <Heading>Playlists</Heading>
-        <AlbumContainer>
-          { props.data.playlists.items.map((playlist, index) => {
-            if (index > 9) return null
-            return (
-              <AlbumTag
-                image={playlist.images[0].url ? playlist.images[0].url : albumImg}
-                name={playlist.name}
-                key={playlist.id}
-                albumId={playlist.id}
-                playlist
-              />
-            )
-          }) }
-        </AlbumContainer>
+        { props.data.playlists.items.length ?
+          <AlbumContainer>
+            { props.data.playlists.items.map((playlist, index) => {
+              if (index > 9) return null
+              return (
+                <AlbumTag
+                  image={playlist.images[0].url ? playlist.images[0].url : albumImg}
+                  name={playlist.name}
+                  key={playlist.id}
+                  albumId={playlist.id}
+                  playlist
+                />
+              )
+            }) }
+          </AlbumContainer>
+        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no playlists found</NullElement> }
       </TopResultsContainer>
     </>
   )

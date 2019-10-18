@@ -10,11 +10,14 @@ import profileImg from '../../images/profile-img.png'
 import TopResults from './TopResults.js'
 import FilterBar from './FilterBar.js'
 import MediaLoader from '../litphum-lib/MediaLoader.js'
+import NullElement from '../litphum-lib/NullElement.js'
 
 const SearchContainer = styled.div`
   background: #4d4b4b;
   width: 100%;
   height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
 `
 const SearchBox = styled.input`
   background: #2e2e2e;
@@ -118,30 +121,58 @@ const Search = props => {
           <Route path='/search/results/' component={() => <TopResults filter={filterBar} data={data} />} />
 
           <Route path='/search/artists/' component={() => (
-            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.artists.next} defaultItems={data.artists.items} mediaType={"artists"} >
+            <MediaLoader
+              spotifyAPI={props.spotifyAPI}
+              filter={filterBar}
+              defaultLoadURL={data.artists.next}
+              defaultItems={data.artists.items}
+              mediaType={"artists"}
+              text={"no artists found"}
+            >
               { artistItems => <Artists artists={artistItems} /> }
             </MediaLoader>
           )} />
 
           <Route path='/search/songs/' component={() => (
-            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.tracks.next} defaultItems={data.tracks.items} mediaType={"tracks"} >
+            <MediaLoader
+              spotifyAPI={props.spotifyAPI}
+              filter={filterBar}
+              defaultLoadURL={data.tracks.next}
+              defaultItems={data.tracks.items}
+              mediaType={"tracks"}
+              text={"no songs found"}
+            >
               { songItems => <Tracks songs={songItems} /> }
             </MediaLoader>
           )} />
 
           <Route path='/search/albums/' component={() => (
-            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.albums.next} defaultItems={data.albums.items} mediaType={"albums"} >
+            <MediaLoader
+              spotifyAPI={props.spotifyAPI}
+              filter={filterBar}
+              defaultLoadURL={data.albums.next}
+              defaultItems={data.albums.items}
+              mediaType={"albums"}
+              text={"no albums found"}
+            >
               { albumItems => <Albums albums={albumItems} /> }
             </MediaLoader>
           )} />
 
           <Route path='/search/playlists/' component={() => (
-            <MediaLoader spotifyAPI={props.spotifyAPI} filter={filterBar} defaultLoadURL={data.playlists.next} defaultItems={data.playlists.items} mediaType={"playlists"} >
+            <MediaLoader
+              spotifyAPI={props.spotifyAPI}
+              filter={filterBar}
+              defaultLoadURL={data.playlists.next}
+              defaultItems={data.playlists.items}
+              mediaType={"playlists"} 
+              text={"no playlists found"}
+            >
               { playlistItems => <Albums albums={playlistItems} /> }
             </MediaLoader>
           )} />
         </>
-      : null }
+      : <NullElement>no results</NullElement> }
     </SearchContainer>
   )
 }

@@ -1,13 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
+import LogoBar from './litphum-lib/LogoBar.js'
+import shape from '../images/login.svg'
+import preview from '../images/litphum-preview.png'
 
 const LoginContainer = styled.div`
-  background: linear-gradient(120deg, rgb(198, 66, 250) 0%, rgb(80, 255, 153) 60%,rgb(0, 144, 211));
+  background-color: white;
   height: 100%;
   width: 100%;
   display: grid;
-  align-items: center;
-  justify-items: center;
+  grid-template-rows: auto 1fr;
 `
 
 const LoginBtn = styled.button`
@@ -15,7 +17,7 @@ const LoginBtn = styled.button`
   color: white;
   font-weight: 600;
   font-size: 18px;
-  padding: 12px 100px;
+  padding: 12px 60px;
   border-radius: 35px;
   border-width: 0px;
   outline: none;
@@ -27,11 +29,40 @@ const LoginBtn = styled.button`
 
 const Login = props => {
   return (
-    <LoginContainer>
-      <LoginBtn onClick={() => window.location = "http://localhost2/login"}>
-       LOG IN WITH SPOTIFY
-      </LoginBtn>
-    </LoginContainer>
+    <div style={{height: "100%"}}>
+      <LoginContainer>
+        <LogoBar>
+          <LoginBtn style={{alignSelf: "center", justifySelf: "right"}} onClick={() => window.location = "http://localhost2/login"}>
+            LOG IN WITH SPOTIFY
+          </LoginBtn>
+        </LogoBar>
+        <div style={{position: "relative"}}>
+          <div style={{margin: "20px 40px"}}>
+            <h4 style={{fontSize: "36px", margin: "0px"}}>See Spotify in a new perspective using litphum.</h4>
+            <h4 style={{fontSize: "36px", margin: "0px"}}>A new desing for Spotify!</h4>
+          </div>
+          <p style={{
+            width: "560px",
+            color: "white",
+            fontSize: "32px", 
+            position: "absolute", 
+            bottom: "0", 
+            right: "0", 
+            zIndex: "5",
+            transform: "translate(-40px, -160px)"
+          }}>A quick way to view your songs, albums, and playlists. See something missing? Just search it up using the litphum search.</p>
+          <img style={{
+            height: "300px",
+            border: "3px solid rgb(25, 25, 25)",
+            borderRadius: "8px",
+            position: "absolute",
+            transform: "translate(150px, 150px)",
+            zIndex: "5"
+          }} src={preview}/>
+        </div>
+      </LoginContainer>
+      <img style={{height: "100%", position: "absolute", right: "0", top: "0"}} src={shape}/>
+    </div>
   )
 }
 

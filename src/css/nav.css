@@ -3,10 +3,10 @@
   width: 250px;
   height: 100%;
   position: fixed;
-  padding: 16px 0px;
+  padding-bottom: 16px;
   box-sizing: border-box;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
 }
 .nav ul {
   margin: 0px;

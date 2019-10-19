@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import LogoBar from './litphum-lib/LogoBar.js'
 import '../css/nav.css'
 
 const ProfileContainer = styled.div`
@@ -34,7 +35,6 @@ const ProfileTab = props => {
       <ProfileContainer>
         <Avitar src={props.image} />
         <ProfileLink onClick={handleSignOut} >Sign Out</ProfileLink>
-        <Link to="/your-space/"><ProfileLink>View Profile</ProfileLink></Link>
       </ProfileContainer>
     </div>
   )
@@ -54,6 +54,7 @@ const Nav = props => {
   const { type, id } = props.user
   return (
     <nav className="nav">
+      <LogoBar />
       <section>
         <ul>
           <Link to={`/${type}/${id}`} ><NavItem>Home</NavItem></Link>

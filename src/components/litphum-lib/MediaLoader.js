@@ -5,7 +5,7 @@ import _ from 'underscore'
 import NullElement from './NullElement.js'
 
 const MusicContainer = styled.div`
-  background: ${props => (props.setBackground || "#4d4b4b")};
+  background: ${props => (props.bgColor || "#4d4b4b")};
   height: 100%;
   width: 100%;
   padding: 0px 20px 20px 20px;
@@ -82,7 +82,7 @@ const MediaLoader = props => {
   return (
     <>
       { musicItems.length ?
-        <MusicContainer setBackground={props.setBackground}>
+        <MusicContainer bgColor={props.bgColor}>
           <MusicContentWrapper ref={scrollRef} onScroll={updateMusicData}>
             {props.header}
             { props.filter || null }

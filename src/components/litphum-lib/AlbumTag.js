@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom"
 import styled from 'styled-components'
-import { TagImage, ImageContainer, TextOverflow } from './litphum-styled.js'
+import { MediaItemImage, ImageContainer, TextOverflow } from './litphum-styled.js'
 import PlayBtn from './PlayBtn.js'
 
 const AlbumInfo = styled.div`
@@ -15,11 +15,11 @@ const AlbumTag = props => {
   return (
     <div style={{marginBottom: "20px"}}>
       <Link to={props.playlist ? "/playlist/"+props.albumId : "/album/"+props.albumId} >
-        <TagImage size={200} imageMargin={"auto"} image={props.image}>
+        <MediaItemImage size={200} imageMargin={"auto"} image={props.image}>
          <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
             <PlayBtn visibility={bool} />
          </ImageContainer>
-        </TagImage>
+        </MediaItemImage>
       </Link>
       <AlbumInfo>
         <Link style={{color: "white"}} to={props.playlist ? "/album/"+props.albumId : "/playlist/"+props.albumId} >

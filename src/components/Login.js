@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import LogoBar from './litphum-lib/LogoBar.js'
 import shape from '../images/login.svg'
-import preview from '../images/litphum-preview.png'
+import websitePreview from '../images/litphum-preview.png'
 
 const LoginContainer = styled.div`
   background-color: white;
@@ -27,7 +27,7 @@ const LoginBtn = styled.button`
   }
 `
 
-const Login = props => {
+const Login = () => {
   return (
     <div style={{height: "100%"}}>
       <LoginContainer>
@@ -39,7 +39,7 @@ const Login = props => {
         <div style={{position: "relative"}}>
           <div style={{margin: "20px 40px"}}>
             <h4 style={{fontSize: "36px", margin: "0px"}}>See Spotify in a new perspective using litphum.</h4>
-            <h4 style={{fontSize: "36px", margin: "0px"}}>A new desing for Spotify!</h4>
+            <h4 style={{fontSize: "36px", margin: "0px"}}>A new design for Spotify!</h4>
           </div>
           <p style={{
             width: "560px",
@@ -58,7 +58,7 @@ const Login = props => {
             position: "absolute",
             transform: "translate(150px, 150px)",
             zIndex: "5"
-          }} src={preview}/>
+          }} src={websitePreview}/>
         </div>
       </LoginContainer>
       <img alt="shape" style={{height: "100%", position: "absolute", right: "0", top: "0"}} src={shape}/>

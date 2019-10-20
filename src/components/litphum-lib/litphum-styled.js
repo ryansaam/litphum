@@ -4,7 +4,6 @@ export const TextOverflow = styled.div`
   color: ${props => props.alternate ? "white" : "inherit"};
   text-align: ${props => props.alternate ? "center" : "left"};
   opacity: ${props => props.alternate ? "0.7" : "1"};
-
   width: 100%;
   -webkit-line-clamp: ${props => props.lineClamp || 1};
   display: -webkit-box;
@@ -12,7 +11,7 @@ export const TextOverflow = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
 `
-export const AlbumContainer = styled.div`
+export const MediaListContainer = styled.div`
   text-align: center;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -30,7 +29,7 @@ export const ImageContainer = styled.div`
     background-color: rgba(0,0,0,0.6)
   }
 `
-export const TagImage = styled.div`
+export const MediaItemImage = styled.div`
   background-image: url(${props => props.image});
   width: ${props => props.size ? props.size+"px" : "100%"};
   height: ${props => props.size ? props.size+"px" : "100%"};

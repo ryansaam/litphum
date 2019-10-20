@@ -23,7 +23,7 @@ export function spotifyAPI(token) {
       })
     )
   }
-  this.getUserTracks = (limit, offset) => {
+  this.getUserTracks = ({ limit, offset }) => {
     return (
       fetch(
         "https://api.spotify.com/v1/me/tracks?" +
@@ -38,7 +38,7 @@ export function spotifyAPI(token) {
       })
     )
   }
-  this.getUserAlbums = (limit, offset) => {
+  this.getUserAlbums = ({ limit, offset }) => {
     return (
       fetch(
         "https://api.spotify.com/v1/me/albums" +
@@ -53,7 +53,7 @@ export function spotifyAPI(token) {
       })
     )
   }
-  this.getUserPlaylists = (limit, offset) => {
+  this.getUserPlaylists = ({ limit, offset }) => {
     return (
       fetch(
         "https://api.spotify.com/v1/me/playlists" +
@@ -103,7 +103,8 @@ export function spotifyAPI(token) {
     )
   }
 
-  this.getArtistProfile = (id,includeGroups,market,limit,offset) => {
+  this.getArtistProfile = ({ id,includeGroups,market,limit,offset }) => {
+    window.scroll(0, 0)
     return Promise.all([
       this.getArtist(id),
       this.getArtistAlbums(id,includeGroups,market,limit,offset),
@@ -161,7 +162,7 @@ export function spotifyAPI(token) {
       })
     )
   }
-  this.getAlbum = (id,market) => {
+  this.getAlbum = ({ id,market }) => {
     return fetch(
       `https://api.spotify.com/v1/albums/${id}`+
       (market 
@@ -174,7 +175,7 @@ export function spotifyAPI(token) {
         return checkServerStat(response.status, response.json())
       })
   }
-  this.getPlaylist = (id, market) => {
+  this.getPlaylist = ({ id, market }) => {
     return fetch(
       `https://api.spotify.com/v1/playlists/${id}`+
       (market
@@ -187,7 +188,7 @@ export function spotifyAPI(token) {
       return checkServerStat(response.status, response.json())
     })
   }
-  this.getSearchResults = (query, type, market, limit, offset) => {
+  this.getSearchResults = ({ query, type, market, limit, offset }) => {
     return fetch(
       `https://api.spotify.com/v1/search?q=${query}&type=${type}`+
       ((market || limit || offset)

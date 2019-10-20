@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import history from '../history.js'
 import { useAsync } from "react-async"
-import { TagImage, ImageContainer, Header, TextOverflow } from './litphum-lib/litphum-styled.js'
+import { MediaItemImage, ImageContainer, Header, TextOverflow } from './litphum-lib/litphum-styled.js'
 import listArtistsNames from './litphum-lib/listArtistsNames.js'
 import PlayBtn from './litphum-lib/PlayBtn.js'
 import SongTag from './litphum-lib/SongTag.js'
@@ -22,7 +22,7 @@ const AlbumDetails = styled.div`
   padding: 20px;
   box-sizing: border-box;
 `
-const AlbumSongContainer = styled.div`
+const AlbumSongsContainer = styled.div`
   background-color: #010101;
   height: 100%;
 `
@@ -34,7 +34,7 @@ const CopyRight = styled.span`
   display: block;
   padding-left: 15px;
 `
-const Button = styled.div`
+const AlbumPlayBtn = styled.div`
   background-color: rgb(198, 66, 250);
   color: white;
   height: 40px;
@@ -53,7 +53,7 @@ const Button = styled.div`
     opacity: 1;
   }
 `
-const Info = styled.span`
+const AlbumInfo = styled.span`
   color: white;
   font-size: 12px;
   margin: auto;
@@ -62,49 +62,41 @@ const Info = styled.span`
   display: block;
 `
 
-const loadAlbumData = ({ api, id }) => {
-  const data = api.getAlbum(id, "US")
-  return data
-}
-const loadPlaylistData = ({ api, id }) => {
-  const data = api.getPlaylist(id, "US")
-  return data
-}
-
 const Album = props => {
-  const [bool, setBool] = useState(false)
-  const id = history.location.pathname.split("/").pop()
-  const { data } = useAsync({ 
-    promiseFn: props.playlist ? loadPlaylistData : loadAlbumData,
-    watch: id,
-    api: props.spotifyAPI, id
+  const [visiblityBool, setVisiblityBool] = useState(false)
+  const albumId = history.location.pathname.split("/").pop()
+  const { data: albumData } = useAsync({ 
+    promiseFn: props.playlist ? props.spotifyAPI.getPlaylist : props.spotifyAPI.getAlbum,
+    watch: albumId,
+    id: albumId,
+    market: "US"
   })
-  const artistsNames = (data && !props.playlist) ? listArtistsNames(data.artists) : null
+  const artistsNames = (albumData && !props.playlist) ? listArtistsNames(albumData.artists) : null
   return (
     <AlbumView>
-      {data ? 
+      {albumData ? 
       <>
         <AlbumDetails>
-          <TagImage imageMargin={"auto"} size={300} image={data.images[0].url}>
-            <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
-              <PlayBtn visibility={bool} />
+          <MediaItemImage imageMargin={"auto"} size={300} image={albumData.images[0].url}>
+            <ImageContainer onMouseEnter={() => setVisiblityBool(true)} onMouseLeave={() => setVisiblityBool(false)} >
+              <PlayBtn visibility={visiblityBool} />
             </ImageContainer>
-          </TagImage>
+          </MediaItemImage>
           <div style={{maxWidth: "300px", margin: "auto"}}>
-          <Header>{data.name}</Header>
-          <TextOverflow>
+          <Header>{albumData.name}</Header>
+          <TextOverflow alternate >
             <div style={{display: "inline"}}>
               <span>{artistsNames}</span>
             </div>
           </TextOverflow>
           </div>
-          <Button>PLAY</Button>
+          <AlbumPlayBtn>PLAY</AlbumPlayBtn>
           { props.playlist 
-            ? <Info>{data.tracks.total} SONGS</Info>
-            : <Info>{data.release_date.split('-')[0]} - {data.total_tracks} SONGS</Info> }
+            ? <AlbumInfo>{albumData.tracks.total} SONGS</AlbumInfo>
+            : <AlbumInfo>{albumData.release_date.split('-')[0]} - {albumData.total_tracks} SONGS</AlbumInfo> }
         </AlbumDetails>
-        <AlbumSongContainer>
-          { data.tracks.items.map((track, index) => {
+        <AlbumSongsContainer>
+          { albumData.tracks.items.map((track, index) => {
             return props.playlist ? (
               <SongTag
                 duration={msToTime(track.track.duration_ms)}
@@ -123,12 +115,12 @@ const Album = props => {
               />
             )
           }) }
-          { props.playlist ? null : data.copyrights.map((object, index) => {
+          { props.playlist ? null : albumData.copyrights.map((object, index) => {
             return (
               <CopyRight key={index}>{object.text}</CopyRight>
             )
           }) }
-        </AlbumSongContainer>
+        </AlbumSongsContainer>
       </>
       : null }
     </AlbumView>

@@ -19,7 +19,7 @@ const FilterBarList = styled.ul`
     } 
   }
 `
-const SelectedBar = styled.span`
+const SelectedUnderline = styled.span`
   background-color: #2ad4ff;
   width: 30px;
   height: 2px;
@@ -32,7 +32,7 @@ const FilterLink = props => {
   return (
     <Link to={`/search/${props.page}/${props.query}`} onClick={props.filterSelection(props.page)} >
       <li>{props.children}</li>
-      <SelectedBar selected={props.activeFilter === props.page ? true : false} />
+      <SelectedUnderline selected={props.activeFilter === props.page ? true : false} />
     </Link>
   )
 }

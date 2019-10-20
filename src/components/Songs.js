@@ -5,7 +5,7 @@ import MediaLoader from './litphum-lib/MediaLoader.js'
 import LibraryHeader from './litphum-lib/LibraryHeader.js'
 import msToTime from './litphum-lib/msToTime.js'
 
-const Tracks = props => {
+const TrackList = props => {
   return (
     <div>
       { props.songs.map((trackItem) => {
@@ -24,31 +24,23 @@ const Tracks = props => {
   )
 }
 
-// gets users tracks from SpotifyAPI
-const loadUserTracks = ({ api, limmit }) => {
-  const data = api.getUserTracks(limmit)
-  return data
-}
-
 const UserSongs = props => {
-  /* users tracks first request */
-  const { data } = useAsync({ 
-    promiseFn: loadUserTracks,
-    api: props.spotifyAPI
+  const { data: usersReturnedTracks } = useAsync({ 
+    promiseFn: props.spotifyAPI.getUserTracks
   })
 
   return (
     <>
-      { data
+      { usersReturnedTracks
       ? <MediaLoader 
-          setBackground={"linear-gradient(120deg, rgb(223, 223, 223), rgb(8, 34, 105))"}
+          bgColor={"linear-gradient(120deg, rgb(223, 223, 223), rgb(8, 34, 105))"}
           spotifyAPI={props.spotifyAPI}
-          defaultLoadURL={data.next} 
-          defaultItems={data.items} 
+          defaultLoadURL={usersReturnedTracks.next} 
+          defaultItems={usersReturnedTracks.items} 
           mediaType={"tracks"}
           header={<LibraryHeader>Your Songs</LibraryHeader>}
         >
-          { songItems => <Tracks songs={songItems} /> }
+          { songItems => <TrackList songs={songItems} /> }
         </MediaLoader>
       : null }
     </>

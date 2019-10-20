@@ -10,7 +10,7 @@ import FilterBar from './FilterBar.js'
 import MediaLoader from '../litphum-lib/MediaLoader.js'
 import NullElement from '../litphum-lib/NullElement.js'
 import AlbumTag from '../litphum-lib/AlbumTag.js'
-import { AlbumContainer } from '../litphum-lib/litphum-styled.js'
+import { MediaListContainer } from '../litphum-lib/litphum-styled.js'
 import SongTag from '../litphum-lib/SongTag.js'
 import msToTime from '../litphum-lib/msToTime.js'
 
@@ -21,7 +21,7 @@ const SearchContainer = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
 `
-const SearchBox = styled.input`
+const SearchInput = styled.input`
   background: #2e2e2e;
   width: 100%;
   height: 57px;
@@ -35,7 +35,7 @@ const SearchBox = styled.input`
     color: #999999;
   }
 `
-const Label = styled.label`
+const SearchLabel = styled.label`
   position: relative;
   width: 100%;
   :before {
@@ -52,24 +52,19 @@ const Label = styled.label`
   }
 `
 
-const loadSearchResults = ({ api, query, market, limit, offset }) => {
-  const data = api.getSearchResults(query, "album,artist,playlist,track")
-  return data
-}
-
 const Search = props => {
   const [query, setQuery] = useState(history.location.pathname.split('/').pop())
   const [activeFilter, setActiveFilter] = useState(history.location.pathname.split('/')[2])
 
-  const { data } = useAsync({ 
-    promiseFn: loadSearchResults,
+  const { data: searchResultData } = useAsync({ 
+    promiseFn: props.spotifyAPI.getSearchResults,
     watch: query,
-    api: props.spotifyAPI,
-    query
+    query,
+    type: "album,artist,playlist,track"
   })
   
   // filters results, artists, songs, albums, playlists, etc.
-  const handleFilter = location => event => {
+  const handleFilter = location => () => {
     if (query) {
       switch (location) {
         case "results":
@@ -115,19 +110,19 @@ const Search = props => {
 
   return (
     <SearchContainer>
-      <Label>
-        <SearchBox onChange={handleChange} placeholder="Type a song, artist, album, playlist..." type="text" />
-      </Label>
-      { data && data.albums
+      <SearchLabel>
+        <SearchInput onChange={handleChange} placeholder="Type a song, artist, album, playlist..." type="text" />
+      </SearchLabel>
+      { searchResultData && searchResultData.albums
       ? <>
-          <Route path='/search/results/' component={() => <TopResults filter={filterBar} data={data} />} />
+          <Route path='/search/results/' component={() => <TopResults filter={filterBar} data={searchResultData} />} />
 
           <Route path='/search/artists/' component={() => (
             <MediaLoader
               spotifyAPI={props.spotifyAPI}
               filter={filterBar}
-              defaultLoadURL={data.artists.next}
-              defaultItems={data.artists.items}
+              defaultLoadURL={searchResultData.artists.next}
+              defaultItems={searchResultData.artists.items}
               mediaType={"artists"}
               text={"no artists found"}
             >
@@ -139,8 +134,8 @@ const Search = props => {
             <MediaLoader
               spotifyAPI={props.spotifyAPI}
               filter={filterBar}
-              defaultLoadURL={data.tracks.next}
-              defaultItems={data.tracks.items}
+              defaultLoadURL={searchResultData.tracks.next}
+              defaultItems={searchResultData.tracks.items}
               mediaType={"tracks"}
               text={"no songs found"}
             >
@@ -152,12 +147,12 @@ const Search = props => {
             <MediaLoader
               spotifyAPI={props.spotifyAPI}
               filter={filterBar}
-              defaultLoadURL={data.albums.next}
-              defaultItems={data.albums.items}
+              defaultLoadURL={searchResultData.albums.next}
+              defaultItems={searchResultData.albums.items}
               mediaType={"albums"}
               text={"no albums found"}
             >
-              { albumItems => <Albums albums={albumItems} /> }
+              { albumItems => <AlbumsList albums={albumItems} /> }
             </MediaLoader>
           )} />
 
@@ -165,12 +160,12 @@ const Search = props => {
             <MediaLoader
               spotifyAPI={props.spotifyAPI}
               filter={filterBar}
-              defaultLoadURL={data.playlists.next}
-              defaultItems={data.playlists.items}
+              defaultLoadURL={searchResultData.playlists.next}
+              defaultItems={searchResultData.playlists.items}
               mediaType={"playlists"} 
               text={"no playlists found"}
             >
-              { playlistItems => <Albums albums={playlistItems} playlist /> }
+              { playlistItems => <AlbumsList albums={playlistItems} playlist /> }
             </MediaLoader>
           )} />
         </>
@@ -182,7 +177,7 @@ const Search = props => {
 export const Artists = props => {
   return (
     <div>
-      <AlbumContainer>
+      <MediaListContainer>
         { props.artists.map(artist => {
           return (
             <ArtistResult
@@ -194,7 +189,7 @@ export const Artists = props => {
             />
           )
         }) }
-      </AlbumContainer>
+      </MediaListContainer>
     </div>
   )
 }
@@ -217,10 +212,10 @@ const Tracks = props => {
   )
 }
 
-export const Albums = props => { 
+export const AlbumsList = props => { 
   return (
     <div>
-      <AlbumContainer>
+      <MediaListContainer>
         { props.albums.map((album) => {
           return (
             <>
@@ -242,7 +237,7 @@ export const Albums = props => {
               </>
           )
         }) }
-      </AlbumContainer>
+      </MediaListContainer>
     </div>
   )
 }

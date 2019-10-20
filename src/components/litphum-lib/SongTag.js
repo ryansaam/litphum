@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { TagImage } from './litphum-styled.js'
+import { MediaItemImage } from './litphum-styled.js'
 
 const SongContainer = styled.li`
   outline: none;
@@ -50,7 +50,7 @@ const SongTag = props => {
       <SongTagPlayBtnContainer>
         <SongTagPlayBtn />
       </SongTagPlayBtnContainer>
-      {props.image? <TagImage image={props.image} imageMargin={"0px 15px 0px 0px"} size={70} /> : null }
+      {props.image? <MediaItemImage image={props.image} imageMargin={"0px 15px 0px 0px"} size={70} /> : null }
       <div>
       <span style={{display: "block", color: "white"}}>{props.name}</span>
       {props.explicit 

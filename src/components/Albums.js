@@ -1,33 +1,25 @@
 import React from 'react'
 import { useAsync } from 'react-async'
-import { Albums } from './search/Search.js'
+import { AlbumsList } from './search/Search.js'
 import MediaLoader from './litphum-lib/MediaLoader.js'
 import LibraryHeader from './litphum-lib/LibraryHeader.js'
 
-// gets users tracks from SpotifyAPI
-const loadUserAlbums = ({ api, limmit }) => {
-  const data = api.getUserAlbums(limmit)
-  return data
-}
-
 const UserAlbums = props => {
-  /* users tracks first request */
-  const { data } = useAsync({ 
-    promiseFn: loadUserAlbums,
-    api: props.spotifyAPI
+  const { data: usersReturnedAlbums } = useAsync({ 
+    promiseFn: props.spotifyAPI.getUserAlbums,
   })
 
   return (
     <>
-      { data
+      { usersReturnedAlbums
       ? <MediaLoader 
-          setBackground={"linear-gradient(120deg, rgb(223, 223, 223), rgb(170, 25, 25))"}
+          bgColor={"linear-gradient(120deg, rgb(223, 223, 223), rgb(170, 25, 25))"}
           spotifyAPI={props.spotifyAPI}
-          defaultLoadURL={data.next}
-          defaultItems={data.items}
+          defaultLoadURL={usersReturnedAlbums.next}
+          defaultItems={usersReturnedAlbums.items}
           header={<LibraryHeader>Your Albums</LibraryHeader>}
         >
-          { albumItems => <Albums albums={albumItems} /> }
+          { albumItems => <AlbumsList albums={albumItems} /> }
         </MediaLoader>
       : null }
     </>

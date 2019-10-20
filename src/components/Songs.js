@@ -1,8 +1,9 @@
 import React from 'react'
 import { useAsync } from 'react-async'
-import SongTag, { msToTime } from './SongTag.js'
+import SongTag from './litphum-lib/SongTag.js'
 import MediaLoader from './litphum-lib/MediaLoader.js'
 import LibraryHeader from './litphum-lib/LibraryHeader.js'
+import msToTime from './litphum-lib/msToTime.js'
 
 const Tracks = props => {
   return (

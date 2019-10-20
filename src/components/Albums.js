@@ -16,7 +16,6 @@ const UserAlbums = props => {
     promiseFn: loadUserAlbums,
     api: props.spotifyAPI
   })
-  console.log(data)
 
   return (
     <>

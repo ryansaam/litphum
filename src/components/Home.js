@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import '../css/home.css'
 import styled from 'styled-components'
 import { Artists } from './search/Search.js'
-import SongTag, { msToTime } from './SongTag.js'
+import SongTag from './litphum-lib/SongTag.js'
+import msToTime from './litphum-lib/msToTime.js'
  
 const TrackSectionContainer = styled.section`
   display: grid;

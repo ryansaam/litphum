@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { TagImage, PlayBtn, ImageContainer, Header, TextOverflow, listArtistsNames } from '../Album.js'
-import SongTag, { msToTime } from '../SongTag.js'
-import { AlbumTag, AlbumContainer } from '../ArtistProfile.js'
-import { ArtistResult } from '../Tags.js'
+import PlayBtn from '../litphum-lib/PlayBtn.js'
+import listArtistsNames from '../litphum-lib/listArtistsNames.js'
+import SongTag from '../litphum-lib/SongTag.js'
+import { AlbumContainer, TagImage, Header, ImageContainer, TextOverflow } from '../litphum-lib/litphum-styled.js'
+import ArtistResult from '../litphum-lib/ArtistResult.js'
+import NullElement from '../litphum-lib/NullElement.js'
+import AlbumTag from '../litphum-lib/AlbumTag.js'
+import msToTime from '../litphum-lib/msToTime.js'
 import profileImg from '../../images/profile-img.png'
 import albumImg from '../../images/album-img.svg'
-import NullElement from '../litphum-lib/NullElement.js'
 
 const TopResultsContainer = styled.div`
   padding: 0px 20px 20px 20px;
@@ -27,7 +30,7 @@ const Heading = styled.h2`
 const TopResults = props => {
   const [bool, setBool] = useState(false)
   const artistsNames = props.data.tracks.total ? listArtistsNames(props.data.tracks.items[0].artists) : null
-  console.log(props.data.artists.length)
+
   return (
     <>
       {props.filter}
@@ -35,14 +38,14 @@ const TopResults = props => {
         { props.data.tracks.total
         ? <SongResults>
             <div style={{marginRight: "20px"}}>
-              <TagImage imageMargin={"auto"} size={"300px"} image={props.data.tracks.items[0].album.images[0].url}>
+              <TagImage imageMargin={"auto"} size={300} image={props.data.tracks.items[0].album.images[0].url}>
                 <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
                   <PlayBtn visibility={bool} />
                 </ImageContainer>
               </TagImage>
               <div style={{maxWidth: "300px", margin: "auto"}}>
                 <Header>{props.data.tracks.items[0].name}</Header>
-                <TextOverflow>
+                <TextOverflow alternate >
                   <div style={{display: "inline"}}>
                     <span>{artistsNames}</span>
                   </div>

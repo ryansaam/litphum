@@ -1,17 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
-import { TextOverflow, ImageContainer, PlayBtn } from './ArtistProfile.js'
+import PlayBtn from './PlayBtn.js'
+import { ImageContainer, TextOverflow } from './litphum-styled.js'
 
-export const Header = styled.div`
-  color: white;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 600;
-  margin: 5px 0px;
-`
-
-export const ArtistResult = props => {
+const ArtistResult = props => {
   const [bool,setBool] = useState(false)
   return (
     <div>
@@ -30,7 +22,7 @@ export const ArtistResult = props => {
           </ImageContainer>
         </div>
         <div style={{marginBottom: "20px"}}>
-          <TextOverflow lineClamp={2}>
+          <TextOverflow style={{opacity: "1"}} alternate lineClamp={2}>
             <div style={{display: "inline"}}>
               <span>{props.name}</span>
             </div>
@@ -40,3 +32,5 @@ export const ArtistResult = props => {
     </div>
   )
 }
+
+export default ArtistResult

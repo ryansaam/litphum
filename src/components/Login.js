@@ -51,7 +51,7 @@ const Login = props => {
             zIndex: "5",
             transform: "translate(-40px, -160px)"
           }}>A quick way to view your songs, albums, and playlists. See something missing? Just search it up using the litphum search.</p>
-          <img style={{
+          <img alt="preview of website" style={{
             height: "300px",
             border: "3px solid rgb(25, 25, 25)",
             borderRadius: "8px",
@@ -61,7 +61,7 @@ const Login = props => {
           }} src={preview}/>
         </div>
       </LoginContainer>
-      <img style={{height: "100%", position: "absolute", right: "0", top: "0"}} src={shape}/>
+      <img alt="shape" style={{height: "100%", position: "absolute", right: "0", top: "0"}} src={shape}/>
     </div>
   )
 }

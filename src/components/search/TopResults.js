@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import PlayBtn from '../litphum-lib/PlayBtn.js'
 import listArtistsNames from '../litphum-lib/listArtistsNames.js'
-import SongTag from '../litphum-lib/SongTag.js'
+import SongListItem from '../litphum-lib/SongListItem.js'
 import { MediaListContainer, MediaItemImage, Header, ImageContainer, TextOverflow } from '../litphum-lib/litphum-styled.js'
 import ArtistResult from '../litphum-lib/ArtistResult.js'
-import NullElement from '../litphum-lib/NullElement.js'
-import AlbumTag from '../litphum-lib/AlbumTag.js'
+import NullResult from '../litphum-lib/NullResult.js'
+import AlbumListItem from '../litphum-lib/AlbumListItem.js'
 import msToTime from '../litphum-lib/msToTime.js'
 import profileImg from '../../images/profile-img.png'
 import albumImg from '../../images/album-img.svg'
@@ -56,7 +56,7 @@ const TopResults = props => {
               { props.data.tracks.items.map((track, index) => {
                   if (index > 4) return null
                   return (
-                    <SongTag
+                    <SongListItem
                       duration={msToTime(track.duration_ms)}
                       key={track.id}
                       name={track.name}
@@ -67,7 +67,7 @@ const TopResults = props => {
               }) }
             </div>
           </SongResults>
-        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={400} size={24}>no results</NullElement>}
+        : <NullResult bgColor={"rgba(0,0,0,0.6)"} height={400} size={24}>no results</NullResult>}
         <Heading>Artists</Heading>
         { props.data.artists.items.length ?
           <MediaListContainer>
@@ -84,14 +84,14 @@ const TopResults = props => {
               )
             }) }
           </MediaListContainer>
-        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no artist found</NullElement> }
+        : <NullResult bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no artist found</NullResult> }
         <Heading>Albums</Heading>
         { props.data.albums.items.length ?
           <MediaListContainer>
             { props.data.albums.items.map((album, index) => {
               if (index > 9) return null
               return (
-                <AlbumTag
+                <AlbumListItem
                   image={album.images[0].url}
                   name={album.name}
                   artistNames={listArtistsNames(album.artists)}
@@ -101,14 +101,14 @@ const TopResults = props => {
               )
             }) }
           </MediaListContainer>
-        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no albums found</NullElement> }
+        : <NullResult bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no albums found</NullResult> }
         <Heading>Playlists</Heading>
         { props.data.playlists.items.length ?
           <MediaListContainer>
             { props.data.playlists.items.map((playlist, index) => {
               if (index > 9) return null
               return (
-                <AlbumTag
+                <AlbumListItem
                   image={playlist.images[0].url ? playlist.images[0].url : albumImg}
                   name={playlist.name}
                   key={playlist.id}
@@ -118,7 +118,7 @@ const TopResults = props => {
               )
             }) }
           </MediaListContainer>
-        : <NullElement bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no playlists found</NullElement> }
+        : <NullResult bgColor={"rgba(0,0,0,0.6)"} height={200} size={24}>no playlists found</NullResult> }
       </TopResultsContainer>
     </>
   )

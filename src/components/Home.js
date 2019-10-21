@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../css/home.css'
 import styled from 'styled-components'
 import { Artists } from './search/Search.js'
-import SongTag from './litphum-lib/SongTag.js'
+import SongListItem from './litphum-lib/SongListItem.js'
 import msToTime from './litphum-lib/msToTime.js'
  
 const TrackSectionContainer = styled.section`
@@ -54,7 +54,7 @@ const Home = props => {
         {trackItems ? 
         <TrackSectionContainer>
           {trackItems.map( track => 
-            <SongTag
+            <SongListItem
               image={track.album.images[1].url}
               duration={msToTime(track.duration_ms)}
               key={track.id}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAsync } from 'react-async'
-import { AlbumsList } from './search/Search.js'
+import AlbumsList from './litphum-lib/AlbumList.js'
 import MediaLoader from './litphum-lib/MediaLoader.js'
 import LibraryHeader from './litphum-lib/LibraryHeader.js'
 

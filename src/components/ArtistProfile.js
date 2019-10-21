@@ -2,10 +2,10 @@ import React from 'react'
 import { useAsync } from "react-async"
 import styled from 'styled-components'
 import history from '../history.js'
-import SongTag from './litphum-lib/SongTag.js'
+import SongListItem from './litphum-lib/SongListItem.js'
 import listArtistsNames from './litphum-lib/listArtistsNames.js'
 import { MediaListContainer } from './litphum-lib/litphum-styled.js'
-import AlbumTag from './litphum-lib/AlbumTag.js'
+import AlbumListItem from './litphum-lib/AlbumListItem.js'
 import msToTime from './litphum-lib/msToTime.js'
 import albumImg from '../images/album-img.svg'
 
@@ -75,7 +75,7 @@ const  ArtistProfile = props => {
           {artistProfileData ? artistProfileData.artistTopTracks.tracks.map((track, index) => {
             if (index > 4) return null
             return (
-              <SongTag
+              <SongListItem
                 image={track.album.images[1].url}
                 duration={msToTime(track.duration_ms)}
                 key={track.id}
@@ -91,7 +91,7 @@ const  ArtistProfile = props => {
         <MediaListContainer>
           {artistProfileData ? artistProfileData.artistAlbums.items.map(album => {
             return (
-              <AlbumTag
+              <AlbumListItem
                 image={(album.images && album.images[0]) ? album.images[0].url : albumImg}
                 name={album.name}
                 artistNames={listArtistsNames(album.artists)}

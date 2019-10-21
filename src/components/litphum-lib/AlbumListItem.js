@@ -10,26 +10,26 @@ const AlbumInfo = styled.div`
   color: #fff;
 `
 
-const AlbumTag = props => {
-  const [bool, setBool] = useState(false)
+const AlbumListItem = props => {
+  const [visibleBool, setVisibleBool] = useState(false)
   return (
     <div style={{marginBottom: "20px"}}>
       <Link to={props.playlist ? "/playlist/"+props.albumId : "/album/"+props.albumId} >
         <MediaItemImage size={200} imageMargin={"auto"} image={props.image}>
-         <ImageContainer onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
-            <PlayBtn visibility={bool} />
+         <ImageContainer onMouseEnter={() => setVisibleBool(true)} onMouseLeave={() => setVisibleBool(false)} >
+            <PlayBtn visibility={visibleBool} />
          </ImageContainer>
         </MediaItemImage>
       </Link>
       <AlbumInfo>
         <Link style={{color: "white"}} to={props.playlist ? "/album/"+props.albumId : "/playlist/"+props.albumId} >
-          <TextOverflow lineClamp={2}>
+          <TextOverflow alternate lineClamp={2}>
             <div style={{display: "inline"}}>
               <span>{props.name}</span>
             </div>
           </TextOverflow>
         </Link>
-        <TextOverflow onClick={props.reload ? props.reload : null}>
+        <TextOverflow alternate onClick={props.reload ? props.reload : null}>
           <div style={{display: "inline"}}>
             <span style={{opacity: "0.7"}}>{props.artistNames}</span>
           </div>
@@ -39,4 +39,4 @@ const AlbumTag = props => {
   )
 }
 
-export default AlbumTag
+export default AlbumListItem

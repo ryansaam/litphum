@@ -5,7 +5,7 @@ import { useAsync } from "react-async"
 import { MediaItemImage, ImageContainer, Header, TextOverflow } from './litphum-lib/litphum-styled.js'
 import listArtistsNames from './litphum-lib/listArtistsNames.js'
 import PlayBtn from './litphum-lib/PlayBtn.js'
-import SongTag from './litphum-lib/SongTag.js'
+import SongListItem from './litphum-lib/SongListItem.js'
 import msToTime from './litphum-lib/msToTime.js'
 
 const AlbumView = styled.div`
@@ -98,7 +98,7 @@ const Album = props => {
         <AlbumSongsContainer>
           { albumData.tracks.items.map((track, index) => {
             return props.playlist ? (
-              <SongTag
+              <SongListItem
                 duration={msToTime(track.track.duration_ms)}
                 key={track.track.id+index}
                 name={track.track.name}
@@ -106,7 +106,7 @@ const Album = props => {
                 hoverColor={"#101010"}
               />
             ) : (
-              <SongTag
+              <SongListItem
                 duration={msToTime(track.duration_ms)}
                 key={track.id}
                 name={track.name}

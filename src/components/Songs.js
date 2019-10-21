@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAsync } from 'react-async'
-import SongTag from './litphum-lib/SongTag.js'
+import SongListItem from './litphum-lib/SongListItem.js'
 import MediaLoader from './litphum-lib/MediaLoader.js'
 import LibraryHeader from './litphum-lib/LibraryHeader.js'
 import msToTime from './litphum-lib/msToTime.js'
@@ -10,7 +10,7 @@ const TrackList = props => {
     <div>
       { props.songs.map((trackItem) => {
           return (
-            <SongTag
+            <SongListItem
               image={trackItem.track.album.images[1].url}
               duration={msToTime(trackItem.track.duration_ms)}
               key={trackItem.track.id}

@@ -8,10 +8,10 @@ import profileImg from '../../images/profile-img.png'
 import TopResults from './TopResults.js'
 import FilterBar from './FilterBar.js'
 import MediaLoader from '../litphum-lib/MediaLoader.js'
-import NullElement from '../litphum-lib/NullElement.js'
-import AlbumTag from '../litphum-lib/AlbumTag.js'
+import NullResult from '../litphum-lib/NullResult.js'
+import AlbumsList from '../litphum-lib/AlbumList.js'
 import { MediaListContainer } from '../litphum-lib/litphum-styled.js'
-import SongTag from '../litphum-lib/SongTag.js'
+import SongListItem from '../litphum-lib/SongListItem.js'
 import msToTime from '../litphum-lib/msToTime.js'
 
 const SearchContainer = styled.div`
@@ -169,7 +169,7 @@ const Search = props => {
             </MediaLoader>
           )} />
         </>
-      : <NullElement>no results</NullElement> }
+      : <NullResult>no results</NullResult> }
     </SearchContainer>
   )
 }
@@ -199,7 +199,7 @@ const Tracks = props => {
     <div>
       { props.songs.map((track) => {
           return (
-            <SongTag
+            <SongListItem
               duration={msToTime(track.duration_ms)}
               key={track.id}
               name={track.name}
@@ -208,36 +208,6 @@ const Tracks = props => {
             />
           )
       }) }
-    </div>
-  )
-}
-
-export const AlbumsList = props => { 
-  return (
-    <div>
-      <MediaListContainer>
-        { props.albums.map((album) => {
-          return (
-            <>
-              { album.added_at // variation of SpotifyAPI data return 
-              ? <AlbumTag
-                  image={album.album.images[0].url}
-                  name={album.album.name}
-                  key={album.album.id}
-                  albumId={album.album.id}
-                  playlist={props.playlist}
-                />
-              : <AlbumTag
-                  image={album.images[0].url}
-                  name={album.name}
-                  key={album.id}
-                  albumId={album.id}
-                  playlist={props.playlist}
-                />}
-              </>
-          )
-        }) }
-      </MediaListContainer>
     </div>
   )
 }

@@ -4,7 +4,7 @@ import PlayBtn from './PlayBtn.js'
 import { ImageContainer, TextOverflow } from './litphum-styled.js'
 
 const ArtistResult = props => {
-  const [bool,setBool] = useState(false)
+  const [visibilityBool,setVisibilityBool] = useState(false)
   return (
     <div>
       <Link style={{color: "white"}} to={"/artist/"+props.id} >
@@ -17,8 +17,8 @@ const ArtistResult = props => {
           width: "200px",
           marginBottom: "10px"}}
         >
-          <ImageContainer style={{backgroundColor: props.bgColor}} circle onMouseEnter={() => setBool(true)} onMouseLeave={() => setBool(false)} >
-            <PlayBtn visibility={bool} />
+          <ImageContainer style={{backgroundColor: props.bgColor}} circle onMouseEnter={() => setVisibilityBool(true)} onMouseLeave={() => setVisibilityBool(false)} >
+            <PlayBtn visibility={visibilityBool} />
           </ImageContainer>
         </div>
         <div style={{marginBottom: "20px"}}>

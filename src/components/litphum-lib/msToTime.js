@@ -1,3 +1,4 @@
+// RobG's answer on StackOverflow https://stackoverflow.com/questions/9763441/milliseconds-to-time-in-javascript/9763769
 function msToTime(s) {
   const pad = (n, z = 2) => ('00' + n).slice(-z);
   if (s >= 3600000) {

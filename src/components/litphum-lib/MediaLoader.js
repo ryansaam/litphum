@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useAsync } from 'react-async'
 import styled from 'styled-components'
 import _ from 'underscore'
-import NullElement from './NullElement.js'
+import NullResult from './NullResult.js'
 
 const MusicContainer = styled.div`
   background: ${props => (props.bgColor || "#4d4b4b")};
@@ -25,7 +25,7 @@ const MusicContentWrapper = styled.div`
   bottom: 0;
 `
 
-// React prevState example hook
+// React prevState example hook https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
 function usePrevious(value) {
   const ref = useRef();
   useEffect(() => {
@@ -40,16 +40,10 @@ const MediaLoader = props => {
   const prevURL = usePrevious(nextURL);
   const scrollRef = useRef(null)
   const scrollPadding = props.scrollPadding || 300
-  
-  const loadMoreItems = ( url , { api } ) => {
-    const data = api.getMoreItems(url[0])
-    return data
-  }
 
   // requests more data if user scrolls to bottom
   const { data: mediaData, run: runLoadMediaData } = useAsync({ 
-    deferFn: loadMoreItems,
-    api: props.spotifyAPI,
+    deferFn: props.spotifyAPI.getMoreItems
   })
   
   /* points URL query string to next list */
@@ -93,7 +87,7 @@ const MediaLoader = props => {
         </MusicContainer>
       : <div style={{height: "100%", display: "grid", gridTemplateRows: "auto 1fr"}}>
           { props.filter || null }
-          <NullElement>{props.text}</NullElement>
+          <NullResult>{props.text}</NullResult>
         </div> }
     </>
   )

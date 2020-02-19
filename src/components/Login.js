@@ -32,7 +32,7 @@ const Login = () => {
     <div style={{height: "100%"}}>
       <LoginContainer>
         <LogoBar>
-          <LoginBtn style={{alignSelf: "center", justifySelf: "right"}} onClick={() => window.location = "http://localhost2/login"}>
+          <LoginBtn style={{alignSelf: "center", justifySelf: "right"}} onClick={() => window.location = `${process.env.REACT_APP_AUTH_LOGIN_URL}/login`}>
             LOG IN WITH SPOTIFY
           </LoginBtn>
         </LogoBar>

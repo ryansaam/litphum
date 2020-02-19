@@ -38,6 +38,7 @@ const UserSongs = props => {
           defaultLoadURL={usersReturnedTracks.next} 
           defaultItems={usersReturnedTracks.items} 
           mediaType={"tracks"}
+          text={"You don't have any songs"}
           header={<LibraryHeader>Your Songs</LibraryHeader>}
         >
           { songItems => <TrackList songs={songItems} /> }

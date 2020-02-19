@@ -9,6 +9,7 @@ const UserAlbums = props => {
     promiseFn: props.spotifyAPI.getUserAlbums,
   })
 
+  console.log(usersReturnedAlbums)
   return (
     <>
       { usersReturnedAlbums
@@ -17,6 +18,7 @@ const UserAlbums = props => {
           spotifyAPI={props.spotifyAPI}
           defaultLoadURL={usersReturnedAlbums.next}
           defaultItems={usersReturnedAlbums.items}
+          text={"You don't have any albums"}
           header={<LibraryHeader>Your Albums</LibraryHeader>}
         >
           { albumItems => <AlbumsList albums={albumItems} /> }

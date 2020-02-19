@@ -75,7 +75,7 @@ const MediaLoader = props => {
 
   return (
     <>
-      { musicItems.length ?
+      { musicItems ?
         <MusicContainer bgColor={props.bgColor}>
           <MusicContentWrapper ref={scrollRef} onScroll={updateMusicData}>
             {props.header}

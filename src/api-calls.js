@@ -7,7 +7,7 @@ export function spotifyAPI(token) {
   const checkServerStat = (status, response) => {
     if (status === 401) {
       sessionStorage.removeItem("access_token")
-      window.location = process.env.REACT_APP_URL
+      window.location = window._env_.REACT_APP_URL
     } else
       return response
   }

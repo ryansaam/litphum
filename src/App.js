@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Router, Route} from 'react-router-dom'
+import { Router, Route } from 'react-router-dom'
 import './App.css'
 import history from './history.js'
 import Login from './components/Login.js'
+import ScreenWarning from './components/ScreenWarning.js'
 import Home from './components/Home.js'
 import Search from './components/search/Search.js'
 import UserSongs from './components/Songs.js'
@@ -63,6 +64,7 @@ class App extends Component {
               </div>)
             : <Login />
             }
+          <ScreenWarning/>
         </div>
       </Router>
     );

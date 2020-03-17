@@ -38,7 +38,7 @@ const Login = () => {
         </LogoBar>
         <div style={{position: "relative"}}>
           <div style={{margin: "20px 40px"}}>
-            <h4 style={{fontSize: "36px", margin: "0px"}}>See Spotify in a new perspective using litphum.</h4>
+            <h4 style={{fontSize: (window.innerWidth <= 1200) ? "26px" : "36px", margin: "0px"}}>See Spotify in a new perspective using litphum.</h4>
             <h4 style={{fontSize: "36px", margin: "0px"}}>A new design for Spotify!</h4>
           </div>
           <p style={{
@@ -47,9 +47,9 @@ const Login = () => {
             fontSize: "32px", 
             position: "absolute", 
             bottom: "0", 
-            right: "0", 
+            right: "0",
             zIndex: "5",
-            transform: "translate(-40px, -160px)"
+            transform: `translate(-40px, ${(window.innerWidth <= 1340) ? "-90px" : "-160px"})`
           }}>A quick way to view your songs, albums, and playlists. See something missing? Just search it up using the litphum search.</p>
           <img alt="preview of website" style={{
             height: "300px",
@@ -61,7 +61,7 @@ const Login = () => {
           }} src={websitePreview}/>
         </div>
       </LoginContainer>
-      <img alt="shape" style={{height: "100%", position: "absolute", right: "0", top: "0"}} src={shape}/>
+      <img alt="svg shape" style={{height: "100%", position: "absolute", right: "0", top: "0"}} src={shape}/>
     </div>
   )
 }
